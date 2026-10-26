@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { CustomerViewProvider } from "@/components/customer-view/customer-view-provider";
 import { AppHeader } from "@/components/header/app-header";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import "./globals.css";
@@ -24,13 +25,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
       <body className="min-h-screen font-sans">
-        <div className="flex min-h-screen flex-col lg:flex-row">
-          <AppSidebar />
-          <div className="min-w-0 flex-1">
-            <AppHeader />
-            {children}
+        <CustomerViewProvider>
+          <div className="flex min-h-screen flex-col lg:flex-row">
+            <AppSidebar />
+            <div className="min-w-0 flex-1">
+              <AppHeader />
+              {children}
+            </div>
           </div>
-        </div>
+        </CustomerViewProvider>
       </body>
     </html>
   );

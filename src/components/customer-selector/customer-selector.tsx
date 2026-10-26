@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Building2, Check, ChevronDown, Layers, Loader2, RotateCw, TriangleAlert } from "lucide-react";
 import type { Customer } from "@/services/customers";
-import { useCustomers, type CustomersState } from "@/components/customer-selector/use-customers";
+import type { CustomersState } from "@/components/customer-view/use-customers";
+import { useCustomerView } from "@/components/customer-view/customer-view-provider";
 
 const segmentBase =
   "inline-flex h-8 min-w-0 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-shield-500/70";
@@ -11,11 +12,18 @@ const segmentActive = "bg-shield-500/15 text-shield-300 ring-1 ring-inset ring-s
 const segmentIdle = "text-ink-300 hover:bg-ink-800 hover:text-ink-100";
 
 export function CustomerSelector() {
-  const { state, reload } = useCustomers();
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const {
+    view,
+    selectedCustomer: selected,
+    notice,
+    customersState: state,
+    reloadCustomers: reload,
+    selectAll,
+    selectCustomer,
+  } = useCustomerView();
+  const selectedId = view.mode === "customer" ? view.customerId : null;
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [notice, setNotice] = useState<string | null>(null);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -24,20 +32,11 @@ export function CustomerSelector() {
   const panelId = `${baseId}-panel`;
 
   const customers = state.status === "ready" ? state.customers : [];
-  const selected = customers.find((customer) => customer.id === selectedId) ?? null;
 
   const close = useCallback((restoreFocus: boolean) => {
     setOpen(false);
     if (restoreFocus) triggerRef.current?.focus();
   }, []);
-
-  useEffect(() => {
-    if (state.status !== "ready" || selectedId === null) return;
-    if (!state.customers.some((customer) => customer.id === selectedId)) {
-      setSelectedId(null);
-      setNotice("The selected customer is no longer available. Showing all customers.");
-    }
-  }, [state, selectedId]);
 
   useEffect(() => {
     if (!open) return;
@@ -53,8 +52,7 @@ export function CustomerSelector() {
   }, [open, state]);
 
   const showAll = () => {
-    setSelectedId(null);
-    setNotice(null);
+    selectAll();
     close(false);
   };
 
@@ -69,13 +67,7 @@ export function CustomerSelector() {
   };
 
   const choose = (customer: Customer | undefined) => {
-    if (!customer || !customers.some((c) => c.id === customer.id)) {
-      setNotice("That customer could not be selected. Showing all customers.");
-      setSelectedId(null);
-    } else {
-      setNotice(null);
-      setSelectedId(customer.id);
-    }
+    if (customer) selectCustomer(customer.id);
     close(true);
   };
 
