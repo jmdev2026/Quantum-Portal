@@ -1,4 +1,4 @@
-import { DatabaseBackup, Shield, ShieldCheck } from "lucide-react";
+import { DatabaseBackup, ShieldCheck } from "lucide-react";
 import { IntegrationCard } from "@/components/integration-card";
 
 export default function HomePage() {
@@ -12,21 +12,6 @@ export default function HomePage() {
         aria-hidden
         className="pointer-events-none absolute top-[-12rem] left-1/2 h-[28rem] w-[56rem] -translate-x-1/2 rounded-full bg-shield-500/10 blur-[120px]"
       />
-
-      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between px-6 py-6 sm:px-8">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-shield-500/30 bg-shield-500/10 text-shield-400">
-            <Shield className="h-5 w-5" strokeWidth={2} />
-          </div>
-          <span className="text-sm font-semibold tracking-wide text-ink-100">
-            Quantum Shield Command
-          </span>
-        </div>
-        <span className="hidden items-center gap-2 font-mono text-xs uppercase tracking-wider text-ink-400 sm:inline-flex">
-          <span className="h-2 w-2 animate-pulse-soft rounded-full bg-shield-500" />
-          Foundation build
-        </span>
-      </header>
 
       <main className="relative z-10 mx-auto max-w-6xl px-6 pt-16 pb-24 sm:px-8 sm:pt-24">
         <section className="mx-auto max-w-3xl animate-rise text-center">

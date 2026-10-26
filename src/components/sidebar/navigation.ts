@@ -62,3 +62,7 @@ export function isNavItemActive(item: NavItem, pathname: string) {
   if (item.href === "/") return pathname === "/";
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
+
+export function findActiveNavItem(pathname: string) {
+  return navSections.flatMap((section) => section.items).find((item) => isNavItemActive(item, pathname));
+}

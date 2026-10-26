@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, PanelLeftClose, PanelLeftOpen, Shield, X } from "lucide-react";
 import { SidebarNav } from "@/components/sidebar/sidebar-nav";
-import { isNavItemActive, navSections } from "@/components/sidebar/navigation";
+import { findActiveNavItem } from "@/components/sidebar/navigation";
 
 const COLLAPSE_STORAGE_KEY = "qsc.sidebar.collapsed";
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -97,9 +97,7 @@ function MobileNavigation({
   const wasOpen = useRef(false);
 
   const close = useCallback(() => onOpenChange(false), [onOpenChange]);
-  const currentLabel = navSections
-    .flatMap((section) => section.items)
-    .find((item) => isNavItemActive(item, pathname))?.label;
+  const currentLabel = findActiveNavItem(pathname)?.label;
 
   useEffect(() => {
     if (open) {
