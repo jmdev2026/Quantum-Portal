@@ -21,3 +21,20 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Next.js
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Deployment and testing
+.vercel/
+.netlify/
+coverage/
