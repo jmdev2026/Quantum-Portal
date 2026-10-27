@@ -1,37 +1,48 @@
-import type { LucideIcon } from "lucide-react";
-import { Cloud, Globe, Mail, MonitorSmartphone, Users } from "lucide-react";
+"use client";
 
-const assets: { id: string; label: string; icon: LucideIcon }[] = [
-  { id: "users", label: "Users", icon: Users },
-  { id: "devices", label: "Devices", icon: MonitorSmartphone },
-  { id: "mailboxes", label: "Mailboxes", icon: Mail },
-  { id: "cloud-drives", label: "Cloud Drives", icon: Cloud },
-  { id: "internet-assets", label: "Internet Assets", icon: Globe },
+import type { LucideIcon } from "lucide-react";
+import { Cloud, Globe, Mail, MonitorSmartphone, RotateCw, Users } from "lucide-react";
+import type { AssetMetricKey, AssetMetricState } from "@/services/dashboard-assets";
+import { AssetMetricCard } from "@/components/dashboard/asset-metric-card";
+import { useAssetSummary, type AssetSummaryState } from "@/components/dashboard/use-asset-summary";
+
+const assets: { key: AssetMetricKey; label: string; icon: LucideIcon }[] = [
+  { key: "users", label: "Users", icon: Users },
+  { key: "devices", label: "Devices", icon: MonitorSmartphone },
+  { key: "mailboxes", label: "Mailboxes", icon: Mail },
+  { key: "cloud_drives", label: "Cloud Drives", icon: Cloud },
+  { key: "internet_assets", label: "Internet Assets", icon: Globe },
 ];
 
+function metricState(state: AssetSummaryState, key: AssetMetricKey): AssetMetricState {
+  if (state.status === "loading") return { kind: "loading" };
+  if (state.status === "error") return { kind: "error", message: state.message };
+  return state.metrics[key];
+}
+
 export function AssetSummary() {
+  const { state, retry } = useAssetSummary();
+
   return (
-    <section aria-labelledby="assets-heading">
-      <h2 id="assets-heading" className="mb-4 font-mono text-[11px] uppercase tracking-widest text-ink-400">
-        Protected assets
-      </h2>
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        {assets.map(({ id, label, icon: Icon }) => (
-          <li
-            key={id}
-            className="group flex items-center gap-4 rounded-xl border border-ink-700 bg-ink-900/80 p-4 transition-colors duration-300 hover:border-shield-500/30"
+    <section aria-labelledby="assets-heading" aria-busy={state.status === "loading"}>
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <h2 id="assets-heading" className="font-mono text-[11px] uppercase tracking-widest text-ink-400">
+          Protected assets
+        </h2>
+        {state.status === "error" && (
+          <button
+            type="button"
+            onClick={retry}
+            className="inline-flex items-center gap-1.5 rounded-md border border-ink-700 px-2.5 py-1 text-xs text-ink-300 transition-colors hover:border-shield-500/40 hover:text-shield-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shield-400"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-ink-600 bg-ink-800 text-shield-400 transition-transform duration-300 group-hover:-translate-y-0.5">
-              <Icon aria-hidden className="h-5 w-5" strokeWidth={1.75} />
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-medium text-ink-100">{label}</span>
-              <span className="mt-0.5 flex items-center gap-1.5 text-xs text-ink-400">
-                <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full border border-ink-400" />
-                Awaiting integration
-              </span>
-            </span>
-          </li>
+            <RotateCw aria-hidden className="h-3.5 w-3.5" strokeWidth={2} />
+            Retry
+          </button>
+        )}
+      </div>
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        {assets.map(({ key, label, icon }) => (
+          <AssetMetricCard key={key} icon={icon} label={label} state={metricState(state, key)} />
         ))}
       </ul>
     </section>
