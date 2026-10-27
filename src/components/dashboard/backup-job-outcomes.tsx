@@ -26,7 +26,7 @@ export function BackupJobOutcomes({ outcomes, fallback, stale }: Props) {
   return (
     <div data-section="job-outcomes" className="@container">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-400">Backup Job Outcomes</h3>
+        <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-300">Backup Job Outcomes</h3>
         {outcomes && (
           <span
             data-period={outcomes.period}
@@ -51,7 +51,7 @@ export function BackupJobOutcomes({ outcomes, fallback, stale }: Props) {
                 <Icon aria-hidden className={`mt-0.5 h-4 w-4 shrink-0 ${tone}`} strokeWidth={2} />
                 <span className="min-w-0">
                   {label}
-                  <span className="block text-[11px] font-normal leading-snug text-ink-400">{description}</span>
+                  <span className="block text-[11px] font-normal leading-snug text-ink-300">{description}</span>
                 </span>
               </span>
               <span data-value className="flex min-h-6 items-end">
@@ -60,7 +60,7 @@ export function BackupJobOutcomes({ outcomes, fallback, stale }: Props) {
                     {formatCount(count)}
                   </span>
                 ) : outcomes ? (
-                  <span className="text-xs text-ink-400">Not reported</span>
+                  <span className="text-xs text-ink-300">Not reported</span>
                 ) : (
                   fallback
                 )}
@@ -71,7 +71,7 @@ export function BackupJobOutcomes({ outcomes, fallback, stale }: Props) {
       </ul>
 
       {outcomes && (
-        <div data-basis={outcomes.basis} className="mt-2 space-y-0.5 text-[11px] leading-relaxed text-ink-400">
+        <div data-basis={outcomes.basis} className="mt-2 space-y-0.5 text-[11px] leading-relaxed text-ink-300">
           <p>
             Counted as: <span className="font-medium text-ink-300">{OUTCOME_BASES[outcomes.basis]}</span>
           </p>

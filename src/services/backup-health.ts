@@ -88,7 +88,7 @@ export type BackupHealthState =
 
 // Proposed Quantum Shield Laravel route — not a Datto API endpoint. Laravel authenticates, authorizes the requested
 // customer, enforces tenant isolation, talks to Datto Endpoint Backup, normalizes data and aggregates MSP-wide when authorized.
-// TODO(api): GET /api/dashboard/backup-health — protected endpoint assets and last successful backup freshness for the requested view
+// TODO(api): GET /api/dashboard/backup-health — protected endpoint assets, last successful backup freshness and last-24-hour job outcomes for the requested view
 // request: { customer_id?: number }  (omit customer_id for the All Customers view)
 // response: { data: { scope: { type: "all" } | { type: "customer", customer_id }, status, protected_assets: number | null, freshness: { less_than_1_hour, 1_to_3_hours, 4_to_24_hours, more_than_24_hours, no_successful_backup } | null, job_outcomes: { period: "last_24_hours", basis: "job_executions" | "asset_statuses", window_start?, window_end?, counts: { successful, partially_successful, degraded_or_failed, not_available } } | null, source, last_synced_at, message } }
 export async function getBackupHealth(scope: DashboardScope): Promise<BackupHealthResponse> {

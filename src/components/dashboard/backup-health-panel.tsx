@@ -13,6 +13,7 @@ import {
   Info,
   RotateCw,
 } from "lucide-react";
+import { useRef, type ReactNode } from "react";
 import { BackupJobOutcomes } from "@/components/dashboard/backup-job-outcomes";
 import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 import { useBackupHealth } from "@/components/dashboard/use-backup-health";
@@ -41,6 +42,14 @@ const placeholder: Record<"empty" | "unavailable" | "error", string> = {
   error: "Unavailable",
 };
 
+const announcement: Record<Exclude<BackupHealthState["kind"], "error">, string> = {
+  loading: "Loading backup health",
+  ready: "Backup health loaded",
+  stale: "Backup health loaded. Data is stale.",
+  empty: "No backup data reported yet",
+  unavailable: "Backup integration not connected",
+};
+
 type BackupData = Extract<BackupHealthState, { kind: "ready" | "stale" }>;
 const hasBackupData = (state: BackupHealthState): state is BackupData => state.kind === "ready" || state.kind === "stale";
 
@@ -58,6 +67,12 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
   const stale = state.kind === "stale";
   const unavailableText =
     state.kind === "empty" || state.kind === "unavailable" || state.kind === "error" ? placeholder[state.kind] : null;
+  const contentRef = useRef<HTMLDivElement>(null);
+  // The Retry button unmounts while reloading, so keep keyboard focus inside the panel.
+  const retry = () => {
+    contentRef.current?.focus();
+    onRetry();
+  };
 
   return (
     <DashboardPanel
@@ -67,7 +82,16 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
       description="Datto Endpoint Backup protected assets, last successful backup freshness and job outcomes."
       status={panelStatus[state.kind]}
     >
-      <div data-state={state.kind} aria-busy={state.kind === "loading"} className="flex flex-1 flex-col gap-4">
+      <p role="status" className="sr-only">
+        {state.kind === "error" ? "" : announcement[state.kind]}
+      </p>
+      <div
+        ref={contentRef}
+        tabIndex={-1}
+        data-state={state.kind}
+        aria-busy={state.kind === "loading"}
+        className="flex flex-1 flex-col gap-4 outline-none"
+      >
         <div
           data-metric="protected-assets"
           className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3"
@@ -82,19 +106,19 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
                 {formatCount(data.protectedAssets)}
               </span>
             ) : (
-              <span className="text-xs text-ink-400">Not reported</span>
+              <span className="text-xs text-ink-300">Not reported</span>
             )
           ) : state.kind === "loading" ? (
             <Pending />
           ) : (
-            <span className="text-xs text-ink-400">
+            <span className="text-xs text-ink-300">
               {state.kind === "unavailable" ? "Awaiting integration" : unavailableText}
             </span>
           )}
         </div>
 
         <div>
-          <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-400">Last successful backup</h3>
+          <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-300">Last successful backup</h3>
           <ul className="mt-2 flex flex-col divide-y divide-ink-800 rounded-xl border border-ink-800 bg-ink-950/40">
             {FRESHNESS_BUCKETS.map(({ key, label }) => {
               const { icon: Icon, tone } = bucketDisplay[key];
@@ -110,18 +134,18 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
                       {formatCount(count)}
                     </span>
                   ) : data ? (
-                    <span className="text-xs text-ink-400">Not reported</span>
+                    <span className="text-xs text-ink-300">Not reported</span>
                   ) : state.kind === "loading" ? (
                     <Pending />
                   ) : (
-                    <span className="text-xs text-ink-400">{unavailableText}</span>
+                    <span className="text-xs text-ink-300">{unavailableText}</span>
                   )}
                 </li>
               );
             })}
           </ul>
           {data && data.freshness && data.protectedAssets !== null && (
-            <p className="mt-2 text-[11px] leading-relaxed text-ink-400">
+            <p className="mt-2 text-[11px] leading-relaxed text-ink-300">
               Freshness counts are reported separately and may not add up to the protected asset count.
             </p>
           )}
@@ -132,16 +156,16 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
           stale={stale}
           fallback={
             data ? (
-              <span className="text-xs text-ink-400">Not reported</span>
+              <span className="text-xs text-ink-300">Not reported</span>
             ) : state.kind === "loading" ? (
               <Pending />
             ) : (
-              <span className="text-xs text-ink-400">{unavailableText}</span>
+              <span className="text-xs text-ink-300">{unavailableText}</span>
             )
           }
         />
 
-        <BackupFooter state={state} onRetry={onRetry} />
+        <BackupFooter state={state} onRetry={retry} />
       </div>
     </DashboardPanel>
   );
@@ -156,9 +180,21 @@ function Pending() {
   );
 }
 
-function Notice({ tone, icon: Icon, title, children }: { tone: string; icon: LucideIcon; title: string; children: React.ReactNode }) {
+function Notice({
+  tone,
+  icon: Icon,
+  title,
+  role,
+  children,
+}: {
+  tone: string;
+  icon: LucideIcon;
+  title: string;
+  role?: "alert";
+  children: ReactNode;
+}) {
   return (
-    <div className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-400">
+    <div role={role} className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-300">
       <p className={`flex items-center gap-1.5 font-medium ${tone}`}>
         <Icon aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
         {title}
@@ -196,14 +232,14 @@ function BackupFooter({ state, onRetry }: { state: BackupHealthState; onRetry: (
       );
     case "empty":
       return (
-        <Notice tone="text-ink-300" icon={Info} title="No backup data reported yet">
+        <Notice tone="text-ink-100" icon={Info} title="No backup data reported yet">
           The backup provider has not reported data for this view. This does not indicate whether endpoints are backed
           up.
         </Notice>
       );
     case "error":
       return (
-        <Notice tone="text-red-400" icon={AlertTriangle} title="Could not load backup health">
+        <Notice tone="text-red-400" icon={AlertTriangle} title="Could not load backup health" role="alert">
           <p>{state.message}</p>
           <button
             type="button"
@@ -226,9 +262,8 @@ function BackupFooter({ state, onRetry }: { state: BackupHealthState; onRetry: (
         </p>
       );
     case "ready":
-      if (!state.lastSyncedAt && !state.source) return null;
       return (
-        <p className="truncate text-xs text-ink-400">
+        <p className="text-xs leading-relaxed text-ink-300">
           <SyncDetails lastSyncedAt={state.lastSyncedAt} source={state.source} />
         </p>
       );
