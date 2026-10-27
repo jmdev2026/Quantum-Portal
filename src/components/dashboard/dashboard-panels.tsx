@@ -1,12 +1,6 @@
-import { Building2, DatabaseBackup, Gauge, Lightbulb, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Building2, DatabaseBackup, Gauge, Lightbulb, ShieldCheck } from "lucide-react";
 import { DashboardPanel, PanelPlaceholder } from "@/components/dashboard/dashboard-panel";
-
-const severities = [
-  { id: "critical", label: "Critical", dot: "bg-red-400" },
-  { id: "high", label: "High", dot: "bg-orange-400" },
-  { id: "medium", label: "Medium", dot: "bg-amber-signal" },
-  { id: "low", label: "Low", dot: "bg-sky-400" },
-];
+import { IssuesBySeverityPanel } from "@/components/dashboard/issues-by-severity-panel";
 
 const backupAreas = [
   { id: "freshness", label: "Backup freshness" },
@@ -32,25 +26,7 @@ export function DashboardPanels() {
         />
       </DashboardPanel>
 
-      <DashboardPanel
-        id="issues-severity"
-        icon={ShieldAlert}
-        title="Issues by Severity"
-        description="Open security issues grouped by severity."
-        status={{ label: "Awaiting integration", tone: "pending" }}
-      >
-        <ul className="flex flex-1 flex-col divide-y divide-ink-800 rounded-xl border border-ink-800 bg-ink-950/40">
-          {severities.map(({ id, label, dot }) => (
-            <li key={id} className="flex items-center justify-between gap-3 px-4 py-3">
-              <span className="flex items-center gap-3 text-sm font-medium text-ink-100">
-                <span aria-hidden className={`h-2 w-2 rounded-full ${dot}`} />
-                {label}
-              </span>
-              <span className="text-xs text-ink-400">No data yet</span>
-            </li>
-          ))}
-        </ul>
-      </DashboardPanel>
+      <IssuesBySeverityPanel />
 
       <DashboardPanel
         id="backup-health"

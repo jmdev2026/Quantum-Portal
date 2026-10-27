@@ -1,10 +1,18 @@
 import { buildUnavailableAssetSummary } from "@/mocks/dashboard-assets";
+import {
+  isCount,
+  isRecord,
+  parseScope,
+  sameScope,
+  textOrNull,
+  timestampOrNull,
+  type DashboardScope,
+} from "@/services/dashboard-response";
 
 export const ASSET_METRIC_KEYS = ["users", "devices", "mailboxes", "cloud_drives", "internet_assets"] as const;
 export type AssetMetricKey = (typeof ASSET_METRIC_KEYS)[number];
 
-// A viewing preference only. Laravel must authorize every requested organization.
-export type AssetScope = { type: "all" } | { type: "customer"; customer_id: number };
+export type AssetScope = DashboardScope;
 
 export type AssetMetricStatus = "ready" | "empty" | "unavailable" | "stale" | "error";
 
@@ -41,28 +49,6 @@ export async function getAssetSummary(scope: AssetScope): Promise<AssetSummaryRe
   await new Promise((resolve) => setTimeout(resolve, 250));
   return buildUnavailableAssetSummary(scope);
 }
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === "object" && value !== null && !Array.isArray(value);
-
-const isCount = (value: unknown): value is number => Number.isSafeInteger(value) && (value as number) >= 0;
-
-const textOrNull = (value: unknown) => (typeof value === "string" && value.trim() !== "" ? value : null);
-
-const timestampOrNull = (value: unknown) =>
-  typeof value === "string" && !Number.isNaN(Date.parse(value)) ? value : null;
-
-function parseScope(value: unknown): AssetScope | null {
-  if (!isRecord(value)) return null;
-  if (value.type === "all") return { type: "all" };
-  if (value.type === "customer" && Number.isSafeInteger(value.customer_id)) {
-    return { type: "customer", customer_id: value.customer_id as number };
-  }
-  return null;
-}
-
-const sameScope = (a: AssetScope, b: AssetScope) =>
-  a.type === b.type && (a.type === "all" || (b.type === "customer" && a.customer_id === b.customer_id));
 
 export function normalizeAssetMetric(raw: unknown): AssetMetricState {
   if (!isRecord(raw)) return { kind: "error", message: "Received an unreadable metric." };
