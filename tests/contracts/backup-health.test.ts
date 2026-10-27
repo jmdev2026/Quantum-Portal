@@ -21,6 +21,7 @@ test("ready returns protected assets, all five buckets and sync info", () => {
     kind: "ready",
     protectedAssets: 60,
     freshness,
+    jobOutcomes: null,
     source: "datto-endpoint-backup",
     lastSyncedAt: "2026-10-27T08:00:00Z",
   });

@@ -11,9 +11,9 @@ import {
   HardDrive,
   Hourglass,
   Info,
-  ListChecks,
   RotateCw,
 } from "lucide-react";
+import { BackupJobOutcomes } from "@/components/dashboard/backup-job-outcomes";
 import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 import { useBackupHealth } from "@/components/dashboard/use-backup-health";
 import { FRESHNESS_BUCKETS, type BackupHealthState, type FreshnessBucket } from "@/services/backup-health";
@@ -64,7 +64,7 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
       id="backup-health"
       icon={DatabaseBackup}
       title="Backup Health"
-      description="Datto Endpoint Backup protected assets and last successful backup freshness."
+      description="Datto Endpoint Backup protected assets, last successful backup freshness and job outcomes."
       status={panelStatus[state.kind]}
     >
       <div data-state={state.kind} aria-busy={state.kind === "loading"} className="flex flex-1 flex-col gap-4">
@@ -127,21 +127,19 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
           )}
         </div>
 
-        <div
-          data-section="job-outcomes"
-          className="flex items-start gap-2.5 rounded-xl border border-dashed border-ink-700 px-4 py-3"
-        >
-          <ListChecks aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-ink-400" strokeWidth={1.75} />
-          <div className="min-w-0">
-            <p className="flex flex-wrap items-center gap-2 text-sm font-medium text-ink-300">
-              Backup job outcomes
-              <span className="rounded border border-ink-700 px-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-400">
-                Future section
-              </span>
-            </p>
-            <p className="mt-0.5 text-xs leading-relaxed text-ink-400">Job outcome reporting is planned for a later phase.</p>
-          </div>
-        </div>
+        <BackupJobOutcomes
+          outcomes={data?.jobOutcomes ?? null}
+          stale={stale}
+          fallback={
+            data ? (
+              <span className="text-xs text-ink-400">Not reported</span>
+            ) : state.kind === "loading" ? (
+              <Pending />
+            ) : (
+              <span className="text-xs text-ink-400">{unavailableText}</span>
+            )
+          }
+        />
 
         <BackupFooter state={state} onRetry={onRetry} />
       </div>
@@ -192,7 +190,7 @@ function BackupFooter({ state, onRetry }: { state: BackupHealthState; onRetry: (
     case "unavailable":
       return (
         <Notice tone="text-amber-signal" icon={Info} title="Backup integration not connected">
-          Protected assets and backup freshness will appear once Datto Endpoint Backup is connected. This does not
+          Protected assets, backup freshness and job outcomes will appear once Datto Endpoint Backup is connected. This does not
           indicate whether endpoints are backed up.
         </Notice>
       );
