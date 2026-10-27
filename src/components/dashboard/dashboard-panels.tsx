@@ -1,5 +1,6 @@
-import { Building2, DatabaseBackup, Lightbulb } from "lucide-react";
+import { Building2, DatabaseBackup } from "lucide-react";
 import { DashboardPanel, PanelPlaceholder } from "@/components/dashboard/dashboard-panel";
+import { InsightsPanel } from "@/components/dashboard/insights-panel";
 import { IssuesBySeverityPanel } from "@/components/dashboard/issues-by-severity-panel";
 import { SecurityCoveragePanel } from "@/components/dashboard/security-coverage-panel";
 
@@ -51,20 +52,7 @@ export function DashboardPanels() {
         />
       </DashboardPanel>
 
-      <DashboardPanel
-        id="insights"
-        icon={Lightbulb}
-        title="Insights"
-        description="Security, backup and operational recommendations."
-        status={{ label: "Awaiting integration", tone: "pending" }}
-        className="lg:col-span-3"
-      >
-        <PanelPlaceholder
-          icon={Lightbulb}
-          title="No insights yet"
-          message="Recommendations will be generated once security and backup providers are connected and reporting data."
-        />
-      </DashboardPanel>
+      <InsightsPanel />
     </div>
   );
 }
