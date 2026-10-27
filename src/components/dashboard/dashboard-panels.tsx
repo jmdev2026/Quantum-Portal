@@ -1,6 +1,7 @@
-import { Building2, DatabaseBackup, Gauge, Lightbulb, ShieldCheck } from "lucide-react";
+import { Building2, DatabaseBackup, Lightbulb } from "lucide-react";
 import { DashboardPanel, PanelPlaceholder } from "@/components/dashboard/dashboard-panel";
 import { IssuesBySeverityPanel } from "@/components/dashboard/issues-by-severity-panel";
+import { SecurityCoveragePanel } from "@/components/dashboard/security-coverage-panel";
 
 const backupAreas = [
   { id: "freshness", label: "Backup freshness" },
@@ -11,20 +12,7 @@ const backupAreas = [
 export function DashboardPanels() {
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      <DashboardPanel
-        id="security-coverage"
-        icon={ShieldCheck}
-        title="Security Coverage & Issues"
-        description="Security control coverage across managed environments."
-        status={{ label: "Awaiting integration", tone: "pending" }}
-        className="lg:col-span-2"
-      >
-        <PanelPlaceholder
-          icon={Gauge}
-          title="Coverage view reserved"
-          message="Control coverage will be visualized here once the Guardz integration is connected."
-        />
-      </DashboardPanel>
+      <SecurityCoveragePanel />
 
       <IssuesBySeverityPanel />
 
