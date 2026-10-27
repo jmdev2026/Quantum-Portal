@@ -1,14 +1,9 @@
-import { Building2, DatabaseBackup } from "lucide-react";
+import { Building2 } from "lucide-react";
+import { BackupHealthPanel } from "@/components/dashboard/backup-health-panel";
 import { DashboardPanel, PanelPlaceholder } from "@/components/dashboard/dashboard-panel";
 import { InsightsPanel } from "@/components/dashboard/insights-panel";
 import { IssuesBySeverityPanel } from "@/components/dashboard/issues-by-severity-panel";
 import { SecurityCoveragePanel } from "@/components/dashboard/security-coverage-panel";
-
-const backupAreas = [
-  { id: "freshness", label: "Backup freshness" },
-  { id: "outcomes", label: "Job outcomes" },
-  { id: "protected", label: "Protected assets" },
-];
 
 export function DashboardPanels() {
   return (
@@ -17,25 +12,7 @@ export function DashboardPanels() {
 
       <IssuesBySeverityPanel />
 
-      <DashboardPanel
-        id="backup-health"
-        icon={DatabaseBackup}
-        title="Backup Health"
-        description="Datto backup freshness, outcomes and protected assets."
-        status={{ label: "Not connected", tone: "disconnected" }}
-      >
-        <ul className="flex flex-1 flex-col gap-3">
-          {backupAreas.map(({ id, label }) => (
-            <li
-              key={id}
-              className="flex items-center justify-between gap-3 rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3"
-            >
-              <span className="text-sm font-medium text-ink-100">{label}</span>
-              <span className="text-xs text-ink-400">Not connected</span>
-            </li>
-          ))}
-        </ul>
-      </DashboardPanel>
+      <BackupHealthPanel />
 
       <DashboardPanel
         id="customer-overview"
