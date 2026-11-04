@@ -21,7 +21,7 @@ export function IntegrationCard({
   return (
     <article
       style={{ animationDelay: delay }}
-      className="group relative flex animate-rise flex-col overflow-hidden rounded-2xl border border-ink-700 bg-ink-900/80 p-6 transition-colors duration-300 hover:border-shield-500/40 sm:p-8"
+      className="group relative flex motion-safe:animate-slide-up flex-col overflow-hidden rounded-2xl border border-ink-700 bg-ink-900/80 p-6 transition-colors duration-300 hover:border-shield-500/40 sm:p-8"
     >
       <div
         aria-hidden

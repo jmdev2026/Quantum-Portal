@@ -47,7 +47,7 @@ export function AppSidebar() {
             onClick={toggleCollapsed}
             aria-expanded={!collapsed}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className={`flex h-10 w-full items-center gap-3 rounded-lg text-sm text-ink-400 outline-none transition-colors hover:bg-ink-800 hover:text-ink-100 focus-visible:ring-2 focus-visible:ring-shield-500/70 ${
+            className={`flex h-10 w-full items-center gap-3 rounded-lg text-sm text-ink-350 outline-none transition-colors hover:bg-ink-800 hover:text-ink-100 focus-visible:ring-2 focus-visible:ring-shield-500/70 ${
               collapsed ? "justify-center" : "px-3"
             }`}
           >
@@ -158,7 +158,7 @@ function MobileNavigation({
           Menu
         </button>
         {currentLabel && (
-          <span className="font-mono text-[11px] uppercase tracking-widest text-ink-400">{currentLabel}</span>
+          <span className="font-mono text-[11px] uppercase tracking-widest text-ink-350">{currentLabel}</span>
         )}
       </div>
 

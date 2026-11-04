@@ -17,7 +17,7 @@ export function SidebarNav({ pathname, collapsed = false, onNavigate }: SidebarN
             className={
               collapsed
                 ? "sr-only"
-                : "mb-2 px-3 font-mono text-[11px] uppercase tracking-widest text-ink-400"
+                : "mb-2 px-3 font-mono text-[11px] uppercase tracking-widest text-ink-350"
             }
           >
             {section.label}
@@ -94,7 +94,7 @@ function PlannedItem({ item, collapsed }: { item: NavItem; collapsed: boolean })
     <div
       aria-disabled="true"
       title={collapsed ? undefined : `${item.label} is not yet implemented`}
-      className={`${rowBase} ${collapsed ? "justify-center px-0" : "px-3"} cursor-not-allowed text-ink-400`}
+      className={`${rowBase} ${collapsed ? "justify-center px-0" : "px-3"} cursor-not-allowed text-ink-350`}
     >
       <span className="relative">
         <Icon aria-hidden className="h-[18px] w-[18px] shrink-0 opacity-70" strokeWidth={1.75} />
@@ -112,7 +112,7 @@ function PlannedItem({ item, collapsed }: { item: NavItem; collapsed: boolean })
       {!collapsed && (
         <span
           aria-hidden
-          className="rounded-md border border-ink-700 bg-ink-800/80 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-400"
+          className="rounded-md border border-ink-700 bg-ink-800/80 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-350"
         >
           Soon
         </span>

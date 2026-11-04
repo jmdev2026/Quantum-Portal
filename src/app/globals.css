@@ -23,6 +23,7 @@
 
   --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
   --animate-rise: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-slide-up: slide-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 
   @keyframes pulse-soft {
     0%, 100% { opacity: 1; }
@@ -32,6 +33,11 @@
   @keyframes rise {
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slide-up {
+    from { transform: translateY(12px); }
+    to { transform: translateY(0); }
   }
 }
 

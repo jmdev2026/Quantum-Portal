@@ -14,7 +14,7 @@ export function DashboardIntro() {
         : "Customer Overview";
 
   return (
-    <section aria-labelledby="dashboard-heading" className="flex animate-rise flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <section aria-labelledby="dashboard-heading" className="flex motion-safe:animate-slide-up flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0">
         <h1 id="dashboard-heading" className="text-2xl font-semibold leading-tight tracking-tight text-ink-100 sm:text-3xl">
           Overview
