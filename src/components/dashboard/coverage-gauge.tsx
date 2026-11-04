@@ -60,14 +60,14 @@ export function CoverageGauge(props: CoverageGaugeProps) {
             >
               {formatCoveragePercentage(props.percentage)}
             </span>
-            <span className="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-400">Coverage</span>
+            <span className="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-350">Coverage</span>
           </>
         ) : props.variant === "loading" ? (
           <span className="h-6 w-14 animate-pulse rounded bg-ink-700" />
         ) : (
           <>
             <span className="text-2xl font-semibold leading-none text-ink-400">--</span>
-            <span className="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-400">Not available</span>
+            <span className="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-350">Not available</span>
           </>
         )}
       </div>

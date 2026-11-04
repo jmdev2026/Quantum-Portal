@@ -30,7 +30,7 @@ export function DashboardPanel({ id, icon: Icon, title, description, status, cla
             <h2 id={`${id}-title`} className="text-base font-semibold leading-tight text-ink-100">
               {title}
             </h2>
-            <p className="mt-1 text-sm leading-relaxed text-ink-400">{description}</p>
+            <p className="mt-1 text-sm leading-relaxed text-ink-350">{description}</p>
           </div>
         </div>
         <span

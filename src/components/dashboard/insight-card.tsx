@@ -53,7 +53,7 @@ export function InsightCard({ insight, stale }: { insight: Insight; stale: boole
         <p className="mt-1.5 text-xs leading-relaxed text-ink-300 [overflow-wrap:anywhere]">{insight.summary}</p>
       </div>
       {(insight.source || timestamp) && (
-        <p className="mt-auto flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 border-t border-ink-800 pt-3 text-[11px] text-ink-400">
+        <p className="mt-auto flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 border-t border-ink-800 pt-3 text-[11px] text-ink-300">
           {insight.source && <span className="min-w-0 font-mono [overflow-wrap:anywhere]">{insight.source}</span>}
           {insight.source && timestamp && <span aria-hidden>·</span>}
           {timestamp && (

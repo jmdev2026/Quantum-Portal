@@ -20,7 +20,7 @@ const controlStatusDisplay: Record<ControlStatus | "not_reported", { label: stri
   covered: { label: "Covered", icon: CircleCheck, tone: "text-shield-400" },
   needs_attention: { label: "Needs attention", icon: AlertTriangle, tone: "text-amber-signal" },
   unknown: { label: "Unknown", icon: CircleHelp, tone: "text-ink-300" },
-  not_reported: { label: "Not reported", icon: Minus, tone: "text-ink-400" },
+  not_reported: { label: "Not reported", icon: Minus, tone: "text-ink-300" },
 };
 
 const rowPlaceholder: Partial<Record<SecurityCoverageState["kind"], string>> = {
@@ -61,9 +61,9 @@ export function SecurityCoverageView({ state, onRetry }: { state: SecurityCovera
             <CoverageCaption state={state} />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-400">Security controls</h3>
+            <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-350">Security controls</h3>
             {hasData && !state.controls ? (
-              <p className="mt-3 rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-400">
+              <p className="mt-3 rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-350">
                 Individual control statuses were not reported for this view.
               </p>
             ) : (
@@ -125,14 +125,14 @@ function ControlStatusValue({
       </>
     );
   }
-  return <span className="text-xs text-ink-400">{rowPlaceholder[state.kind]}</span>;
+  return <span className="text-xs text-ink-350">{rowPlaceholder[state.kind]}</span>;
 }
 
 function CoverageCaption({ state }: { state: SecurityCoverageState }) {
   if (state.kind === "loading") return <span className="sr-only">Loading coverage</span>;
   if ((state.kind === "ready" || state.kind === "stale") && state.coverage) {
     return (
-      <p className="max-w-xs text-xs leading-relaxed text-ink-400">
+      <p className="max-w-xs text-xs leading-relaxed text-ink-350">
         <span className="font-medium text-ink-300">Measures: </span>
         {state.coverage.basis}
       </p>
@@ -142,12 +142,12 @@ function CoverageCaption({ state }: { state: SecurityCoverageState }) {
     state.kind === "ready" || state.kind === "stale"
       ? "An overall coverage percentage was not reported."
       : "Coverage is not yet available.";
-  return <p className="max-w-xs text-xs leading-relaxed text-ink-400">{text}</p>;
+  return <p className="max-w-xs text-xs leading-relaxed text-ink-350">{text}</p>;
 }
 
 function Notice({ tone, icon: Icon, title, children }: { tone: string; icon: LucideIcon; title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-400">
+    <div className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-350">
       <p className={`flex items-center gap-1.5 font-medium ${tone}`}>
         <Icon aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
         {title}
@@ -216,7 +216,7 @@ function CoverageFooter({ state, onRetry }: { state: SecurityCoverageState; onRe
     case "ready":
       if (!state.lastSyncedAt && !state.source) return null;
       return (
-        <p className="truncate text-xs text-ink-400">
+        <p className="truncate text-xs text-ink-350">
           <SyncDetails lastSyncedAt={state.lastSyncedAt} source={state.source} />
         </p>
       );

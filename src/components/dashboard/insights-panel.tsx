@@ -100,14 +100,14 @@ export function InsightsView({ state, onRetry }: { state: InsightsState; onRetry
                 onClick={() => setActiveTab(key)}
                 onKeyDown={(event) => onTabKeyDown(event, index)}
                 className={`inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-shield-400 ${
-                  selected ? "bg-ink-800 text-shield-300 shadow-sm shadow-black/40" : "text-ink-400 hover:text-ink-100"
+                  selected ? "bg-ink-800 text-shield-300 shadow-sm shadow-black/40" : "text-ink-350 hover:text-ink-100"
                 }`}
               >
                 <Icon aria-hidden className="h-4 w-4 shrink-0" strokeWidth={1.75} />
                 {label}
                 {count !== null && (
                   <span
-                    className={`rounded px-1.5 font-mono text-[10px] tabular-nums ${selected ? "bg-shield-500/15 text-shield-300" : "bg-ink-800 text-ink-400"}`}
+                    className={`rounded px-1.5 font-mono text-[10px] tabular-nums ${selected ? "bg-shield-500/15 text-shield-300" : "bg-ink-800 text-ink-350"}`}
                   >
                     <span className="sr-only">(</span>
                     {count}
@@ -166,7 +166,7 @@ function EmptyList({ message }: { message: string }) {
     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-ink-700 bg-ink-950/40 px-6 py-8 text-center">
       <Inbox aria-hidden className="h-5 w-5 text-ink-400" strokeWidth={1.5} />
       <p className="mt-2 text-sm text-ink-300">{message}</p>
-      <p className="mt-1 max-w-md text-xs leading-relaxed text-ink-400">
+      <p className="mt-1 max-w-md text-xs leading-relaxed text-ink-350">
         The absence of an insight does not indicate the level of security risk.
       </p>
     </div>
@@ -175,7 +175,7 @@ function EmptyList({ message }: { message: string }) {
 
 function Notice({ tone, icon: Icon, title, children }: { tone: string; icon: LucideIcon; title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-400">
+    <div className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-350">
       <p className={`flex items-center gap-1.5 font-medium ${tone}`}>
         <Icon aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
         {title}
@@ -241,7 +241,7 @@ function DataFooter({ state }: { state: InsightsData }) {
   return (
     <div className="flex flex-col gap-2 text-xs">
       {state.hiddenCount > 0 && (
-        <p className="text-ink-400">
+        <p className="text-ink-350">
           {state.hiddenCount} more {state.hiddenCount === 1 ? "insight was" : "insights were"} returned but not shown.
         </p>
       )}
@@ -251,7 +251,7 @@ function DataFooter({ state }: { state: InsightsData }) {
           <span>Stale data. Insights may be out of date. {sync}</span>
         </p>
       ) : (
-        (state.lastSyncedAt || state.source) && <p className="truncate text-ink-400">{sync}</p>
+        (state.lastSyncedAt || state.source) && <p className="truncate text-ink-350">{sync}</p>
       )}
     </div>
   );

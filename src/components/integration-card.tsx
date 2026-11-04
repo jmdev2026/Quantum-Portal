@@ -39,7 +39,7 @@ export function IntegrationCard({
       </div>
 
       <h2 className="mt-6 text-xl font-semibold leading-tight text-ink-100 sm:text-2xl">{title}</h2>
-      <p className="mt-1 font-mono text-xs uppercase tracking-widest text-ink-400">
+      <p className="mt-1 font-mono text-xs uppercase tracking-widest text-ink-350">
         {provider} integration planned
       </p>
       <p className="mt-4 leading-relaxed text-ink-300">{description}</p>

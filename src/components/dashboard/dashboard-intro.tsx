@@ -29,7 +29,7 @@ export function DashboardIntro() {
             </span>
           )}
         </div>
-        <p className="mt-1 text-xs text-ink-400">
+        <p className="mt-1 text-xs text-ink-350">
           The customer view only changes this label. No data is filtered.
         </p>
       </div>

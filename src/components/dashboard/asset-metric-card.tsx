@@ -38,7 +38,7 @@ export function AssetMetricCard({ icon: Icon, label, state }: AssetMetricCardPro
 
 function StatusLine({ dotClass, children }: { dotClass: string; children: React.ReactNode }) {
   return (
-    <p className="mt-0.5 flex items-center gap-1.5 text-xs text-ink-400">
+    <p className="mt-0.5 flex items-center gap-1.5 text-xs text-ink-350">
       <span aria-hidden className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotClass}`} />
       {children}
     </p>
@@ -65,7 +65,7 @@ function MetricBody({ state }: { state: AssetMetricState }) {
             <AlertTriangle aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
             Could not load
           </p>
-          <p className="mt-0.5 line-clamp-2 text-ink-400">{state.message}</p>
+          <p className="mt-0.5 line-clamp-2 text-ink-350">{state.message}</p>
         </div>
       );
     case "ready":
@@ -112,7 +112,7 @@ function SyncLine({ state }: { state: Extract<AssetMetricState, { kind: "ready" 
   }
   if (!time && !source) return null;
   return (
-    <p className="mt-1 truncate text-[11px] text-ink-400">
+    <p className="mt-1 truncate text-[11px] text-ink-350">
       {time ? <>Synced {time}</> : "Sync time not provided"}
       {source}
     </p>

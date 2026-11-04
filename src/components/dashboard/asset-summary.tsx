@@ -26,7 +26,7 @@ export function AssetSummary() {
   return (
     <section aria-labelledby="assets-heading" aria-busy={state.status === "loading"}>
       <div className="mb-4 flex items-center justify-between gap-4">
-        <h2 id="assets-heading" className="font-mono text-[11px] uppercase tracking-widest text-ink-400">
+        <h2 id="assets-heading" className="font-mono text-[11px] uppercase tracking-widest text-ink-350">
           Protected assets
         </h2>
         {state.status === "error" && (

@@ -24,7 +24,7 @@ export default function HomePage() {
         <section aria-labelledby="integration-status-heading">
           <h2
             id="integration-status-heading"
-            className="mb-4 font-mono text-[11px] uppercase tracking-widest text-ink-400"
+            className="mb-4 font-mono text-[11px] uppercase tracking-widest text-ink-350"
           >
             Integration status
           </h2>
@@ -50,7 +50,7 @@ export default function HomePage() {
       </main>
 
       <footer className="relative z-10 border-t border-ink-800">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs text-ink-400 sm:flex-row sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs text-ink-350 sm:flex-row sm:px-6 lg:px-8">
           <span>Quantum Shield Command</span>
           <span className="font-mono">No live data &middot; integrations pending</span>
         </div>
