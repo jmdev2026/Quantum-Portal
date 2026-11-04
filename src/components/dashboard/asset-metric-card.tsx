@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { AlertTriangle, Clock } from "lucide-react";
 import type { AssetMetricState } from "@/services/dashboard-assets";
 
-type AssetMetricCardProps = { icon: LucideIcon; label: string; state: AssetMetricState };
+type AssetMetricCardProps = { icon: LucideIcon; label: string; state: AssetMetricState; simulated?: boolean };
 
 const iconTone: Record<AssetMetricState["kind"], string> = {
   loading: "text-ink-400",
@@ -16,7 +16,7 @@ const iconTone: Record<AssetMetricState["kind"], string> = {
 const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-export function AssetMetricCard({ icon: Icon, label, state }: AssetMetricCardProps) {
+export function AssetMetricCard({ icon: Icon, label, state, simulated = false }: AssetMetricCardProps) {
   return (
     <li
       aria-busy={state.kind === "loading"}
@@ -31,6 +31,11 @@ export function AssetMetricCard({ icon: Icon, label, state }: AssetMetricCardPro
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-medium text-ink-100">{label}</p>
         <MetricBody state={state} />
+        {simulated && (state.kind === "ready" || state.kind === "stale") && (
+          <p data-simulated className="mt-1 font-mono text-[10px] uppercase tracking-wider text-amber-signal">
+            Simulated · fictional
+          </p>
+        )}
       </div>
     </li>
   );

@@ -1,3 +1,4 @@
+import { buildDemoAssetSummary } from "@/demo/dashboard-assets";
 import { buildUnavailableAssetSummary } from "@/mocks/dashboard-assets";
 import {
   isCount,
@@ -48,6 +49,12 @@ export type AssetSummaryResult =
 export async function getAssetSummary(scope: AssetScope): Promise<AssetSummaryResponse> {
   await new Promise((resolve) => setTimeout(resolve, 250));
   return buildUnavailableAssetSummary(scope);
+}
+
+// Frontend demonstration only: fictional fixtures, no network request. Not a stand-in for a Laravel endpoint.
+export async function getDemoAssetSummary(scope: AssetScope): Promise<AssetSummaryResponse> {
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  return buildDemoAssetSummary(scope);
 }
 
 export function normalizeAssetMetric(raw: unknown, now = Date.now()): AssetMetricState {

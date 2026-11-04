@@ -2,9 +2,12 @@
 
 import { Info } from "lucide-react";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
+import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
+import { DashboardModeSwitch, DemoModeNotice } from "@/components/dashboard-mode/dashboard-mode-switch";
 
 export function DashboardIntro() {
   const { view, selectedCustomer } = useCustomerView();
+  const { mode } = useDashboardMode();
 
   const viewLabel =
     view.mode === "all"
@@ -14,7 +17,8 @@ export function DashboardIntro() {
         : "Customer Overview";
 
   return (
-    <section aria-labelledby="dashboard-heading" className="flex motion-safe:animate-slide-up flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <section aria-labelledby="dashboard-heading" className="flex motion-safe:animate-slide-up flex-col gap-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0">
         <h1 id="dashboard-heading" className="text-2xl font-semibold leading-tight tracking-tight text-ink-100 sm:text-3xl">
           Overview
@@ -30,15 +34,23 @@ export function DashboardIntro() {
           )}
         </div>
         <p className="mt-1 text-xs text-ink-350">
-          The customer view only changes this label. No data is filtered.
+          {mode === "demo"
+            ? "In Demo Mode the customer view selects simulated asset figures. Other panels stay unavailable."
+            : "The customer view only changes this label. No data is filtered."}
         </p>
       </div>
 
-      <p className="inline-flex items-center gap-2 self-start rounded-full border border-ink-700 bg-ink-900/80 px-3 py-1.5 text-xs text-ink-300 md:self-auto">
-        <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-amber-signal" />
-        Provider integrations are not connected yet
-        <Info aria-hidden className="h-3.5 w-3.5 text-ink-400" strokeWidth={1.75} />
-      </p>
+      <div className="flex flex-col items-start gap-2 md:items-end">
+        <DashboardModeSwitch />
+        <p className="inline-flex items-center gap-2 rounded-full border border-ink-700 bg-ink-900/80 px-3 py-1.5 text-xs text-ink-300">
+          <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-amber-signal" />
+          Provider integrations are not connected yet
+          <Info aria-hidden className="h-3.5 w-3.5 text-ink-400" strokeWidth={1.75} />
+        </p>
+      </div>
+      </div>
+
+      <DemoModeNotice />
     </section>
   );
 }

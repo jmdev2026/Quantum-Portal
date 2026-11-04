@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { CustomerViewProvider } from "@/components/customer-view/customer-view-provider";
+import { DashboardModeProvider } from "@/components/dashboard-mode/dashboard-mode-provider";
 import { AppHeader } from "@/components/header/app-header";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import "./globals.css";
@@ -30,7 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <AppSidebar />
             <div className="min-w-0 flex-1">
               <AppHeader />
-              {children}
+              <DashboardModeProvider>{children}</DashboardModeProvider>
             </div>
           </div>
         </CustomerViewProvider>

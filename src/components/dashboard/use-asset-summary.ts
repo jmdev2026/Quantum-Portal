@@ -2,46 +2,46 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
+import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
 import {
-  getAssetSummary,
-  normalizeAssetSummary,
-  type AssetMetricKey,
-  type AssetMetricState,
-  type AssetScope,
-} from "@/services/dashboard-assets";
-
-export type AssetSummaryState =
-  | { status: "loading" }
-  | { status: "error"; message: string }
-  | { status: "ready"; metrics: Record<AssetMetricKey, AssetMetricState> };
+  assetSummarySource,
+  visibleAssetSummary,
+  type LoadedAssetSummary,
+} from "@/components/dashboard/asset-summary-view";
+import { normalizeAssetSummary, type AssetScope } from "@/services/dashboard-assets";
 
 export function useAssetSummary() {
   const { view } = useCustomerView();
+  const { mode } = useDashboardMode();
   const customerId = view.mode === "customer" ? view.customerId : null;
-  const [state, setState] = useState<AssetSummaryState>({ status: "loading" });
+  const [loaded, setLoaded] = useState<LoadedAssetSummary>(() => ({ mode, customerId, state: { status: "loading" } }));
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     const scope: AssetScope = customerId === null ? { type: "all" } : { type: "customer", customer_id: customerId };
-    setState({ status: "loading" });
+    setLoaded({ mode, customerId, state: { status: "loading" } });
 
-    getAssetSummary(scope)
+    assetSummarySource(mode)(scope)
       .then((response) => {
         if (cancelled) return;
         const result = normalizeAssetSummary(response, scope);
-        setState(result.ok ? { status: "ready", metrics: result.metrics } : { status: "error", message: result.message });
+        setLoaded({
+          mode,
+          customerId,
+          state: result.ok ? { status: "ready", metrics: result.metrics } : { status: "error", message: result.message },
+        });
       })
       .catch(() => {
-        if (!cancelled) setState({ status: "error", message: "Asset data could not be loaded." });
+        if (!cancelled) setLoaded({ mode, customerId, state: { status: "error", message: "Asset data could not be loaded." } });
       });
 
     return () => {
       cancelled = true;
     };
-  }, [customerId, attempt]);
+  }, [mode, customerId, attempt]);
 
   const retry = useCallback(() => setAttempt((count) => count + 1), []);
 
-  return { state, retry };
+  return { state: visibleAssetSummary(loaded, mode, customerId), simulated: mode === "demo", retry };
 }
