@@ -1,7 +1,17 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { AlertTriangle, Clock, Info, OctagonAlert, RotateCw, ShieldAlert, TriangleAlert, CircleAlert } from "lucide-react";
+import {
+  AlertTriangle,
+  CircleAlert,
+  Clock,
+  FlaskConical,
+  Info,
+  OctagonAlert,
+  RotateCw,
+  ShieldAlert,
+  TriangleAlert,
+} from "lucide-react";
 import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 import { useSecuritySeverity } from "@/components/dashboard/use-security-severity";
 import type { SecuritySeverityState, SeverityLevel } from "@/services/security-severity";
@@ -33,12 +43,15 @@ const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
 export function IssuesBySeverityPanel() {
-  const { state, retry } = useSecuritySeverity();
-  return <IssuesBySeverityView state={state} onRetry={retry} />;
+  const { state, simulated, retry } = useSecuritySeverity();
+  return <IssuesBySeverityView state={state} simulated={simulated} onRetry={retry} />;
 }
 
-export function IssuesBySeverityView({ state, onRetry }: { state: SecuritySeverityState; onRetry: () => void }) {
+type IssuesBySeverityViewProps = { state: SecuritySeverityState; simulated: boolean; onRetry: () => void };
+
+export function IssuesBySeverityView({ state, simulated, onRetry }: IssuesBySeverityViewProps) {
   const hasCounts = state.kind === "ready" || state.kind === "stale";
+  const status = simulated && hasCounts ? ({ label: "Simulated", tone: "disconnected" } as const) : panelStatus[state.kind];
 
   return (
     <DashboardPanel
@@ -46,9 +59,9 @@ export function IssuesBySeverityView({ state, onRetry }: { state: SecuritySeveri
       icon={ShieldAlert}
       title="Issues by Severity"
       description="Open security issues grouped by severity."
-      status={panelStatus[state.kind]}
+      status={status}
     >
-      <div data-state={state.kind} className="flex flex-1 flex-col gap-4">
+      <div data-state={state.kind} data-mode={simulated ? "demo" : "live"} className="flex flex-1 flex-col gap-4">
         <ul
           aria-busy={state.kind === "loading"}
           className="flex flex-col divide-y divide-ink-800 rounded-xl border border-ink-800 bg-ink-950/40"
@@ -76,7 +89,7 @@ export function IssuesBySeverityView({ state, onRetry }: { state: SecuritySeveri
             </li>
           ))}
         </ul>
-        <SeverityFooter state={state} onRetry={onRetry} />
+        <SeverityFooter state={state} simulated={simulated} onRetry={onRetry} />
       </div>
     </DashboardPanel>
   );
@@ -118,7 +131,7 @@ function SyncDetails({
   );
 }
 
-function SeverityFooter({ state, onRetry }: { state: SecuritySeverityState; onRetry: () => void }) {
+function SeverityFooter({ state, simulated, onRetry }: IssuesBySeverityViewProps) {
   switch (state.kind) {
     case "loading":
       return null;
@@ -160,7 +173,12 @@ function SeverityFooter({ state, onRetry }: { state: SecuritySeverityState; onRe
               </span>
             </p>
           )}
-          {state.kind === "stale" ? (
+          {simulated ? (
+            <p data-simulated className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-amber-signal">
+              <FlaskConical aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+              Simulated data · fictional, not provider findings
+            </p>
+          ) : state.kind === "stale" ? (
             <p className="flex items-start gap-1.5 text-amber-signal">
               <Clock aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
               <span>

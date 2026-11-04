@@ -1,3 +1,4 @@
+import { buildDemoSecuritySeverity } from "@/demo/security-severity";
 import { buildUnavailableSecuritySeverity } from "@/mocks/security-severity";
 import {
   historicalTimestampOrNull,
@@ -42,6 +43,12 @@ export type SecuritySeverityState =
 export async function getSecuritySeverity(scope: DashboardScope): Promise<SecuritySeverityResponse> {
   await new Promise((resolve) => setTimeout(resolve, 250));
   return buildUnavailableSecuritySeverity(scope);
+}
+
+// Frontend demonstration only: fictional fixtures, no network request. Not a stand-in for a Laravel endpoint.
+export async function getDemoSecuritySeverity(scope: DashboardScope): Promise<SecuritySeverityResponse> {
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  return buildDemoSecuritySeverity(scope);
 }
 
 function parseCounts(value: unknown): SeverityCounts | null {
