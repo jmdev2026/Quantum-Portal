@@ -43,13 +43,3 @@ export function DashboardPanel({ id, icon: Icon, title, description, status, cla
     </section>
   );
 }
-
-export function PanelPlaceholder({ icon: Icon, title, message }: { icon: LucideIcon; title: string; message: string }) {
-  return (
-    <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-dashed border-ink-700 bg-ink-950/40 px-6 py-10 text-center">
-      <Icon aria-hidden className="h-6 w-6 text-ink-400" strokeWidth={1.5} />
-      <p className="mt-3 text-sm font-medium text-ink-100">{title}</p>
-      <p className="mt-1 max-w-sm text-xs leading-relaxed text-ink-400">{message}</p>
-    </div>
-  );
-}
