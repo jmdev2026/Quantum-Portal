@@ -169,7 +169,7 @@ export function CustomerSelector() {
       <div
         id={panelId}
         hidden={!open}
-        className="absolute inset-x-0 top-full z-30 mt-2 origin-top animate-rise overflow-hidden rounded-xl border border-ink-700 bg-ink-900 shadow-2xl shadow-black/60 [animation-duration:200ms] lg:left-auto lg:w-80"
+        className="absolute inset-x-0 top-full z-30 mt-2 origin-top motion-safe:animate-slide-up overflow-hidden rounded-xl border border-ink-700 bg-ink-900 shadow-2xl shadow-black/60 motion-safe:[animation-duration:200ms] lg:left-auto lg:w-80"
       >
         <div className="flex items-center justify-between border-b border-ink-800 px-4 py-3">
           <p id={`${baseId}-label`} className="text-sm font-semibold text-ink-100">
@@ -199,7 +199,7 @@ export function CustomerSelector() {
           onListKeyDown={onListKeyDown}
         />
 
-        <p className="border-t border-ink-800 bg-ink-950/50 px-4 py-3 text-xs leading-relaxed text-ink-400">
+        <p className="border-t border-ink-800 bg-ink-950/50 px-4 py-3 text-xs leading-relaxed text-ink-350">
           Frontend demonstration only. Choosing a customer does not filter data or control access.
         </p>
       </div>
@@ -263,7 +263,7 @@ function PanelBody({
       <div className="px-4 py-6 text-center">
         <Building2 aria-hidden className="mx-auto h-6 w-6 text-ink-400" strokeWidth={1.5} />
         <p className="mt-2 text-sm font-medium text-ink-100">No customers available</p>
-        <p className="mt-1 text-xs text-ink-400">Customers will appear here once they are added.</p>
+        <p className="mt-1 text-xs text-ink-350">Customers will appear here once they are added.</p>
       </div>
     );
   }
@@ -309,7 +309,7 @@ function PanelBody({
               <span className={`block truncate text-sm font-medium ${isSelected ? "text-shield-300" : "text-ink-100"}`}>
                 {customer.name}
               </span>
-              <span className="block font-mono text-[10px] uppercase tracking-wider text-ink-400">
+              <span className="block font-mono text-[10px] uppercase tracking-wider text-ink-350">
                 {customer.is_demo ? "Demo record" : customer.status}
               </span>
             </span>
