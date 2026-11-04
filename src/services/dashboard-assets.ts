@@ -5,7 +5,7 @@ import {
   parseScope,
   sameScope,
   textOrNull,
-  timestampOrNull,
+  historicalTimestampOrNull,
   type DashboardScope,
 } from "@/services/dashboard-response";
 
@@ -50,9 +50,9 @@ export async function getAssetSummary(scope: AssetScope): Promise<AssetSummaryRe
   return buildUnavailableAssetSummary(scope);
 }
 
-export function normalizeAssetMetric(raw: unknown): AssetMetricState {
+export function normalizeAssetMetric(raw: unknown, now = Date.now()): AssetMetricState {
   if (!isRecord(raw)) return { kind: "error", message: "Received an unreadable metric." };
-  const sync = { source: textOrNull(raw.source), lastSyncedAt: timestampOrNull(raw.last_synced_at) };
+  const sync = { source: textOrNull(raw.source), lastSyncedAt: historicalTimestampOrNull(raw.last_synced_at, now) };
 
   switch (raw.status) {
     case "ready":
@@ -74,7 +74,7 @@ export function normalizeAssetMetric(raw: unknown): AssetMetricState {
   }
 }
 
-export function normalizeAssetSummary(response: unknown, requested: AssetScope): AssetSummaryResult {
+export function normalizeAssetSummary(response: unknown, requested: AssetScope, now = Date.now()): AssetSummaryResult {
   const data = isRecord(response) ? response.data : null;
   if (!isRecord(data) || !Array.isArray(data.metrics)) {
     return { ok: false, message: "Asset data came back in an unexpected format." };
@@ -88,7 +88,7 @@ export function normalizeAssetSummary(response: unknown, requested: AssetScope):
   const metrics = {} as Record<AssetMetricKey, AssetMetricState>;
   for (const key of ASSET_METRIC_KEYS) {
     const raw = data.metrics.find((metric) => isRecord(metric) && metric.key === key);
-    metrics[key] = raw === undefined ? { kind: "unavailable", source: null, lastSyncedAt: null } : normalizeAssetMetric(raw);
+    metrics[key] = raw === undefined ? { kind: "unavailable", source: null, lastSyncedAt: null } : normalizeAssetMetric(raw, now);
   }
   return { ok: true, metrics };
 }

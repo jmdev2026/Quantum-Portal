@@ -1,11 +1,13 @@
 import { buildUnavailableBackupHealth } from "@/mocks/backup-health";
 import {
+  CLOCK_SKEW_TOLERANCE_MS,
+  historicalTimestampOrNull,
   isCount,
   isRecord,
+  parseInstant,
   parseScope,
   sameScope,
   textOrNull,
-  timestampOrNull,
   type DashboardScope,
 } from "@/services/dashboard-response";
 
@@ -116,13 +118,15 @@ function parseFreshness(value: unknown): FreshnessCounts | null | undefined {
 const outcomeKeys = new Set<string>(JOB_OUTCOMES.map((outcome) => outcome.key));
 const outcomeFields = new Set(["period", "basis", "window_start", "window_end", "counts"]);
 
-const optionalInstant = (value: unknown): number | null | undefined => {
+// Reporting-window boundaries, not sync evidence. A last_24_hours window describes a completed period ending at
+// report time, so a boundary beyond the skew tolerance is contradictory and the outcomes are rejected.
+const optionalBoundary = (value: unknown, now: number): number | null | undefined => {
   if (value === undefined || value === null) return null;
-  const time = typeof value === "string" ? Date.parse(value) : NaN;
-  return Number.isNaN(time) ? undefined : time;
+  const time = parseInstant(value);
+  return time === null || time > now + CLOCK_SKEW_TOLERANCE_MS ? undefined : time;
 };
 
-function parseJobOutcomes(value: unknown): JobOutcomes | null | undefined {
+function parseJobOutcomes(value: unknown, now: number): JobOutcomes | null | undefined {
   if (value === undefined || value === null) return null;
   if (!isRecord(value) || Object.keys(value).some((key) => !outcomeFields.has(key))) return undefined;
 
@@ -139,8 +143,8 @@ function parseJobOutcomes(value: unknown): JobOutcomes | null | undefined {
   if (typeof value.period !== "string" || !Object.hasOwn(OUTCOME_PERIODS, value.period)) return undefined;
   if (typeof value.basis !== "string" || !Object.hasOwn(OUTCOME_BASES, value.basis)) return undefined;
 
-  const start = optionalInstant(value.window_start);
-  const end = optionalInstant(value.window_end);
+  const start = optionalBoundary(value.window_start, now);
+  const end = optionalBoundary(value.window_end, now);
   if (start === undefined || end === undefined) return undefined;
   if (start !== null && end !== null && start >= end) return undefined;
 
@@ -153,7 +157,7 @@ function parseJobOutcomes(value: unknown): JobOutcomes | null | undefined {
   };
 }
 
-export function normalizeBackupHealth(response: unknown, requested: DashboardScope): BackupHealthState {
+export function normalizeBackupHealth(response: unknown, requested: DashboardScope, now = Date.now()): BackupHealthState {
   const data = isRecord(response) ? response.data : null;
   if (!isRecord(data)) return { kind: "error", message: "Backup data came back in an unexpected format." };
 
@@ -162,7 +166,7 @@ export function normalizeBackupHealth(response: unknown, requested: DashboardSco
     return { kind: "error", message: "Backup data did not match the selected customer view." };
   }
 
-  const sync = { source: textOrNull(data.source), lastSyncedAt: timestampOrNull(data.last_synced_at) };
+  const sync = { source: textOrNull(data.source), lastSyncedAt: historicalTimestampOrNull(data.last_synced_at, now) };
 
   switch (data.status) {
     case "ready":
@@ -171,7 +175,7 @@ export function normalizeBackupHealth(response: unknown, requested: DashboardSco
       if (protectedAssets === undefined) return { kind: "error", message: "Received an invalid protected asset count." };
       const freshness = parseFreshness(data.freshness);
       if (freshness === undefined) return { kind: "error", message: "Received invalid backup freshness counts." };
-      const jobOutcomes = parseJobOutcomes(data.job_outcomes);
+      const jobOutcomes = parseJobOutcomes(data.job_outcomes, now);
       if (jobOutcomes === undefined) return { kind: "error", message: "Received invalid backup job outcomes." };
       if (protectedAssets === null && !freshness && !jobOutcomes) {
         return { kind: "error", message: "Backup data was reported without any values." };

@@ -1,11 +1,11 @@
 import { buildUnavailableSecuritySeverity } from "@/mocks/security-severity";
 import {
+  historicalTimestampOrNull,
   isCount,
   isRecord,
   parseScope,
   sameScope,
   textOrNull,
-  timestampOrNull,
   type DashboardScope,
 } from "@/services/dashboard-response";
 
@@ -55,7 +55,11 @@ function parseCounts(value: unknown): SeverityCounts | null {
   return counts;
 }
 
-export function normalizeSecuritySeverity(response: unknown, requested: DashboardScope): SecuritySeverityState {
+export function normalizeSecuritySeverity(
+  response: unknown,
+  requested: DashboardScope,
+  now = Date.now(),
+): SecuritySeverityState {
   const data = isRecord(response) ? response.data : null;
   if (!isRecord(data)) return { kind: "error", message: "Issue data came back in an unexpected format." };
 
@@ -64,7 +68,7 @@ export function normalizeSecuritySeverity(response: unknown, requested: Dashboar
     return { kind: "error", message: "Issue data did not match the selected customer view." };
   }
 
-  const sync = { source: textOrNull(data.source), lastSyncedAt: timestampOrNull(data.last_synced_at) };
+  const sync = { source: textOrNull(data.source), lastSyncedAt: historicalTimestampOrNull(data.last_synced_at, now) };
 
   switch (data.status) {
     case "ready":

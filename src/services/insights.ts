@@ -1,10 +1,10 @@
 import { buildUnavailableInsights } from "@/mocks/insights";
 import {
+  historicalTimestampOrNull,
   isRecord,
   parseScope,
   sameScope,
   textOrNull,
-  timestampOrNull,
   type DashboardScope,
 } from "@/services/dashboard-response";
 
@@ -85,7 +85,7 @@ function parseId(value: unknown): string | null {
   return null;
 }
 
-function parseInsight(value: unknown): Insight | null {
+function parseInsight(value: unknown, now: number): Insight | null {
   if (!isRecord(value)) return null;
   const id = parseId(value.id);
   const title = boundedText(value.title, INSIGHT_TEXT_LIMITS.title);
@@ -99,17 +99,17 @@ function parseInsight(value: unknown): Insight | null {
     summary,
     priority: (value.priority as InsightPriority | null | undefined) ?? null,
     source: boundedText(value.source, INSIGHT_TEXT_LIMITS.source),
-    observedAt: timestampOrNull(value.observed_at),
-    updatedAt: timestampOrNull(value.updated_at),
+    observedAt: historicalTimestampOrNull(value.observed_at, now),
+    updatedAt: historicalTimestampOrNull(value.updated_at, now),
   };
 }
 
-function parseInsights(value: unknown): Insight[] | null {
+function parseInsights(value: unknown, now: number): Insight[] | null {
   if (!Array.isArray(value)) return null;
   const seen = new Set<string>();
   const insights: Insight[] = [];
   for (const entry of value) {
-    const insight = parseInsight(entry);
+    const insight = parseInsight(entry, now);
     if (!insight || seen.has(insight.id)) return null;
     seen.add(insight.id);
     insights.push(insight);
@@ -117,7 +117,7 @@ function parseInsights(value: unknown): Insight[] | null {
   return insights;
 }
 
-export function normalizeInsights(response: unknown, requested: DashboardScope): InsightsState {
+export function normalizeInsights(response: unknown, requested: DashboardScope, now = Date.now()): InsightsState {
   const data = isRecord(response) ? response.data : null;
   if (!isRecord(data)) return { kind: "error", message: "Insights came back in an unexpected format." };
 
@@ -128,13 +128,13 @@ export function normalizeInsights(response: unknown, requested: DashboardScope):
 
   const sync = {
     source: boundedText(data.source, INSIGHT_TEXT_LIMITS.source),
-    lastSyncedAt: timestampOrNull(data.last_synced_at),
+    lastSyncedAt: historicalTimestampOrNull(data.last_synced_at, now),
   };
 
   switch (data.status) {
     case "ready":
     case "stale": {
-      const insights = parseInsights(data.insights);
+      const insights = parseInsights(data.insights, now);
       if (!insights) return { kind: "error", message: "Received invalid or duplicate insight records." };
       return {
         kind: data.status,

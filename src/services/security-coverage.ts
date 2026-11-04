@@ -1,10 +1,10 @@
 import { buildUnavailableSecurityCoverage } from "@/mocks/security-coverage";
 import {
+  historicalTimestampOrNull,
   isRecord,
   parseScope,
   sameScope,
   textOrNull,
-  timestampOrNull,
   type DashboardScope,
 } from "@/services/dashboard-response";
 
@@ -89,7 +89,11 @@ function parseCoverage(percentage: unknown, basis: unknown): CoverageScore | nul
   return explanation ? { percentage, basis: explanation } : undefined;
 }
 
-export function normalizeSecurityCoverage(response: unknown, requested: DashboardScope): SecurityCoverageState {
+export function normalizeSecurityCoverage(
+  response: unknown,
+  requested: DashboardScope,
+  now = Date.now(),
+): SecurityCoverageState {
   const data = isRecord(response) ? response.data : null;
   if (!isRecord(data)) return { kind: "error", message: "Coverage data came back in an unexpected format." };
 
@@ -98,7 +102,7 @@ export function normalizeSecurityCoverage(response: unknown, requested: Dashboar
     return { kind: "error", message: "Coverage data did not match the selected customer view." };
   }
 
-  const sync = { source: textOrNull(data.source), lastSyncedAt: timestampOrNull(data.last_synced_at) };
+  const sync = { source: textOrNull(data.source), lastSyncedAt: historicalTimestampOrNull(data.last_synced_at, now) };
 
   switch (data.status) {
     case "ready":

@@ -1,10 +1,11 @@
 import { buildUnavailableCustomerOverview } from "@/mocks/customer-overview";
 import {
+  checkHistoricalTimestamp,
+  historicalTimestampOrNull,
   isRecord,
   parseScope,
   sameScope,
   textOrNull,
-  timestampOrNull,
   type DashboardScope,
 } from "@/services/dashboard-response";
 
@@ -71,22 +72,20 @@ const boundedText = (value: unknown, limit: number) => {
   return text.length > limit ? `${text.slice(0, limit - 1).trimEnd()}…` : text;
 };
 
-const isoTimestamp = (value: unknown) =>
-  typeof value === "string" && /^\d{4}-\d{2}-\d{2}T/.test(value) ? timestampOrNull(value) : null;
-
-// Returns undefined when the field is present but malformed, so the record is rejected rather than shown as unsynced.
-function optionalTimestamp(value: unknown): string | null | undefined {
-  if (value === undefined || value === null) return null;
-  return isoTimestamp(value) ?? undefined;
+// Returns undefined when the field is present but malformed or in the future, so the record is rejected rather than shown as unsynced.
+function optionalTimestamp(value: unknown, now: number): string | null | undefined {
+  const check = checkHistoricalTimestamp(value, now);
+  if (check.kind === "missing" || check.kind === "null") return null;
+  return check.kind === "valid" ? check.value : undefined;
 }
 
-function parseCustomer(value: unknown): CustomerPortfolioRecord | null {
+function parseCustomer(value: unknown, now: number): CustomerPortfolioRecord | null {
   if (!isRecord(value) || Object.keys(value).some((key) => !recordKeys.has(key))) return null;
   if (!Number.isSafeInteger(value.id) || (value.id as number) <= 0) return null;
   const name = boundedText(value.name, CUSTOMER_TEXT_LIMITS.name);
   if (!name) return null;
   if (!reportingStatuses.has(value.security_reporting) || !reportingStatuses.has(value.backup_reporting)) return null;
-  const lastSyncedAt = optionalTimestamp(value.last_synced_at);
+  const lastSyncedAt = optionalTimestamp(value.last_synced_at, now);
   if (lastSyncedAt === undefined) return null;
   return {
     id: value.id as number,
@@ -97,12 +96,12 @@ function parseCustomer(value: unknown): CustomerPortfolioRecord | null {
   };
 }
 
-function parseCustomers(value: unknown): CustomerPortfolioRecord[] | null {
+function parseCustomers(value: unknown, now: number): CustomerPortfolioRecord[] | null {
   if (!Array.isArray(value) || value.length === 0) return null;
   const seen = new Set<number>();
   const customers: CustomerPortfolioRecord[] = [];
   for (const entry of value) {
-    const customer = parseCustomer(entry);
+    const customer = parseCustomer(entry, now);
     if (!customer || seen.has(customer.id)) return null;
     seen.add(customer.id);
     customers.push(customer);
@@ -110,7 +109,11 @@ function parseCustomers(value: unknown): CustomerPortfolioRecord[] | null {
   return customers;
 }
 
-export function normalizeCustomerOverview(response: unknown, requested: DashboardScope): CustomerOverviewState {
+export function normalizeCustomerOverview(
+  response: unknown,
+  requested: DashboardScope,
+  now = Date.now(),
+): CustomerOverviewState {
   const data = isRecord(response) ? response.data : null;
   if (!isRecord(data)) return { kind: "error", message: "Customer overview came back in an unexpected format." };
 
@@ -121,13 +124,13 @@ export function normalizeCustomerOverview(response: unknown, requested: Dashboar
 
   const sync = {
     source: boundedText(data.source, CUSTOMER_TEXT_LIMITS.source),
-    lastSyncedAt: isoTimestamp(data.last_synced_at),
+    lastSyncedAt: historicalTimestampOrNull(data.last_synced_at, now),
   };
 
   switch (data.status) {
     case "ready":
     case "stale": {
-      const customers = parseCustomers(data.customers);
+      const customers = parseCustomers(data.customers, now);
       if (!customers) return { kind: "error", message: "Received missing, invalid or duplicate customer records." };
       if (requested.type === "customer" && (customers.length !== 1 || customers[0].id !== requested.customer_id)) {
         return { kind: "error", message: "Customer overview did not match the selected customer view." };
