@@ -4,6 +4,7 @@ import type { LucideIcon } from "lucide-react";
 import { AlertTriangle, Building2, Clock, Info, RotateCw } from "lucide-react";
 import { useRef, type ReactNode } from "react";
 import { CustomerPortfolioDetail, CustomerPortfolioList } from "@/components/dashboard/customer-portfolio-list";
+import { portfolioLayout, type OverviewMode } from "@/components/dashboard/customer-overview-view";
 import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 import { useCustomerOverview } from "@/components/dashboard/use-customer-overview";
 import type { CustomerOverviewState } from "@/services/customer-overview";
@@ -29,11 +30,19 @@ const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
 export function CustomerOverviewPanel() {
-  const { state, retry } = useCustomerOverview();
-  return <CustomerOverviewView state={state} onRetry={retry} />;
+  const { state, mode, retry } = useCustomerOverview();
+  return <CustomerOverviewView state={state} mode={mode} onRetry={retry} />;
 }
 
-export function CustomerOverviewView({ state, onRetry }: { state: CustomerOverviewState; onRetry: () => void }) {
+export function CustomerOverviewView({
+  state,
+  mode,
+  onRetry,
+}: {
+  state: CustomerOverviewState;
+  mode: OverviewMode;
+  onRetry: () => void;
+}) {
   const contentRef = useRef<HTMLDivElement>(null);
   // The Retry button unmounts while reloading, so keep keyboard focus inside the panel.
   const retry = () => {
@@ -60,7 +69,7 @@ export function CustomerOverviewView({ state, onRetry }: { state: CustomerOvervi
         aria-busy={state.kind === "loading"}
         className="@container flex flex-1 flex-col gap-4 outline-none"
       >
-        <OverviewBody state={state} onRetry={retry} />
+        <OverviewBody state={state} mode={mode} onRetry={retry} />
         <p className="flex items-start gap-1.5 text-[11px] leading-relaxed text-ink-300">
           <Info aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
           Reporting status shows whether data is being received. It does not indicate whether a customer is secure or
@@ -71,7 +80,15 @@ export function CustomerOverviewView({ state, onRetry }: { state: CustomerOvervi
   );
 }
 
-function OverviewBody({ state, onRetry }: { state: CustomerOverviewState; onRetry: () => void }) {
+function OverviewBody({
+  state,
+  mode,
+  onRetry,
+}: {
+  state: CustomerOverviewState;
+  mode: OverviewMode;
+  onRetry: () => void;
+}) {
   switch (state.kind) {
     case "loading":
       return (
@@ -123,7 +140,7 @@ function OverviewBody({ state, onRetry }: { state: CustomerOverviewState; onRetr
               Stale data. Reporting availability may be out of date.
             </p>
           )}
-          {state.customers.length === 1 && state.hiddenCount === 0 ? (
+          {portfolioLayout(mode) === "detail" ? (
             <CustomerPortfolioDetail customer={state.customers[0]} stale={stale} />
           ) : (
             <CustomerPortfolioList customers={state.customers} stale={stale} />
