@@ -1,7 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { AlertTriangle, Clock, Info, Inbox, Layers, Lightbulb, RotateCw } from "lucide-react";
+import { AlertTriangle, Clock, FlaskConical, Info, Inbox, Layers, Lightbulb, RotateCw } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 import { categoryDisplay, InsightCard } from "@/components/dashboard/insight-card";
@@ -40,17 +40,18 @@ const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
 export function InsightsPanel() {
-  const { state, retry } = useInsights();
-  return <InsightsView state={state} onRetry={retry} />;
+  const { state, simulated, retry } = useInsights();
+  return <InsightsView state={state} simulated={simulated} onRetry={retry} />;
 }
 
-export function InsightsView({ state, onRetry }: { state: InsightsState; onRetry: () => void }) {
+export function InsightsView({ state, simulated, onRetry }: { state: InsightsState; simulated: boolean; onRetry: () => void }) {
   const [activeTab, setActiveTab] = useState<TabKey>("all");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const baseId = useId();
   const hasData = hasInsights(state);
   const insights = hasData ? state.insights : [];
   const visible = activeTab === "all" ? insights : insights.filter((insight) => insight.category === activeTab);
+  const status = simulated && hasData ? ({ label: "Simulated", tone: "disconnected" } as const) : panelStatus[state.kind];
 
   const onTabKeyDown = (event: React.KeyboardEvent, index: number) => {
     const last = tabs.length - 1;
@@ -72,10 +73,10 @@ export function InsightsView({ state, onRetry }: { state: InsightsState; onRetry
       icon={Lightbulb}
       title="Insights"
       description="Read-only security, tip and operations insights for the selected view."
-      status={panelStatus[state.kind]}
+      status={status}
       className="lg:col-span-3"
     >
-      <div data-state={state.kind} className="@container flex flex-1 flex-col gap-4">
+      <div data-state={state.kind} data-mode={simulated ? "demo" : "live"} className="@container flex flex-1 flex-col gap-4">
         <div
           role="tablist"
           aria-label="Insight categories"
@@ -154,7 +155,7 @@ export function InsightsView({ state, onRetry }: { state: InsightsState; onRetry
             <StateNotice state={state} onRetry={onRetry} />
           )}
 
-          {hasInsights(state) && <DataFooter state={state} />}
+          {hasInsights(state) && <DataFooter state={state} simulated={simulated} />}
         </div>
       </div>
     </DashboardPanel>
@@ -224,7 +225,15 @@ function StateNotice({
   }
 }
 
-function DataFooter({ state }: { state: InsightsData }) {
+function DataFooter({ state, simulated }: { state: InsightsData; simulated: boolean }) {
+  if (simulated) {
+    return (
+      <p data-simulated className="flex items-start gap-1.5 text-xs leading-relaxed text-amber-signal">
+        <FlaskConical aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+        Simulated insights — fictional demonstration content, not provider findings
+      </p>
+    );
+  }
   const sync = (
     <>
       {state.lastSyncedAt ? (

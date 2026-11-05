@@ -1,3 +1,4 @@
+import { buildDemoInsights } from "@/demo/insights";
 import { buildUnavailableInsights } from "@/mocks/insights";
 import {
   historicalTimestampOrNull,
@@ -68,6 +69,12 @@ export type InsightsState =
 export async function getInsights(scope: DashboardScope): Promise<InsightsResponse> {
   await new Promise((resolve) => setTimeout(resolve, 250));
   return buildUnavailableInsights(scope);
+}
+
+// Frontend demonstration only: fictional fixtures, no network request. Not a stand-in for a Laravel endpoint.
+export async function getDemoInsights(scope: DashboardScope): Promise<InsightsResponse> {
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  return buildDemoInsights(scope);
 }
 
 const categories = new Set<unknown>(INSIGHT_CATEGORIES);
