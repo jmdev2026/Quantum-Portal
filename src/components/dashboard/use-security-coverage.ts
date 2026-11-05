@@ -2,38 +2,41 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
-import type { DashboardScope } from "@/services/dashboard-response";
+import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
 import {
-  getSecurityCoverage,
-  normalizeSecurityCoverage,
-  type SecurityCoverageState,
-} from "@/services/security-coverage";
+  securityCoverageSource,
+  visibleSecurityCoverage,
+  type LoadedSecurityCoverage,
+} from "@/components/dashboard/security-coverage-view";
+import type { DashboardScope } from "@/services/dashboard-response";
+import { normalizeSecurityCoverage } from "@/services/security-coverage";
 
 export function useSecurityCoverage() {
   const { view } = useCustomerView();
+  const { mode } = useDashboardMode();
   const customerId = view.mode === "customer" ? view.customerId : null;
-  const [state, setState] = useState<SecurityCoverageState>({ kind: "loading" });
+  const [loaded, setLoaded] = useState<LoadedSecurityCoverage>(() => ({ mode, customerId, state: { kind: "loading" } }));
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     const scope: DashboardScope = customerId === null ? { type: "all" } : { type: "customer", customer_id: customerId };
-    setState({ kind: "loading" });
+    setLoaded({ mode, customerId, state: { kind: "loading" } });
 
-    getSecurityCoverage(scope)
+    securityCoverageSource(mode)(scope)
       .then((response) => {
-        if (!cancelled) setState(normalizeSecurityCoverage(response, scope));
+        if (!cancelled) setLoaded({ mode, customerId, state: normalizeSecurityCoverage(response, scope) });
       })
       .catch(() => {
-        if (!cancelled) setState({ kind: "error", message: "Security coverage could not be loaded." });
+        if (!cancelled) setLoaded({ mode, customerId, state: { kind: "error", message: "Security coverage could not be loaded." } });
       });
 
     return () => {
       cancelled = true;
     };
-  }, [customerId, attempt]);
+  }, [mode, customerId, attempt]);
 
   const retry = useCallback(() => setAttempt((count) => count + 1), []);
 
-  return { state, retry };
+  return { state: visibleSecurityCoverage(loaded, mode, customerId), simulated: mode === "demo", retry };
 }

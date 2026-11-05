@@ -1,3 +1,4 @@
+import { buildDemoSecurityCoverage } from "@/demo/security-coverage";
 import { buildUnavailableSecurityCoverage } from "@/mocks/security-coverage";
 import {
   historicalTimestampOrNull,
@@ -60,6 +61,12 @@ export type SecurityCoverageState =
 export async function getSecurityCoverage(scope: DashboardScope): Promise<SecurityCoverageResponse> {
   await new Promise((resolve) => setTimeout(resolve, 250));
   return buildUnavailableSecurityCoverage(scope);
+}
+
+// Frontend demonstration only: fictional fixtures, no network request. Not a stand-in for a Laravel endpoint.
+export async function getDemoSecurityCoverage(scope: DashboardScope): Promise<SecurityCoverageResponse> {
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  return buildDemoSecurityCoverage(scope);
 }
 
 // Truncate rather than round so a value like 99.96 is never shown as 100%.

@@ -1,7 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { AlertTriangle, CircleCheck, CircleHelp, Clock, Info, Minus, RotateCw, ShieldCheck } from "lucide-react";
+import { AlertTriangle, CircleCheck, CircleHelp, Clock, FlaskConical, Info, Minus, RotateCw, ShieldCheck } from "lucide-react";
 import { CoverageGauge } from "@/components/dashboard/coverage-gauge";
 import { DashboardPanel } from "@/components/dashboard/dashboard-panel";
 import { useSecurityCoverage } from "@/components/dashboard/use-security-coverage";
@@ -33,13 +33,17 @@ const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
 export function SecurityCoveragePanel() {
-  const { state, retry } = useSecurityCoverage();
-  return <SecurityCoverageView state={state} onRetry={retry} />;
+  const { state, simulated, retry } = useSecurityCoverage();
+  return <SecurityCoverageView state={state} simulated={simulated} onRetry={retry} />;
 }
 
-export function SecurityCoverageView({ state, onRetry }: { state: SecurityCoverageState; onRetry: () => void }) {
+type SecurityCoverageViewProps = { state: SecurityCoverageState; simulated: boolean; onRetry: () => void };
+
+export function SecurityCoverageView({ state, simulated, onRetry }: SecurityCoverageViewProps) {
   const hasData = state.kind === "ready" || state.kind === "stale";
   const coverage = hasData ? state.coverage : null;
+  const showSimulated = simulated && hasData;
+  const status = showSimulated ? ({ label: "Simulated", tone: "disconnected" } as const) : panelStatus[state.kind];
 
   return (
     <DashboardPanel
@@ -47,21 +51,39 @@ export function SecurityCoverageView({ state, onRetry }: { state: SecurityCovera
       icon={ShieldCheck}
       title="Security Coverage"
       description="Security control coverage for the selected view."
-      status={panelStatus[state.kind]}
+      status={status}
       className="lg:col-span-2"
     >
-      <div data-state={state.kind} aria-busy={state.kind === "loading"} className="@container flex flex-1 flex-col gap-5">
+      <div
+        data-state={state.kind}
+        data-mode={simulated ? "demo" : "live"}
+        aria-busy={state.kind === "loading"}
+        className="@container flex flex-1 flex-col gap-5"
+      >
         <div className="flex flex-col gap-6 @2xl:flex-row @2xl:items-start">
           <div className="flex flex-col items-center gap-3 text-center @2xl:w-52 @2xl:shrink-0">
             {coverage ? (
-              <CoverageGauge variant="value" percentage={coverage.percentage} stale={state.kind === "stale"} />
+              <CoverageGauge
+                variant="value"
+                percentage={coverage.percentage}
+                stale={state.kind === "stale"}
+                simulated={simulated}
+              />
             ) : (
               <CoverageGauge variant={state.kind === "loading" ? "loading" : "neutral"} />
             )}
             <CoverageCaption state={state} />
           </div>
           <div className="min-w-0 flex-1">
-            <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-350">Security controls</h3>
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-mono text-[11px] uppercase tracking-wider text-ink-350">Security controls</h3>
+              {showSimulated && state.controls && (
+                <span className="inline-flex items-center gap-1 rounded-md border border-amber-signal/40 bg-amber-signal/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-signal">
+                  <FlaskConical aria-hidden className="h-3 w-3" strokeWidth={2} />
+                  Simulated statuses
+                </span>
+              )}
+            </div>
             {hasData && !state.controls ? (
               <p className="mt-3 rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-350">
                 Individual control statuses were not reported for this view.
@@ -84,6 +106,7 @@ export function SecurityCoverageView({ state, onRetry }: { state: SecurityCovera
                     </span>
                     <ControlStatusValue
                       state={state}
+                      simulated={simulated}
                       status={hasData ? (state.controls?.[control.key] ?? "not_reported") : null}
                     />
                   </li>
@@ -92,7 +115,7 @@ export function SecurityCoverageView({ state, onRetry }: { state: SecurityCovera
             )}
           </div>
         </div>
-        <CoverageFooter state={state} onRetry={onRetry} />
+        <CoverageFooter state={state} simulated={simulated} onRetry={onRetry} />
       </div>
     </DashboardPanel>
   );
@@ -100,9 +123,11 @@ export function SecurityCoverageView({ state, onRetry }: { state: SecurityCovera
 
 function ControlStatusValue({
   state,
+  simulated,
   status,
 }: {
   state: SecurityCoverageState;
+  simulated: boolean;
   status: ControlStatus | "not_reported" | null;
 }) {
   if (status) {
@@ -111,7 +136,7 @@ function ControlStatusValue({
       <span className={`flex items-center gap-1.5 text-xs font-medium ${tone} ${state.kind === "stale" ? "opacity-75" : ""}`}>
         <Icon aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
         <span>
-          <span className="sr-only">Status: </span>
+          <span className="sr-only">{simulated ? "Simulated status: " : "Status: "}</span>
           {label}
         </span>
       </span>
@@ -172,7 +197,15 @@ function SyncDetails({ lastSyncedAt, source }: { lastSyncedAt: string | null; so
   );
 }
 
-function CoverageFooter({ state, onRetry }: { state: SecurityCoverageState; onRetry: () => void }) {
+function CoverageFooter({ state, simulated, onRetry }: SecurityCoverageViewProps) {
+  if (simulated && (state.kind === "ready" || state.kind === "stale")) {
+    return (
+      <p data-simulated className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-amber-signal">
+        <FlaskConical aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+        Simulated data · fictional, not provider measurements
+      </p>
+    );
+  }
   switch (state.kind) {
     case "loading":
       return null;

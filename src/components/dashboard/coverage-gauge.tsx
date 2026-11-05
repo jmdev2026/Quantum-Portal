@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { formatCoveragePercentage } from "@/services/security-coverage";
 
 type CoverageGaugeProps =
-  | { variant: "value"; percentage: number; stale: boolean }
+  | { variant: "value"; percentage: number; stale: boolean; simulated?: boolean }
   | { variant: "loading" | "neutral" };
 
 export function CoverageGauge(props: CoverageGaugeProps) {
@@ -16,9 +16,10 @@ export function CoverageGauge(props: CoverageGaugeProps) {
     return () => cancelAnimationFrame(frame);
   }, [target]);
 
+  const simulated = props.variant === "value" && props.simulated === true;
   const label =
     props.variant === "value"
-      ? `Security coverage ${formatCoveragePercentage(props.percentage)}${props.stale ? ", possibly out of date" : ""}`
+      ? `${simulated ? "Simulated demo coverage" : "Security coverage"} ${formatCoveragePercentage(props.percentage)}${props.stale ? ", possibly out of date" : ""}`
       : props.variant === "loading"
         ? "Loading security coverage"
         : "Security coverage not available";
@@ -60,7 +61,11 @@ export function CoverageGauge(props: CoverageGaugeProps) {
             >
               {formatCoveragePercentage(props.percentage)}
             </span>
-            <span className="mt-1.5 font-mono text-[10px] uppercase tracking-wider text-ink-350">Coverage</span>
+            <span
+              className={`mt-1.5 font-mono text-[10px] uppercase tracking-wider ${simulated ? "text-amber-signal" : "text-ink-350"}`}
+            >
+              {simulated ? "Simulated" : "Coverage"}
+            </span>
           </>
         ) : props.variant === "loading" ? (
           <span className="h-6 w-14 animate-pulse rounded bg-ink-700" />
