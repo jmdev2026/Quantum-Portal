@@ -29,7 +29,7 @@ export function IntegrationCard({
       />
 
       <div className="flex items-start justify-between gap-4">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-ink-600 bg-ink-800 text-shield-400 transition-transform duration-300 group-hover:-translate-y-0.5">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-ink-600 bg-ink-800 text-shield-400 transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5">
           <Icon className="h-6 w-6" strokeWidth={1.75} />
         </div>
         <span className="inline-flex items-center gap-2 rounded-full border border-amber-signal/30 bg-amber-signal/10 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-amber-signal">

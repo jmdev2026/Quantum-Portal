@@ -126,7 +126,7 @@ function CollapsedTooltip({ label, note }: { label: string; note?: string }) {
   return (
     <span
       aria-hidden
-      className="pointer-events-none absolute left-full z-50 ml-3 -translate-x-1 rounded-md border border-ink-700 bg-ink-800 px-2.5 py-1.5 whitespace-nowrap opacity-0 shadow-xl shadow-black/40 transition-all duration-150 group-hover/item:translate-x-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:opacity-100"
+      className="pointer-events-none absolute left-full z-50 ml-3 -translate-x-1 rounded-md border border-ink-700 bg-ink-800 px-2.5 py-1.5 whitespace-nowrap opacity-0 shadow-xl shadow-black/40 transition-all duration-150 motion-reduce:translate-x-0 motion-reduce:transition-none group-hover/item:translate-x-0 group-hover/item:opacity-100 group-focus-visible/item:translate-x-0 group-focus-visible/item:opacity-100"
     >
       <span className="block text-xs font-medium text-ink-100">{label}</span>
       {note && <span className="block font-mono text-[10px] uppercase tracking-wider text-amber-signal">{note}</span>}

@@ -29,7 +29,7 @@ export function AppSidebar() {
     <>
       <aside
         aria-label="Sidebar"
-        className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-ink-800 bg-ink-900/95 backdrop-blur transition-[width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] lg:flex ${
+        className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-ink-800 bg-ink-900/95 backdrop-blur transition-[width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none lg:flex ${
           collapsed ? "w-[76px]" : "w-64"
         }`}
       >
@@ -178,7 +178,7 @@ function MobileNavigation({
         aria-label="Main menu"
         inert={!open}
         onKeyDown={onKeyDown}
-        className={`fixed inset-y-0 left-0 z-50 flex w-[min(20rem,85vw)] flex-col border-r border-ink-800 bg-ink-900 shadow-2xl shadow-black/60 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[min(20rem,85vw)] flex-col border-r border-ink-800 bg-ink-900 shadow-2xl shadow-black/60 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >

@@ -24,7 +24,7 @@ export function AssetMetricCard({ icon: Icon, label, state, simulated = false }:
       className="group flex items-center gap-4 rounded-xl border border-ink-700 bg-ink-900/80 p-4 transition-colors duration-300 hover:border-shield-500/30"
     >
       <span
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-ink-600 bg-ink-800 transition-transform duration-300 group-hover:-translate-y-0.5 ${iconTone[state.kind]}`}
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-ink-600 bg-ink-800 transition-transform duration-300 motion-safe:group-hover:-translate-y-0.5 ${iconTone[state.kind]}`}
       >
         <Icon aria-hidden className="h-5 w-5" strokeWidth={1.75} />
       </span>

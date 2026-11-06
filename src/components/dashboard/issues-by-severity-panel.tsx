@@ -38,6 +38,14 @@ const rowPlaceholder: Partial<Record<SecuritySeverityState["kind"], string>> = {
   error: "Unavailable",
 };
 
+const announcement: Record<Exclude<SecuritySeverityState["kind"], "error">, string> = {
+  loading: "Loading issue counts",
+  ready: "Issue counts loaded",
+  stale: "Issue counts loaded. Data is stale.",
+  empty: "No findings reported yet",
+  unavailable: "Security provider not connected",
+};
+
 const formatCount = (value: number) => new Intl.NumberFormat().format(value);
 const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
@@ -61,6 +69,9 @@ export function IssuesBySeverityView({ state, simulated, onRetry }: IssuesBySeve
       description="Open security issues grouped by severity."
       status={status}
     >
+      <p role="status" className="sr-only">
+        {state.kind === "error" ? "" : simulated && hasCounts ? "Simulated issue counts loaded" : announcement[state.kind]}
+      </p>
       <div data-state={state.kind} data-mode={simulated ? "demo" : "live"} className="flex flex-1 flex-col gap-4">
         <ul
           aria-busy={state.kind === "loading"}
@@ -95,9 +106,21 @@ export function IssuesBySeverityView({ state, simulated, onRetry }: IssuesBySeve
   );
 }
 
-function Notice({ tone, icon: Icon, title, children }: { tone: string; icon: LucideIcon; title: string; children: React.ReactNode }) {
+function Notice({
+  tone,
+  icon: Icon,
+  title,
+  role,
+  children,
+}: {
+  tone: string;
+  icon: LucideIcon;
+  title: string;
+  role?: "alert";
+  children: React.ReactNode;
+}) {
   return (
-    <div className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-350">
+    <div role={role} className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-350">
       <p className={`flex items-center gap-1.5 font-medium ${tone}`}>
         <Icon aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
         {title}
@@ -149,7 +172,7 @@ function SeverityFooter({ state, simulated, onRetry }: IssuesBySeverityViewProps
       );
     case "error":
       return (
-        <Notice tone="text-red-400" icon={AlertTriangle} title="Could not load issue counts">
+        <Notice tone="text-red-400" icon={AlertTriangle} title="Could not load issue counts" role="alert">
           <p>{state.message}</p>
           <button
             type="button"

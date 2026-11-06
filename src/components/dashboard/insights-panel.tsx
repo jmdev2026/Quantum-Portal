@@ -33,6 +33,14 @@ const panelStatus: Record<InsightsState["kind"], { label: string; tone: "pending
   error: { label: "Error", tone: "disconnected" },
 };
 
+const announcement: Record<Exclude<InsightsState["kind"], "error">, string> = {
+  loading: "Loading insights",
+  ready: "Insights loaded",
+  stale: "Insights loaded. Data is stale.",
+  empty: "No insights reported yet",
+  unavailable: "Insights provider not connected",
+};
+
 type InsightsData = Extract<InsightsState, { kind: "ready" | "stale" }>;
 const hasInsights = (state: InsightsState): state is InsightsData => state.kind === "ready" || state.kind === "stale";
 
@@ -76,6 +84,9 @@ export function InsightsView({ state, simulated, onRetry }: { state: InsightsSta
       status={status}
       className="lg:col-span-3"
     >
+      <p role="status" className="sr-only">
+        {state.kind === "error" ? "" : simulated && hasData ? "Simulated insights loaded" : announcement[state.kind]}
+      </p>
       <div data-state={state.kind} data-mode={simulated ? "demo" : "live"} className="@container flex flex-1 flex-col gap-4">
         <div
           role="tablist"
@@ -174,9 +185,21 @@ function EmptyList({ message }: { message: string }) {
   );
 }
 
-function Notice({ tone, icon: Icon, title, children }: { tone: string; icon: LucideIcon; title: string; children: React.ReactNode }) {
+function Notice({
+  tone,
+  icon: Icon,
+  title,
+  role,
+  children,
+}: {
+  tone: string;
+  icon: LucideIcon;
+  title: string;
+  role?: "alert";
+  children: React.ReactNode;
+}) {
   return (
-    <div className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-350">
+    <div role={role} className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3 text-xs leading-relaxed text-ink-350">
       <p className={`flex items-center gap-1.5 font-medium ${tone}`}>
         <Icon aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
         {title}
@@ -210,7 +233,7 @@ function StateNotice({
       );
     case "error":
       return (
-        <Notice tone="text-red-400" icon={AlertTriangle} title="Could not load insights">
+        <Notice tone="text-red-400" icon={AlertTriangle} title="Could not load insights" role="alert">
           <p className="[overflow-wrap:anywhere]">{state.message}</p>
           <button
             type="button"

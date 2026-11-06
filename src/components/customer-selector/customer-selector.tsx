@@ -149,7 +149,7 @@ export function CustomerSelector() {
           </span>
           <ChevronDown
             aria-hidden
-            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+            className={`h-4 w-4 shrink-0 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-180" : ""}`}
             strokeWidth={1.75}
           />
         </button>

@@ -21,11 +21,32 @@ function metricState(state: AssetSummaryState, key: AssetMetricKey): AssetMetric
   return state.metrics[key];
 }
 
+function announcement(state: AssetSummaryState, simulated: boolean): string {
+  if (state.status === "loading") return "Loading protected assets";
+  if (state.status === "error") return "";
+  const kinds = Object.values(state.metrics).map((metric) => metric.kind);
+  if (kinds.includes("error")) return "Some protected asset counts could not be loaded";
+  if (kinds.some((kind) => kind === "ready" || kind === "stale")) {
+    if (simulated) return "Simulated protected asset counts loaded";
+    return kinds.includes("stale") ? "Protected asset counts loaded. Some data is stale." : "Protected asset counts loaded";
+  }
+  if (kinds.every((kind) => kind === "unavailable")) return "Asset integrations not connected";
+  return "No asset data reported yet";
+}
+
 export function AssetSummary() {
   const { state, simulated, retry } = useAssetSummary();
 
   return (
     <section aria-labelledby="assets-heading" aria-busy={state.status === "loading"} data-mode={simulated ? "demo" : "live"}>
+      <p role="status" className="sr-only">
+        {announcement(state, simulated)}
+      </p>
+      {state.status === "error" && (
+        <p role="alert" className="sr-only">
+          Could not load protected assets
+        </p>
+      )}
       <div className="mb-4 flex items-center justify-between gap-4">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <h2 id="assets-heading" className="font-mono text-[11px] uppercase tracking-widest text-ink-350">
