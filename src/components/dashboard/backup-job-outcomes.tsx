@@ -46,7 +46,7 @@ export function BackupJobOutcomes({ outcomes, fallback, stale, simulated }: Prop
             <li
               key={key}
               data-outcome={key}
-              className="flex min-w-0 flex-col gap-2 rounded-xl border border-ink-800 bg-ink-950/40 px-3 py-3"
+              className="flex min-w-0 flex-col justify-between gap-3 rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3"
             >
               <span className="flex min-w-0 items-start gap-2 text-sm font-medium text-ink-100">
                 <Icon aria-hidden className={`mt-0.5 h-4 w-4 shrink-0 ${tone}`} strokeWidth={2} />
@@ -57,7 +57,7 @@ export function BackupJobOutcomes({ outcomes, fallback, stale, simulated }: Prop
               </span>
               <span data-value className="flex min-h-6 items-end">
                 {count !== null ? (
-                  <span className={`text-xl font-semibold leading-none tabular-nums ${stale ? "text-ink-300" : "text-ink-100"}`}>
+                  <span className={`text-2xl font-semibold leading-none tabular-nums ${stale ? "text-ink-300" : "text-ink-100"}`}>
                     {formatCount(count)}
                   </span>
                 ) : outcomes ? (

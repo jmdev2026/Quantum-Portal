@@ -89,7 +89,7 @@ export function BackupHealthView({
       id="backup-health"
       icon={DatabaseBackup}
       title="Backup Health"
-      description="Datto Endpoint Backup protected assets, last successful backup freshness and job outcomes."
+      description="Endpoint protection, backup freshness and job outcomes."
       status={status}
     >
       <p role="status" className="sr-only">

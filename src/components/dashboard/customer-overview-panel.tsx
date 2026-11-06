@@ -61,7 +61,6 @@ export function CustomerOverviewView({
       title="Customer Overview"
       description="Security and backup reporting availability for the selected view."
       status={status}
-      className="lg:col-span-2"
     >
       <p role="status" className="sr-only">
         {state.kind === "error" ? "" : simulated && hasData ? "Simulated customer overview loaded" : announcement[state.kind]}

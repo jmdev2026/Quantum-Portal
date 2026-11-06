@@ -11,9 +11,14 @@ export function DashboardPanels() {
 
       <IssuesBySeverityPanel />
 
-      <BackupHealthPanel />
+      <div
+        data-row="backup-overview"
+        className="grid grid-cols-1 items-start gap-6 lg:col-span-3 xl:grid-cols-[minmax(0,11fr)_minmax(0,9fr)]"
+      >
+        <BackupHealthPanel />
 
-      <CustomerOverviewPanel />
+        <CustomerOverviewPanel />
+      </div>
 
       <InsightsPanel />
     </div>
