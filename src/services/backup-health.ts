@@ -1,3 +1,4 @@
+import { buildDemoBackupHealth } from "@/demo/backup-health";
 import { buildUnavailableBackupHealth } from "@/mocks/backup-health";
 import {
   CLOCK_SKEW_TOLERANCE_MS,
@@ -96,6 +97,12 @@ export type BackupHealthState =
 export async function getBackupHealth(scope: DashboardScope): Promise<BackupHealthResponse> {
   await new Promise((resolve) => setTimeout(resolve, 250));
   return buildUnavailableBackupHealth(scope);
+}
+
+// Frontend demonstration only: fictional fixtures, no network request. Not a stand-in for a Laravel endpoint.
+export async function getDemoBackupHealth(scope: DashboardScope): Promise<BackupHealthResponse> {
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  return buildDemoBackupHealth(scope);
 }
 
 const bucketKeys = new Set<string>(FRESHNESS_BUCKETS.map((bucket) => bucket.key));

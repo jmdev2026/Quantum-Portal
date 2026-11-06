@@ -8,6 +8,7 @@ import {
   Clock,
   Clock3,
   DatabaseBackup,
+  FlaskConical,
   HardDrive,
   Hourglass,
   Info,
@@ -58,12 +59,21 @@ const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
 export function BackupHealthPanel() {
-  const { state, retry } = useBackupHealth();
-  return <BackupHealthView state={state} onRetry={retry} />;
+  const { state, simulated, retry } = useBackupHealth();
+  return <BackupHealthView state={state} simulated={simulated} onRetry={retry} />;
 }
 
-export function BackupHealthView({ state, onRetry }: { state: BackupHealthState; onRetry: () => void }) {
+export function BackupHealthView({
+  state,
+  simulated,
+  onRetry,
+}: {
+  state: BackupHealthState;
+  simulated: boolean;
+  onRetry: () => void;
+}) {
   const data = hasBackupData(state) ? state : null;
+  const status = simulated && data ? ({ label: "Simulated", tone: "disconnected" } as const) : panelStatus[state.kind];
   const stale = state.kind === "stale";
   const unavailableText =
     state.kind === "empty" || state.kind === "unavailable" || state.kind === "error" ? placeholder[state.kind] : null;
@@ -80,15 +90,16 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
       icon={DatabaseBackup}
       title="Backup Health"
       description="Datto Endpoint Backup protected assets, last successful backup freshness and job outcomes."
-      status={panelStatus[state.kind]}
+      status={status}
     >
       <p role="status" className="sr-only">
-        {state.kind === "error" ? "" : announcement[state.kind]}
+        {state.kind === "error" ? "" : simulated && data ? "Simulated backup health loaded" : announcement[state.kind]}
       </p>
       <div
         ref={contentRef}
         tabIndex={-1}
         data-state={state.kind}
+        data-mode={simulated ? "demo" : "live"}
         aria-busy={state.kind === "loading"}
         className="flex flex-1 flex-col gap-4 outline-none"
       >
@@ -103,6 +114,7 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
           {data ? (
             data.protectedAssets !== null ? (
               <span className={`text-2xl font-semibold leading-none tabular-nums ${stale ? "text-ink-300" : "text-ink-100"}`}>
+                {simulated && <span className="sr-only">Simulated: </span>}
                 {formatCount(data.protectedAssets)}
               </span>
             ) : (
@@ -154,6 +166,7 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
         <BackupJobOutcomes
           outcomes={data?.jobOutcomes ?? null}
           stale={stale}
+          simulated={simulated && !!data}
           fallback={
             data ? (
               <span className="text-xs text-ink-300">Not reported</span>
@@ -165,7 +178,7 @@ export function BackupHealthView({ state, onRetry }: { state: BackupHealthState;
           }
         />
 
-        <BackupFooter state={state} onRetry={retry} />
+        <BackupFooter state={state} simulated={simulated} onRetry={retry} />
       </div>
     </DashboardPanel>
   );
@@ -219,7 +232,18 @@ function SyncDetails({ lastSyncedAt, source }: { lastSyncedAt: string | null; so
   );
 }
 
-function BackupFooter({ state, onRetry }: { state: BackupHealthState; onRetry: () => void }) {
+function BackupFooter({ state, simulated, onRetry }: { state: BackupHealthState; simulated: boolean; onRetry: () => void }) {
+  if (simulated && hasBackupData(state)) {
+    return (
+      <p data-simulated className="flex items-start gap-1.5 text-xs leading-relaxed text-amber-signal">
+        <FlaskConical aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+        <span>
+          Simulated backup information — fictional endpoint backup data for demonstration purposes only. No actual Datto
+          backup activity has been verified.
+        </span>
+      </p>
+    );
+  }
   switch (state.kind) {
     case "loading":
       return null;

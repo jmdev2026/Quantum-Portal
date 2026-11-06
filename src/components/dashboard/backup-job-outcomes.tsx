@@ -20,9 +20,9 @@ const formatCount = (value: number) => new Intl.NumberFormat().format(value);
 const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-type Props = { outcomes: JobOutcomes | null; fallback: ReactNode; stale: boolean };
+type Props = { outcomes: JobOutcomes | null; fallback: ReactNode; stale: boolean; simulated: boolean };
 
-export function BackupJobOutcomes({ outcomes, fallback, stale }: Props) {
+export function BackupJobOutcomes({ outcomes, fallback, stale, simulated }: Props) {
   return (
     <div data-section="job-outcomes" className="@container">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -33,6 +33,7 @@ export function BackupJobOutcomes({ outcomes, fallback, stale }: Props) {
             className="rounded-full border border-shield-500/30 bg-shield-500/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-shield-300"
           >
             {OUTCOME_PERIODS[outcomes.period]}
+            {simulated && " · Illustrative"}
           </span>
         )}
       </div>
@@ -82,6 +83,11 @@ export function BackupJobOutcomes({ outcomes, fallback, stale }: Props) {
             </p>
           )}
           <p>Reported separately from protected assets and freshness. No success rate is calculated.</p>
+          {simulated && (
+            <p data-illustrative-period className="text-amber-signal">
+              “Last 24 Hours” is an illustrative period for this demonstration, not measured backup activity.
+            </p>
+          )}
         </div>
       )}
     </div>
