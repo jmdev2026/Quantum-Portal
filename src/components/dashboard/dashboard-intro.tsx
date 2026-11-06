@@ -35,7 +35,7 @@ export function DashboardIntro() {
         </div>
         <p className="mt-1 text-xs text-ink-350">
           {mode === "demo"
-            ? "In Demo Mode the customer view selects simulated asset figures. Other panels stay unavailable."
+            ? "In Demo Mode the customer view selects simulated figures in every panel. No provider data is shown."
             : "The customer view only changes this label. No data is filtered."}
         </p>
       </div>
