@@ -1,3 +1,4 @@
+import { buildDemoCustomerOverview } from "@/demo/customer-overview";
 import { buildUnavailableCustomerOverview } from "@/mocks/customer-overview";
 import {
   checkHistoricalTimestamp,
@@ -61,6 +62,12 @@ export type CustomerOverviewState =
 export async function getCustomerOverview(scope: DashboardScope): Promise<CustomerOverviewResponse> {
   await new Promise((resolve) => setTimeout(resolve, 250));
   return buildUnavailableCustomerOverview(scope);
+}
+
+// Frontend demonstration only: fictional fixtures, no network request. Not a stand-in for a Laravel endpoint.
+export async function getDemoCustomerOverview(scope: DashboardScope): Promise<CustomerOverviewResponse> {
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  return buildDemoCustomerOverview(scope);
 }
 
 const reportingStatuses = new Set<unknown>(REPORTING_STATUSES);

@@ -12,7 +12,7 @@ const statusDisplay: Record<ReportingStatus, { label: string; icon: LucideIcon; 
 const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-function ReportingBadge({ kind, status }: { kind: "security" | "backup"; status: ReportingStatus }) {
+function ReportingBadge({ kind, status, simulated }: { kind: "security" | "backup"; status: ReportingStatus; simulated: boolean }) {
   const { label, icon: Icon, tone } = statusDisplay[status];
   const KindIcon = kind === "security" ? ShieldCheck : DatabaseBackup;
   return (
@@ -24,6 +24,7 @@ function ReportingBadge({ kind, status }: { kind: "security" | "backup"; status:
       <KindIcon aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
       <span className="text-ink-100">{kind === "security" ? "Security" : "Backup"}</span>
       <Icon aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+      {simulated && <span className="sr-only">Simulated demo fixture: </span>}
       <span className="font-medium">{label}</span>
     </span>
   );
@@ -37,7 +38,9 @@ function SyncTime({ value }: { value: string | null }) {
   );
 }
 
-export function CustomerPortfolioList({ customers, stale }: { customers: CustomerPortfolioRecord[]; stale: boolean }) {
+type PortfolioProps = { stale: boolean; simulated: boolean };
+
+export function CustomerPortfolioList({ customers, stale, simulated }: { customers: CustomerPortfolioRecord[] } & PortfolioProps) {
   return (
     <ul aria-label="Customer reporting status" className="flex flex-col divide-y divide-ink-800 rounded-xl border border-ink-800 bg-ink-950/40">
       {customers.map((customer) => (
@@ -50,8 +53,8 @@ export function CustomerPortfolioList({ customers, stale }: { customers: Custome
             {customer.name}
           </span>
           <span className="flex flex-wrap gap-2 @2xl:contents">
-            <ReportingBadge kind="security" status={customer.securityReporting} />
-            <ReportingBadge kind="backup" status={customer.backupReporting} />
+            <ReportingBadge kind="security" status={customer.securityReporting} simulated={simulated} />
+            <ReportingBadge kind="backup" status={customer.backupReporting} simulated={simulated} />
           </span>
           <span className="text-xs text-ink-300 @2xl:text-right">
             <span className="@2xl:sr-only">Last synced </span>
@@ -63,7 +66,7 @@ export function CustomerPortfolioList({ customers, stale }: { customers: Custome
   );
 }
 
-export function CustomerPortfolioDetail({ customer, stale }: { customer: CustomerPortfolioRecord; stale: boolean }) {
+export function CustomerPortfolioDetail({ customer, stale, simulated }: { customer: CustomerPortfolioRecord } & PortfolioProps) {
   return (
     <div data-customer-id={customer.id} className="rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-4">
       <p className={`break-words text-lg font-semibold leading-tight ${stale ? "text-ink-300" : "text-ink-100"}`}>
@@ -73,13 +76,13 @@ export function CustomerPortfolioDetail({ customer, stale }: { customer: Custome
         <div>
           <dt className="font-mono text-[11px] uppercase tracking-wider text-ink-300">Security reporting</dt>
           <dd className="mt-1.5">
-            <ReportingBadge kind="security" status={customer.securityReporting} />
+            <ReportingBadge kind="security" status={customer.securityReporting} simulated={simulated} />
           </dd>
         </div>
         <div>
           <dt className="font-mono text-[11px] uppercase tracking-wider text-ink-300">Backup reporting</dt>
           <dd className="mt-1.5">
-            <ReportingBadge kind="backup" status={customer.backupReporting} />
+            <ReportingBadge kind="backup" status={customer.backupReporting} simulated={simulated} />
           </dd>
         </div>
         <div>

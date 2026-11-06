@@ -1,7 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { AlertTriangle, Building2, Clock, Info, RotateCw } from "lucide-react";
+import { AlertTriangle, Building2, Clock, FlaskConical, Info, RotateCw } from "lucide-react";
 import { useRef, type ReactNode } from "react";
 import { CustomerPortfolioDetail, CustomerPortfolioList } from "@/components/dashboard/customer-portfolio-list";
 import { portfolioLayout, type OverviewMode } from "@/components/dashboard/customer-overview-view";
@@ -30,19 +30,23 @@ const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
 export function CustomerOverviewPanel() {
-  const { state, mode, retry } = useCustomerOverview();
-  return <CustomerOverviewView state={state} mode={mode} onRetry={retry} />;
+  const { state, mode, simulated, retry } = useCustomerOverview();
+  return <CustomerOverviewView state={state} mode={mode} simulated={simulated} onRetry={retry} />;
 }
 
 export function CustomerOverviewView({
   state,
   mode,
+  simulated,
   onRetry,
 }: {
   state: CustomerOverviewState;
   mode: OverviewMode;
+  simulated: boolean;
   onRetry: () => void;
 }) {
+  const hasData = state.kind === "ready" || state.kind === "stale";
+  const status = simulated && hasData ? ({ label: "Simulated", tone: "disconnected" } as const) : panelStatus[state.kind];
   const contentRef = useRef<HTMLDivElement>(null);
   // The Retry button unmounts while reloading, so keep keyboard focus inside the panel.
   const retry = () => {
@@ -56,20 +60,21 @@ export function CustomerOverviewView({
       icon={Building2}
       title="Customer Overview"
       description="Security and backup reporting availability for the selected view."
-      status={panelStatus[state.kind]}
+      status={status}
       className="lg:col-span-2"
     >
       <p role="status" className="sr-only">
-        {state.kind === "error" ? "" : announcement[state.kind]}
+        {state.kind === "error" ? "" : simulated && hasData ? "Simulated customer overview loaded" : announcement[state.kind]}
       </p>
       <div
         ref={contentRef}
         tabIndex={-1}
         data-state={state.kind}
+        data-mode={simulated ? "demo" : "live"}
         aria-busy={state.kind === "loading"}
         className="@container flex flex-1 flex-col gap-4 outline-none"
       >
-        <OverviewBody state={state} mode={mode} onRetry={retry} />
+        <OverviewBody state={state} mode={mode} simulated={simulated} onRetry={retry} />
         <p className="flex items-start gap-1.5 text-[11px] leading-relaxed text-ink-300">
           <Info aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
           Reporting status shows whether data is being received. It does not indicate whether a customer is secure or
@@ -83,10 +88,12 @@ export function CustomerOverviewView({
 function OverviewBody({
   state,
   mode,
+  simulated,
   onRetry,
 }: {
   state: CustomerOverviewState;
   mode: OverviewMode;
+  simulated: boolean;
   onRetry: () => void;
 }) {
   switch (state.kind) {
@@ -141,25 +148,35 @@ function OverviewBody({
             </p>
           )}
           {portfolioLayout(mode) === "detail" ? (
-            <CustomerPortfolioDetail customer={state.customers[0]} stale={stale} />
+            <CustomerPortfolioDetail customer={state.customers[0]} stale={stale} simulated={simulated} />
           ) : (
-            <CustomerPortfolioList customers={state.customers} stale={stale} />
+            <CustomerPortfolioList customers={state.customers} stale={stale} simulated={simulated} />
           )}
-          <p className="text-xs leading-relaxed text-ink-300">
-            {state.hiddenCount > 0 && (
-              <span className="block">
-                Showing the first {state.customers.length} customers. {state.hiddenCount} more not shown.
+          {simulated ? (
+            <p data-simulated className="flex items-start gap-1.5 text-xs leading-relaxed text-amber-signal">
+              <FlaskConical aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+              <span>
+                Simulated customer portfolio — &ldquo;Available&rdquo; only means demonstration fixtures exist. No Guardz
+                or Datto integration is connected and no reporting has been received.
               </span>
-            )}
-            {state.lastSyncedAt ? (
-              <>
-                Last synced <time dateTime={state.lastSyncedAt}>{formatTimestamp(state.lastSyncedAt)}</time>
-              </>
-            ) : (
-              "Sync time not provided"
-            )}
-            {state.source && <span className="font-mono"> · {state.source}</span>}
-          </p>
+            </p>
+          ) : (
+            <p className="text-xs leading-relaxed text-ink-300">
+              {state.hiddenCount > 0 && (
+                <span className="block">
+                  Showing the first {state.customers.length} customers. {state.hiddenCount} more not shown.
+                </span>
+              )}
+              {state.lastSyncedAt ? (
+                <>
+                  Last synced <time dateTime={state.lastSyncedAt}>{formatTimestamp(state.lastSyncedAt)}</time>
+                </>
+              ) : (
+                "Sync time not provided"
+              )}
+              {state.source && <span className="font-mono"> · {state.source}</span>}
+            </p>
+          )}
         </>
       );
     }

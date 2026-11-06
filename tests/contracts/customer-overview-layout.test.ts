@@ -36,9 +36,9 @@ test("Single Customer with an incorrect record is an error, so no detail is show
 test("data loaded for another view is never shown under the current view", () => {
   const allData = n(res(ALL, [rec(1)]), ALL);
   const aData = n(res(A, [rec(101)]), A);
-  assert.deepEqual(visibleOverview({ customerId: null, state: allData }, 101), { kind: "loading" });
-  assert.deepEqual(visibleOverview({ customerId: 101, state: aData }, null), { kind: "loading" });
-  assert.deepEqual(visibleOverview({ customerId: 101, state: aData }, 202), { kind: "loading" });
-  assert.equal(visibleOverview({ customerId: 101, state: aData }, 101), aData);
-  assert.equal(visibleOverview({ customerId: null, state: allData }, null), allData);
+  assert.deepEqual(visibleOverview({ mode: "live", customerId: null, state: allData }, "live", 101), { kind: "loading" });
+  assert.deepEqual(visibleOverview({ mode: "live", customerId: 101, state: aData }, "live", null), { kind: "loading" });
+  assert.deepEqual(visibleOverview({ mode: "live", customerId: 101, state: aData }, "live", 202), { kind: "loading" });
+  assert.equal(visibleOverview({ mode: "live", customerId: 101, state: aData }, "live", 101), aData);
+  assert.equal(visibleOverview({ mode: "live", customerId: null, state: allData }, "live", null), allData);
 });
