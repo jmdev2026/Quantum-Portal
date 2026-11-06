@@ -9,23 +9,19 @@ export function DashboardIntro() {
   const { view, selectedCustomer } = useCustomerView();
   const { mode } = useDashboardMode();
 
-  const viewLabel =
-    view.mode === "all"
-      ? "All Customers Overview"
-      : selectedCustomer
-        ? `${selectedCustomer.name} Overview`
-        : "Customer Overview";
+  const scopeLabel = view.mode === "all" ? "All Customers" : (selectedCustomer?.name ?? "Selected customer");
 
   return (
     <section aria-labelledby="dashboard-heading" className="flex motion-safe:animate-slide-up flex-col gap-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div className="min-w-0">
         <h1 id="dashboard-heading" className="text-2xl font-semibold leading-tight tracking-tight text-ink-100 sm:text-3xl">
-          Overview
+          Security &amp; Backup Overview
         </h1>
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <p aria-live="polite" className="text-sm font-medium text-shield-300">
-            {viewLabel}
+          <p aria-live="polite" data-scope className="break-words text-sm font-medium text-shield-300">
+            <span className="sr-only">Selected scope: </span>
+            {scopeLabel}
           </p>
           {selectedCustomer?.is_demo && (
             <span className="rounded-md border border-amber-signal/30 bg-amber-signal/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-signal">
@@ -33,14 +29,17 @@ export function DashboardIntro() {
             </span>
           )}
         </div>
-        <p className="mt-1 text-xs text-ink-350">
+        <p className="mt-1.5 text-sm leading-relaxed text-ink-300">
+          Visibility into security, protected assets and endpoint backup reporting.
+        </p>
+        <p className="mt-0.5 text-xs text-ink-350">
           {mode === "demo"
             ? "In Demo Mode the customer view selects simulated figures in every panel. No provider data is shown."
             : "The customer view only changes this label. No data is filtered."}
         </p>
       </div>
 
-      <div className="flex flex-col items-start gap-2 md:items-end">
+      <div className="flex flex-col items-start gap-2 md:shrink-0 md:items-end">
         <DashboardModeSwitch />
         <p className="inline-flex items-center gap-2 rounded-full border border-ink-700 bg-ink-900/80 px-3 py-1.5 text-xs text-ink-300">
           <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-amber-signal" />

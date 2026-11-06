@@ -155,8 +155,8 @@ function OverviewBody({
             <p data-simulated className="flex items-start gap-1.5 text-xs leading-relaxed text-amber-signal">
               <FlaskConical aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={2} />
               <span>
-                Simulated customer portfolio — &ldquo;Available&rdquo; only means demonstration fixtures exist. No Guardz
-                or Datto integration is connected and no reporting has been received.
+                Simulated customer portfolio — &ldquo;Demo data present&rdquo; only means demonstration fixtures exist. No
+                Guardz or Datto integration is connected and no reporting has been received.
               </span>
             </p>
           ) : (

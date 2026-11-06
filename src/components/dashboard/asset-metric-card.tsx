@@ -29,12 +29,12 @@ export function AssetMetricCard({ icon: Icon, label, state, simulated = false }:
         <Icon aria-hidden className="h-5 w-5" strokeWidth={1.75} />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium text-ink-100">{label}</p>
+        <p className="break-words text-sm font-medium leading-snug text-ink-100">{label}</p>
         <MetricBody state={state} />
         {simulated && (state.kind === "ready" || state.kind === "stale") && (
-          <p data-simulated className="mt-1 font-mono text-[10px] uppercase tracking-wider text-amber-signal">
-            Simulated · fictional
-          </p>
+          <span data-simulated className="sr-only">
+            Simulated, fictional demonstration value
+          </span>
         )}
       </div>
     </li>

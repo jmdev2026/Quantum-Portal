@@ -4,7 +4,7 @@ import { FlaskConical, PlugZap } from "lucide-react";
 import { useDashboardMode, type DashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
 
 const segmentBase =
-  "inline-flex h-8 min-w-0 flex-1 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-shield-500/70 sm:flex-none";
+  "inline-flex min-h-8 min-w-0 flex-auto items-center justify-center gap-2 rounded-md px-3 py-1 text-center text-sm font-medium leading-tight outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-shield-500/70 sm:flex-none";
 const segmentIdle = "text-ink-300 hover:bg-ink-800 hover:text-ink-100";
 const activeTone: Record<DashboardMode, string> = {
   live: "bg-shield-500/15 text-shield-300 ring-1 ring-inset ring-shield-500/30",
@@ -37,7 +37,7 @@ export function DashboardModeSwitch() {
             className={`${segmentBase} ${mode === value ? activeTone[value] : segmentIdle}`}
           >
             <Icon aria-hidden className="h-4 w-4 shrink-0" strokeWidth={1.75} />
-            <span className="truncate">{label}</span>
+            <span>{label}</span>
           </button>
         ))}
       </div>

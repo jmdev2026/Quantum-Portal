@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { CircleCheck, CircleDashed, CircleOff, Clock, DatabaseBackup, ShieldCheck } from "lucide-react";
+import { CircleCheck, CircleDashed, CircleOff, Clock, DatabaseBackup, FlaskConical, ShieldCheck } from "lucide-react";
 import type { CustomerPortfolioRecord, ReportingStatus } from "@/services/customer-overview";
 
 const statusDisplay: Record<ReportingStatus, { label: string; icon: LucideIcon; tone: string }> = {
@@ -9,11 +9,14 @@ const statusDisplay: Record<ReportingStatus, { label: string; icon: LucideIcon; 
   unknown: { label: "Unknown", icon: CircleDashed, tone: "border-ink-600 bg-ink-800 text-ink-300" },
 };
 
+// Demo fixtures describe data presence only, so avoid the success-green "healthy" look.
+const demoAvailableDisplay = { label: "Demo data present", icon: FlaskConical, tone: "border-ink-600 bg-ink-700/60 text-ink-100" };
+
 const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
 function ReportingBadge({ kind, status, simulated }: { kind: "security" | "backup"; status: ReportingStatus; simulated: boolean }) {
-  const { label, icon: Icon, tone } = statusDisplay[status];
+  const { label, icon: Icon, tone } = simulated && status === "available" ? demoAvailableDisplay : statusDisplay[status];
   const KindIcon = kind === "security" ? ShieldCheck : DatabaseBackup;
   return (
     <span
