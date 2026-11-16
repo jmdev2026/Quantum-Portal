@@ -1,13 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { SECURITY_SECTIONS, securityScopeLabel } from "@/components/security/security-overview-view";
 import { securityOverviewMetrics } from "@/components/security/security-overview-metrics";
-import {
-  DEMO_DETECTIONS_PLACEHOLDER,
-  DETECTION_DISPLAY_FIELDS,
-  detectionFeedView,
-} from "@/components/security/threats-detections-view";
+import { DETECTION_DISPLAY_FIELDS, detectionFeedView } from "@/components/security/threats-detections-view";
+import type { DetectionsState } from "@/services/security-detections";
 
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), "utf8");
 const panelSource = read("src/components/security/threats-detections-panel.tsx");
@@ -15,12 +12,17 @@ const feedSource = read("src/components/security/detection-feed.tsx");
 const viewSource = read("src/components/security/threats-detections-view.ts");
 const sectionsSource = read("src/components/security/security-sections.tsx");
 const scopes = ["All Customers", "Demo Customer A", "Demo Customer B", "Demo Customer C"];
-const modes = ["live", "demo"] as const;
+const nonRecordStates: DetectionsState[] = [
+  { kind: "unavailable" },
+  { kind: "loading" },
+  { kind: "error", message: "No demonstration data exists for this customer." },
+  { kind: "ready", detections: [] },
+];
 const allCopy = () =>
-  modes.flatMap((mode) =>
+  nonRecordStates.flatMap((state) =>
     scopes.flatMap((scope) => {
-      const view = detectionFeedView(mode, scope);
-      return [view.badge, view.announcement, view.emptyTitle, view.emptyBody, view.fieldsIntro];
+      const view = detectionFeedView(state, scope);
+      return [view.badge, view.announcement, view.emptyTitle, view.emptyBody];
     }),
   );
 
@@ -40,7 +42,7 @@ test("title and supporting description match the specification", () => {
 
 test("Live Mode is clearly unavailable, with no count or sync time", () => {
   for (const scope of scopes) {
-    const view = detectionFeedView("live", scope);
+    const view = detectionFeedView({ kind: "unavailable" }, scope);
     assert.equal(view.status, "not-connected");
     assert.equal(view.badge, "Not connected");
     assert.match(view.emptyTitle, /not connected/);
@@ -49,51 +51,27 @@ test("Live Mode is clearly unavailable, with no count or sync time", () => {
   }
 });
 
-test("Demo Mode is clearly a demonstration placeholder", () => {
-  const view = detectionFeedView("demo", "All Customers");
-  assert.equal(view.status, "demo-placeholder");
-  assert.match(view.badge, /^Demo · Placeholder$/);
-  assert.equal(view.emptyBody, DEMO_DETECTIONS_PLACEHOLDER);
-  assert.equal(
-    DEMO_DETECTIONS_PLACEHOLDER,
-    "Individual demonstration detections have not been populated yet. Security Overview metrics are separate simulated summaries.",
-  );
-  assert.match(panelSource, /data-simulated[\s\S]*Demonstration only · no detection records/);
-  assert.doesNotMatch(view.emptyTitle, /no threats|no detections found/i);
-});
-
-test("no fabricated detection records exist anywhere", () => {
-  assert.match(panelSource, /<DetectionFeed\s+items=\{\[\]\}/);
-  assert.doesNotMatch(panelSource + feedSource + viewSource, /@\/demo|@\/mocks|use(SecuritySeverity|SecurityCoverage|Insights)\b/);
-  for (const dir of ["src/demo", "src/mocks", "src/services"]) {
-    const files = readdirSync(new URL(`../../${dir}`, import.meta.url));
-    assert.ok(!files.some((f) => /detection|threat/i.test(f)), `${dir}: ${files.join()}`);
-  }
-  assert.match(viewSource, /Provisional, frontend-only display shape/);
-});
-
-test("no zero-threat or healthy-security claims in either mode or scope", () => {
+test("no zero-threat or healthy-security claims in any non-record state", () => {
   for (const text of allCopy()) {
     assert.doesNotMatch(text, /\d/, text);
     assert.doesNotMatch(text, /no threats (detected|found)|all clear|healthy|you are (safe|secure)|no (active )?detections\b/i, text);
   }
 });
 
-test("customer scope comes from the shared customer view and is reflected immediately", () => {
+test("customer scope comes from the shared customer view", () => {
   assert.match(panelSource, /useCustomerView\(\)/);
   assert.match(panelSource, /securityScopeLabel\(view\.mode, selectedCustomer\?\.name\)/);
   assert.match(panelSource, /data-detections-scope/);
   assert.doesNotMatch(panelSource, /CustomerSelector|aria-haspopup|role="listbox"/);
   for (const scope of scopes) {
-    assert.match(detectionFeedView("live", scope).emptyBody, new RegExp(`for ${scope}`));
-    for (const other of scopes.filter((s) => s !== scope)) {
-      assert.doesNotMatch(detectionFeedView("live", scope).emptyBody, new RegExp(other));
-    }
+    const body = detectionFeedView({ kind: "unavailable" }, scope).emptyBody;
+    assert.match(body, new RegExp(`for ${scope}`));
+    for (const other of scopes.filter((s) => s !== scope)) assert.doesNotMatch(body, new RegExp(other));
   }
   assert.equal(securityScopeLabel("customer", "Demo Customer B"), "Demo Customer B");
 });
 
-test("Security Overview from the previous phase is unchanged", () => {
+test("Security Overview is unchanged", () => {
   const overview = SECURITY_SECTIONS.find((s) => s.id === "security-overview")!;
   assert.equal(overview.description, "Summary of reported security figures for the selected scope.");
   assert.match(sectionsSource, /section\.id === "security-overview"\) return <SecurityOverviewPanel/);
@@ -116,7 +94,7 @@ test("Identities & Endpoints and Security Controls remain placeholders", () => {
 
 test("no actions, links or provider integrations are introduced", () => {
   const ui = panelSource + feedSource;
-  assert.doesNotMatch(ui, /<button|onClick|href=|<a\s|fetch\(|axios|@\/services\/api|guardz|datto|laravel/i);
-  assert.doesNotMatch(viewSource, /guardz|datto|laravel|endpoint|https?:/i);
+  assert.doesNotMatch(ui, /<button|onClick|href=|<a\s|fetch\(|axios|@\/services\/api|guardz|datto|laravel|dangerouslySetInnerHTML/i);
+  assert.doesNotMatch(viewSource, /guardz|datto|laravel|https?:/i);
   assert.deepEqual([...DETECTION_DISPLAY_FIELDS], ["Detection title", "Severity", "Affected scope", "Short summary", "Source"]);
 });

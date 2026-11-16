@@ -94,6 +94,7 @@ test("no demonstration fixtures or figures are duplicated in the Security module
     "dashboard-assets.ts",
     "insights.ts",
     "security-coverage.ts",
+    "security-detections.ts",
     "security-severity.ts",
   ]);
 });

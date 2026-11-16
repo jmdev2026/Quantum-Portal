@@ -1,31 +1,48 @@
 "use client";
 
-import { FlaskConical, PlugZap, Radar } from "lucide-react";
+import { AlertTriangle, FlaskConical, Info, LoaderCircle, PlugZap, Radar } from "lucide-react";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
-import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
 import { DetectionFeed } from "@/components/security/detection-feed";
 import { SECURITY_SECTIONS, securityScopeLabel } from "@/components/security/security-overview-view";
-import { DETECTION_DISPLAY_FIELDS, detectionFeedView } from "@/components/security/threats-detections-view";
+import {
+  DETECTION_DISPLAY_FIELDS,
+  DETECTIONS_SEPARATION_NOTICE,
+  detectionFeedView,
+  toDetectionDisplayItem,
+  type DetectionFeedStatus,
+} from "@/components/security/threats-detections-view";
+import { useSecurityDetections } from "@/components/security/use-security-detections";
 
 const section = SECURITY_SECTIONS.find((entry) => entry.id === "threats-detections")!;
 
-const badgeTone = {
+const badgeTone: Record<DetectionFeedStatus, string> = {
   "not-connected": "border-amber-signal/30 bg-amber-signal/10 text-amber-signal",
-  "demo-placeholder": "border-ink-700 bg-ink-800/80 text-ink-300",
+  loading: "border-ink-700 bg-ink-800/80 text-ink-300",
+  simulated: "border-amber-signal/30 bg-amber-signal/10 text-amber-signal",
+  "demo-empty": "border-amber-signal/30 bg-amber-signal/10 text-amber-signal",
+  error: "border-red-400/30 bg-red-400/10 text-red-300",
+};
+
+const emptyIcon: Record<Exclude<DetectionFeedStatus, "simulated">, { icon: typeof PlugZap; tone: string }> = {
+  "not-connected": { icon: PlugZap, tone: "border-ink-700 bg-ink-800 text-ink-300" },
+  loading: { icon: LoaderCircle, tone: "border-ink-700 bg-ink-800 text-ink-300" },
+  "demo-empty": { icon: FlaskConical, tone: "border-amber-signal/30 bg-amber-signal/10 text-amber-signal" },
+  error: { icon: AlertTriangle, tone: "border-red-400/30 bg-red-400/10 text-red-300" },
 };
 
 export function ThreatsDetectionsPanel() {
-  const { mode } = useDashboardMode();
   const { view, selectedCustomer } = useCustomerView();
+  const { state, simulated } = useSecurityDetections();
   const scopeLabel = securityScopeLabel(view.mode, selectedCustomer?.name);
-  const feed = detectionFeedView(mode, scopeLabel);
-  const demo = feed.status === "demo-placeholder";
-  const EmptyIcon = demo ? FlaskConical : PlugZap;
+  const feed = detectionFeedView(state, scopeLabel);
+  const items = state.kind === "ready" ? state.detections.map(toDetectionDisplayItem) : [];
+  const showRecords = feed.status === "simulated";
 
   return (
     <section
       aria-labelledby={`${section.id}-title`}
-      data-mode={mode}
+      aria-busy={feed.status === "loading"}
+      data-mode={simulated ? "demo" : "live"}
       data-state={feed.status}
       style={{ animationDelay: "140ms" }}
       className="flex min-w-0 motion-safe:animate-slide-up flex-col rounded-2xl border border-ink-700 bg-ink-900/80 p-5 transition-colors duration-300 hover:border-ink-600 sm:p-6 md:col-span-2"
@@ -53,10 +70,10 @@ export function ThreatsDetectionsPanel() {
         {feed.announcement}
       </p>
 
-      {demo && (
+      {simulated && feed.status !== "loading" && (
         <p data-simulated className="mt-4 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-amber-signal">
           <FlaskConical aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
-          Demonstration only · no detection records
+          Simulated data · fictional example detections
         </p>
       )}
 
@@ -70,40 +87,59 @@ export function ThreatsDetectionsPanel() {
         </div>
 
         <DetectionFeed
-          items={[]}
-          empty={
-            <div data-feed-empty className="flex flex-col items-start gap-3 px-4 py-5 sm:flex-row sm:gap-4">
-              <span
-                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border ${
-                  demo ? "border-amber-signal/30 bg-amber-signal/10 text-amber-signal" : "border-ink-700 bg-ink-800 text-ink-300"
-                }`}
-              >
-                <EmptyIcon aria-hidden className="h-4 w-4" strokeWidth={2} />
-              </span>
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-ink-100">{feed.emptyTitle}</p>
-                <p className="mt-1 max-w-2xl break-words text-sm leading-relaxed text-ink-350">{feed.emptyBody}</p>
-              </div>
-            </div>
-          }
+          items={showRecords ? items : []}
+          empty={feed.status === "simulated" ? null : <FeedMessage status={feed.status} title={feed.emptyTitle} body={feed.emptyBody} />}
         />
 
-        <div className="border-t border-ink-800 px-4 py-3">
-          <p id={`${section.id}-fields`} className="text-xs text-ink-350">
-            {feed.fieldsIntro}:
+        {showRecords ? (
+          <p data-separation-notice className="flex items-start gap-1.5 border-t border-ink-800 px-4 py-3 text-xs leading-relaxed text-ink-350">
+            <Info aria-hidden className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-300" strokeWidth={2} />
+            <span>
+              {DETECTIONS_SEPARATION_NOTICE} <span className="text-ink-300">Source:</span>{" "}
+              <span className="font-mono">{items[0]?.sourceLabel}</span>
+            </span>
           </p>
-          <ul aria-labelledby={`${section.id}-fields`} className="mt-2 flex flex-wrap gap-1.5">
-            {DETECTION_DISPLAY_FIELDS.map((field) => (
-              <li
-                key={field}
-                className="rounded-md border border-ink-800 bg-ink-900/80 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-350"
-              >
-                {field}
-              </li>
-            ))}
-          </ul>
-        </div>
+        ) : (
+          feed.status === "not-connected" && (
+            <div className="border-t border-ink-800 px-4 py-3">
+              <p id={`${section.id}-fields`} className="text-xs text-ink-350">
+                Once connected, each detection will show:
+              </p>
+              <ul aria-labelledby={`${section.id}-fields`} className="mt-2 flex flex-wrap gap-1.5">
+                {DETECTION_DISPLAY_FIELDS.map((field) => (
+                  <li
+                    key={field}
+                    className="rounded-md border border-ink-800 bg-ink-900/80 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-350"
+                  >
+                    {field}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        )}
       </div>
     </section>
+  );
+}
+
+function FeedMessage({ status, title, body }: { status: Exclude<DetectionFeedStatus, "simulated">; title: string; body: string }) {
+  const { icon: Icon, tone } = emptyIcon[status];
+  return (
+    <div data-feed-empty className="flex flex-col items-start gap-3 px-4 py-5 sm:flex-row sm:gap-4">
+      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border ${tone}`}>
+        <Icon
+          aria-hidden
+          className={`h-4 w-4 ${status === "loading" ? "motion-safe:animate-spin" : ""}`}
+          strokeWidth={2}
+        />
+      </span>
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-ink-100">{title}</p>
+        <p className={`mt-1 max-w-2xl break-words text-sm leading-relaxed ${status === "error" ? "text-red-300" : "text-ink-350"}`}>
+          {body}
+        </p>
+      </div>
+    </div>
   );
 }
