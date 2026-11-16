@@ -111,7 +111,7 @@ function RecordRow({ kind, record }: { kind: VisibilityArea["id"]; record: Visib
       data-record={record.id}
       data-record-kind={kind}
       data-customer-id={record.customerId}
-      className="min-w-0 px-3.5 py-3 transition-colors duration-200 hover:bg-ink-800/40"
+      className="min-w-0 px-3.5 py-3"
     >
       <p className="break-words text-sm font-medium leading-snug text-ink-100">
         {record.name}

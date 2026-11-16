@@ -30,7 +30,7 @@ export function SecurityIntro() {
             )}
           </div>
           <p className="mt-1.5 text-sm leading-relaxed text-ink-300">
-            Visibility into cybersecurity findings, security controls, protected identities and endpoints.
+            Visibility into cybersecurity findings, security controls, identities and endpoints.
           </p>
         </div>
 
