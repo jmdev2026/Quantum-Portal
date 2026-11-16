@@ -3,6 +3,7 @@
 import type { LucideIcon } from "lucide-react";
 import { Fingerprint, Gauge, Radar, ShieldCheck } from "lucide-react";
 import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
+import { SecurityOverviewPanel } from "@/components/security/security-overview-panel";
 import {
   SECURITY_SECTIONS,
   securitySectionMessage,
@@ -30,6 +31,7 @@ export function SecuritySections() {
   return (
     <div className="grid gap-6 md:grid-cols-2" data-mode={mode}>
       {SECURITY_SECTIONS.map((section, index) => {
+        if (section.id === "security-overview") return <SecurityOverviewPanel key={section.id} />;
         const Icon = sectionIcons[section.id];
         return (
           <section

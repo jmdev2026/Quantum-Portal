@@ -12,7 +12,7 @@ export const SECURITY_SECTIONS: readonly SecuritySection[] = [
   {
     id: "security-overview",
     title: "Security Overview",
-    description: "Overall security posture and finding totals for the selected scope.",
+    description: "Summary of reported security figures for the selected scope.",
   },
   {
     id: "threats-detections",
