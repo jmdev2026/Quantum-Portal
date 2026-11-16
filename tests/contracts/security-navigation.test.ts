@@ -5,9 +5,14 @@ import {
   SECURITY_LIVE_NOTICE,
   SECURITY_SECTIONS,
   securityScopeLabel,
-  securitySectionMessage,
-  securitySectionStatus,
 } from "@/components/security/security-overview-view";
+import {
+  SIMULATED_CONTROLS_EXPLANATION,
+  SIMULATED_STATUS_MEANINGS,
+  securityControlsView,
+} from "@/components/security/security-controls-view";
+
+const liveControls = securityControlsView({ kind: "unavailable", source: null, lastSyncedAt: null }, false, "All Customers");
 
 const items = navSections.flatMap((section) => section.items);
 const byId = (id: string) => items.find((item) => item.id === id)!;
@@ -45,16 +50,19 @@ test("section copy carries no figures in either mode", () => {
   const texts = [
     SECURITY_LIVE_NOTICE,
     ...SECURITY_SECTIONS.flatMap((s) => [s.title, s.description]),
-    ...(["live", "demo"] as const).flatMap((m) => [securitySectionStatus(m).label, ...Object.values(securitySectionMessage(m))]),
+    SIMULATED_CONTROLS_EXPLANATION,
+    ...SIMULATED_STATUS_MEANINGS.map((m) => m.meaning),
+    liveControls.badge,
+    liveControls.announcement,
+    ...Object.values(liveControls.message!),
   ];
   for (const text of texts) assert.doesNotMatch(text, /\d/, text);
 });
 
 test("Live mode says integrations are not connected; Demo mode is labelled as demonstration", () => {
-  assert.deepEqual(securitySectionStatus("live"), { label: "Not connected", tone: "disconnected" });
-  assert.match(securitySectionStatus("demo").label, /^Demo/);
+  assert.equal(liveControls.badge, "Not connected");
   assert.match(SECURITY_LIVE_NOTICE, /not connected/);
-  assert.match(securitySectionMessage("demo").body, /Demo Mode/);
+  assert.match(SIMULATED_CONTROLS_EXPLANATION, /simulated examples/);
 });
 
 test("scope label follows the shared customer view", () => {

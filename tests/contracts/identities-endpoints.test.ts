@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { SECURITY_SECTIONS, securitySectionMessage, securitySectionStatus } from "@/components/security/security-overview-view";
+import { SECURITY_SECTIONS } from "@/components/security/security-overview-view";
 import { securityOverviewMetrics } from "@/components/security/security-overview-metrics";
 import {
   VISIBILITY_AREAS,
@@ -145,11 +145,9 @@ test("existing detection records are unchanged", () => {
   assert.match(sectionsSource, /section\.id === "threats-detections"\) return <ThreatsDetectionsPanel/);
 });
 
-test("Security Controls placeholder is unchanged", () => {
+test("Security Controls is routed to its own panel", () => {
   const controls = SECURITY_SECTIONS.find((s) => s.id === "security-controls")!;
-  assert.equal(controls.description, "Status of the security controls applied to protected environments.");
-  assert.doesNotMatch(sectionsSource, /section\.id === "security-controls"/);
-  assert.match(sectionsSource, /data-state="empty"/);
-  assert.equal(securitySectionStatus("demo").label, "Demo · No data yet");
-  assert.equal(securitySectionMessage("live").title, "Security integration not connected");
+  assert.equal(controls.description, "Review security control reporting and visibility for the selected customer.");
+  assert.match(sectionsSource, /section\.id === "security-controls"\) return <SecurityControlsPanel/);
+  assert.match(sectionsSource, /section\.id === "identities-endpoints"\) return <IdentitiesEndpointsPanel/);
 });

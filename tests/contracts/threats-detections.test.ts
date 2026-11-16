@@ -82,10 +82,10 @@ test("Security Overview is unchanged", () => {
   );
 });
 
-test("Security Controls remains a placeholder", () => {
+test("all four Security sections are routed to dedicated panels", () => {
   const routed = [...sectionsSource.matchAll(/section\.id === "([a-z-]+)"/g)].map((m) => m[1]);
-  assert.deepEqual(routed, ["security-overview", "threats-detections", "identities-endpoints"]);
-  assert.match(sectionsSource, /data-state="empty"/);
+  assert.deepEqual(routed, ["security-overview", "threats-detections", "identities-endpoints", "security-controls"]);
+  assert.doesNotMatch(sectionsSource, /data-state="empty"/);
   assert.deepEqual(
     SECURITY_SECTIONS.slice(2).map((s) => s.title),
     ["Identities & Endpoints", "Security Controls"],
