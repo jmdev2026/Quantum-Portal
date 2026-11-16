@@ -17,7 +17,7 @@ export const SECURITY_SECTIONS: readonly SecuritySection[] = [
   {
     id: "threats-detections",
     title: "Threats & Detections",
-    description: "Detected threats, alerts and their severity.",
+    description: "Review security detections and investigation information for the selected customer view.",
   },
   {
     id: "identities-endpoints",
