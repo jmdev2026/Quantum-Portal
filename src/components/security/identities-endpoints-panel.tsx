@@ -1,7 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { Fingerprint, Laptop, UserRound } from "lucide-react";
+import { Fingerprint, FlaskConical, Laptop, UserRound } from "lucide-react";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
 import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
 import {
@@ -11,6 +11,7 @@ import {
   type VisibilityAreaId,
 } from "@/components/security/identities-endpoints-view";
 import { SECURITY_SECTIONS, securityScopeLabel } from "@/components/security/security-overview-view";
+import { useVisibilityRecords } from "@/components/security/use-visibility-records";
 import { VisibilityAreaCard } from "@/components/security/visibility-area-card";
 
 const section = SECURITY_SECTIONS.find((entry) => entry.id === "identities-endpoints")!;
@@ -24,6 +25,7 @@ export function IdentitiesEndpointsPanel() {
   const { view, selectedCustomer } = useCustomerView();
   const { mode } = useDashboardMode();
   const scopeLabel = securityScopeLabel(view.mode, selectedCustomer?.name);
+  const states = { identities: useVisibilityRecords("identities"), endpoints: useVisibilityRecords("endpoints") };
 
   return (
     <section
@@ -51,12 +53,19 @@ export function IdentitiesEndpointsPanel() {
       </header>
 
       <p role="status" className="sr-only">
-        {identitiesEndpointsAnnouncement(mode, scopeLabel)}
+        {identitiesEndpointsAnnouncement(mode, states.identities, states.endpoints, scopeLabel)}
       </p>
+
+      {mode === "demo" && (
+        <p data-simulated className="mt-4 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wider text-amber-signal">
+          <FlaskConical aria-hidden className="h-3.5 w-3.5 shrink-0" strokeWidth={2} />
+          Simulated data · fictional example identities and endpoints
+        </p>
+      )}
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         {VISIBILITY_AREAS.map((area) => (
-          <VisibilityAreaCard key={area.id} area={area} icon={areaIcons[area.id]} view={visibilityAreaView(mode, area, scopeLabel)} />
+          <VisibilityAreaCard key={area.id} area={area} icon={areaIcons[area.id]} view={visibilityAreaView(states[area.id], area, scopeLabel)} />
         ))}
       </div>
     </section>

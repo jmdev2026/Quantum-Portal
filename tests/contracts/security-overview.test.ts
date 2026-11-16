@@ -95,7 +95,10 @@ test("no demonstration fixtures or figures are duplicated in the Security module
     "insights.ts",
     "security-coverage.ts",
     "security-detections.ts",
+    "security-endpoints.ts",
+    "security-identities.ts",
     "security-severity.ts",
+    "visibility-records.ts",
   ]);
 });
 
