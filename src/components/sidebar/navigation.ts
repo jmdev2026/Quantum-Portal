@@ -34,7 +34,7 @@ export const navSections: NavSection[] = [
     id: "protection",
     label: "Protection",
     items: [
-      { id: "security", label: "Security", icon: ShieldCheck },
+      { id: "security", label: "Security", icon: ShieldCheck, href: "/security" },
       { id: "backup", label: "Backup & Recovery", icon: DatabaseBackup },
     ],
   },
