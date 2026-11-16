@@ -22,7 +22,7 @@ export const SECURITY_SECTIONS: readonly SecuritySection[] = [
   {
     id: "identities-endpoints",
     title: "Identities & Endpoints",
-    description: "Protected user identities and managed endpoints.",
+    description: "Review identity and endpoint security visibility for the selected customer.",
   },
   {
     id: "security-controls",
