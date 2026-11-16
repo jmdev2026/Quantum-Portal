@@ -7,7 +7,8 @@ import type { CustomersState } from "@/components/customer-view/use-customers";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
 
 const segmentBase =
-  "inline-flex h-8 min-w-0 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-shield-500/70";
+  "inline-flex min-h-8 min-w-0 items-center justify-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-shield-500/70 max-[359px]:px-2 sm:gap-2 sm:px-3";
+const segmentIcon = "h-4 w-4 shrink-0 max-[359px]:hidden";
 const segmentActive = "bg-shield-500/15 text-shield-300 ring-1 ring-inset ring-shield-500/30";
 const segmentIdle = "text-ink-300 hover:bg-ink-800 hover:text-ink-100";
 
@@ -121,10 +122,10 @@ export function CustomerSelector() {
           type="button"
           onClick={showAll}
           aria-pressed={selectedId === null}
-          className={`${segmentBase} flex-1 lg:flex-none ${selectedId === null ? segmentActive : segmentIdle}`}
+          className={`${segmentBase} flex-auto max-sm:shrink-0 sm:flex-1 lg:flex-none ${selectedId === null ? segmentActive : segmentIdle}`}
         >
-          <Layers aria-hidden className="h-4 w-4 shrink-0" strokeWidth={1.75} />
-          <span className="truncate">All customers</span>
+          <Layers aria-hidden className={segmentIcon} strokeWidth={1.75} />
+          <span className="whitespace-nowrap">All customers</span>
         </button>
 
         <button
@@ -134,17 +135,20 @@ export function CustomerSelector() {
           aria-haspopup="listbox"
           aria-expanded={open}
           aria-controls={panelId}
-          className={`${segmentBase} flex-1 lg:flex-none ${selected ? segmentActive : segmentIdle} ${open && !selected ? "bg-ink-800 text-ink-100" : ""}`}
+          className={`${segmentBase} flex-auto sm:flex-1 lg:flex-none ${selected ? segmentActive : segmentIdle} ${open && !selected ? "bg-ink-800 text-ink-100" : ""}`}
         >
-          <Building2 aria-hidden className="h-4 w-4 shrink-0" strokeWidth={1.75} />
-          <span className="truncate lg:max-w-[10rem]">
+          <Building2 aria-hidden className={segmentIcon} strokeWidth={1.75} />
+          <span
+            title={selected?.name}
+            className="min-w-0 break-words text-center max-lg:leading-tight max-lg:line-clamp-2 lg:max-w-[10rem] lg:truncate"
+          >
             {selected ? (
               <>
                 <span className="sr-only">Single customer: </span>
                 {selected.name}
               </>
             ) : (
-              "Single customer"
+              <span className="whitespace-nowrap">Single customer</span>
             )}
           </span>
           <ChevronDown
