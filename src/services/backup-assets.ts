@@ -78,7 +78,8 @@ const FICTIONAL = /^Fictional example:/;
 
 const keysOf = (value: Record<string, unknown>) => Object.keys(value).sort().join();
 
-function plainText(value: unknown, limit: number): string | null {
+// Rejects markup and anything resembling a real identifier; shared by the backup demonstration validators.
+export function plainDemoText(value: unknown, limit: number): string | null {
   if (typeof value !== "string" || value.length > limit) return null;
   const text = textOrNull(value)?.replace(/\s+/g, " ").trim();
   if (!text || MARKUP.test(text) || REAL_IDENTIFIER.test(text)) return null;
@@ -88,10 +89,10 @@ function plainText(value: unknown, limit: number): string | null {
 function parseAsset(value: unknown, requested: DashboardScope, customers: ReadonlyMap<number, string>): BackupAsset | null {
   if (!isRecord(value) || keysOf(value) !== RECORD_KEYS) return null;
   if (!isRecord(value.customer) || keysOf(value.customer) !== CUSTOMER_KEYS) return null;
-  const id = plainText(value.id, BACKUP_ASSET_TEXT_LIMITS.id);
-  const name = plainText(value.name, BACKUP_ASSET_TEXT_LIMITS.name);
-  const customerName = plainText(value.customer.name, BACKUP_ASSET_TEXT_LIMITS.customerName);
-  const visibilityNote = plainText(value.visibility_note, BACKUP_ASSET_TEXT_LIMITS.visibilityNote);
+  const id = plainDemoText(value.id, BACKUP_ASSET_TEXT_LIMITS.id);
+  const name = plainDemoText(value.name, BACKUP_ASSET_TEXT_LIMITS.name);
+  const customerName = plainDemoText(value.customer.name, BACKUP_ASSET_TEXT_LIMITS.customerName);
+  const visibilityNote = plainDemoText(value.visibility_note, BACKUP_ASSET_TEXT_LIMITS.visibilityNote);
   const customerId = value.customer.id;
   if (!id || !name || !customerName || !visibilityNote) return null;
   if (value.protection_state !== UNVERIFIED_PROTECTION || value.source !== DEMO_BACKUP_SOURCE) return null;
@@ -126,7 +127,7 @@ export function normalizeDemoBackupAssets(
     return { kind: "error", message: "Example assets did not match the selected customer view." };
   }
   if (data.status === "error") {
-    return { kind: "error", message: plainText(data.message, 200) ?? "Example assets could not be shown." };
+    return { kind: "error", message: plainDemoText(data.message, 200) ?? "Example assets could not be shown." };
   }
   if (data.status !== "ready" || data.source !== DEMO_BACKUP_SOURCE || !Array.isArray(data.records)) {
     return { kind: "error", message: "Example assets came back in an unexpected format." };

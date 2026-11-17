@@ -7,10 +7,11 @@ import {
   BACKUP_LIVE_NOTICE,
   BACKUP_PROVIDER_NAME,
   BACKUP_SECTIONS,
-  RECOVERY_DISCLAIMER,
   backupAnnouncement,
-  backupSectionState,
 } from "@/components/backup/backup-view";
+import { JOB_ACTIVITY_PLANNED, jobActivityView } from "@/components/backup/backup-job-activity-view";
+import { PROTECTED_ASSETS_PLANNED, protectedAssetsView } from "@/components/backup/protected-assets-view";
+import { RESTORE_UNAVAILABLE, recoveryInformation } from "@/components/backup/recovery-information-view";
 import { SECURITY_SECTIONS } from "@/components/security/security-overview-view";
 import { getBackupHealth, getDemoBackupHealth, normalizeBackupHealth } from "@/services/backup-health";
 
@@ -24,6 +25,8 @@ const BACKUP_UI = [
   "src/components/backup/backup-section-frame.tsx",
   "src/components/backup/backup-overview-panel.tsx",
   "src/components/backup/protected-assets-panel.tsx",
+  "src/components/backup/backup-job-activity-panel.tsx",
+  "src/components/backup/recovery-information-panel.tsx",
 ];
 const ui = BACKUP_UI.map(read).join("\n");
 const viewSource = [
@@ -31,14 +34,27 @@ const viewSource = [
   "src/components/backup/backup-overview-view.ts",
   "src/components/backup/protected-assets-view.ts",
   "src/components/backup/use-backup-assets.ts",
+  "src/components/backup/backup-job-activity-view.ts",
+  "src/components/backup/use-backup-job-activity.ts",
+  "src/components/backup/recovery-information-view.ts",
 ].map(read).join("\n");
+const unavailableCopy = (scope: string) => {
+  const jobs = jobActivityView({ kind: "unavailable" }, scope);
+  const assets = protectedAssetsView({ kind: "unavailable" }, scope);
+  return [jobs, assets].flatMap((view) => (view.status === "simulated" ? [] : [view.badge, view.title, view.body]));
+};
 const SCOPES = ["All Customers", "Demo Customer A", "Demo Customer B", "Demo Customer C"];
 const allCopy = (scope: string) => [
   BACKUP_LIVE_NOTICE,
   BACKUP_DEMO_PAGE_NOTICE,
-  RECOVERY_DISCLAIMER,
-  ...BACKUP_SECTIONS.flatMap((s) => [s.title, s.description, s.plannedLabel, ...s.planned]),
-  ...(["live", "demo"] as const).flatMap((m) => [...Object.values(backupSectionState(m, scope)), backupAnnouncement(m, scope)]),
+  ...BACKUP_SECTIONS.flatMap((s) => [s.title, s.description]),
+  ...JOB_ACTIVITY_PLANNED,
+  ...PROTECTED_ASSETS_PLANNED,
+  ...unavailableCopy(scope),
+  ...(["live", "demo"] as const).flatMap((m) => {
+    const info = recoveryInformation(m, scope);
+    return [info.badge, ...info.areas.flatMap((a) => [a.title, a.status, a.body]), backupAnnouncement(m, scope)];
+  }),
 ];
 
 test("/backup route exists with page metadata and the Backup & Recovery heading", () => {
@@ -85,41 +101,44 @@ test("all four backup sections are defined in order and rendered", () => {
   assert.match(sections, /BACKUP_SECTIONS\.map/);
   assert.match(sections, /<BackupOverviewPanel /);
   assert.match(sections, /<ProtectedAssetsPanel /);
-  assert.match(sections, /<PlaceholderSection/);
+  assert.match(sections, /<BackupJobActivityPanel /);
+  assert.match(sections, /<RecoveryInformationPanel /);
+  assert.doesNotMatch(sections, /PlaceholderSection|not yet populated/);
 });
 
 test("Live Mode is explicitly unavailable and does not imply zero issues or success", () => {
-  const live = backupSectionState("live", "All Customers");
-  assert.equal(live.badge, "Not connected");
+  const jobs = jobActivityView({ kind: "unavailable" }, "All Customers");
+  assert.equal(jobs.badge, "Not connected");
+  assert.ok(jobs.status === "not-connected" && /does not mean there are no failed jobs, and it does not indicate that backups are working/.test(jobs.body));
+  assert.equal(recoveryInformation("live", "All Customers").badge, "Not connected");
   assert.match(BACKUP_LIVE_NOTICE, /not connected/);
-  assert.match(live.body, /does not mean there are zero backup issues or that any backups have succeeded/);
   assert.match(backupAnnouncement("live", "All Customers"), /not connected/);
 });
 
-test("Demo Mode keeps placeholder copy for unpopulated sections and explains what the page shows", () => {
-  const demo = backupSectionState("demo", "Demo Customer B");
-  assert.match(demo.badge, /Demo/);
-  assert.match(demo.body, /later updates/);
-  assert.match(demo.body, /No provider connection exists/);
-  assert.match(BACKUP_DEMO_PAGE_NOTICE, /simulated backup overview and illustrative asset samples/);
+test("Demo Mode explains what the page shows and that no recovery information exists", () => {
+  assert.match(recoveryInformation("demo", "Demo Customer B").badge, /Demo/);
+  assert.match(BACKUP_DEMO_PAGE_NOTICE, /simulated backup overview, illustrative asset samples and illustrative job examples/);
   assert.match(BACKUP_DEMO_PAGE_NOTICE, /same fictional figures as the Dashboard's Backup Health summary/);
-  assert.match(BACKUP_DEMO_PAGE_NOTICE, /job activity and recovery details have not been added yet/);
+  assert.match(BACKUP_DEMO_PAGE_NOTICE, /No actual recovery information is available/);
   assert.match(read("src/components/backup/backup-intro.tsx"), /<DemoModeNotice \/>/);
 });
 
 test("customer scope comes from the shared provider and appears in every section state", () => {
-  for (const file of ["src/components/backup/backup-intro.tsx", "src/components/backup/backup-sections.tsx", "src/components/backup/use-backup-assets.ts"]) {
+  const hooks = ["src/components/backup/use-backup-assets.ts", "src/components/backup/use-backup-job-activity.ts"];
+  for (const file of ["src/components/backup/backup-intro.tsx", "src/components/backup/backup-sections.tsx", ...hooks]) {
     const source = read(file);
     assert.match(source, /useCustomerView\(\)/, file);
     assert.match(source, /useDashboardMode\(\)/, file);
     assert.doesNotMatch(source, /CustomerSelector|createContext/, file);
-    if (!file.endsWith("use-backup-assets.ts")) assert.doesNotMatch(source, /useState/, file);
+    if (!hooks.includes(file)) assert.doesNotMatch(source, /useState/, file);
   }
   for (const scope of SCOPES) {
     for (const mode of ["live", "demo"] as const) {
-      assert.match(backupSectionState(mode, scope).body, new RegExp(scope), `${mode} ${scope}`);
+      assert.match(recoveryInformation(mode, scope).areas[0].body, new RegExp(scope), `${mode} ${scope}`);
       assert.match(backupAnnouncement(mode, scope), new RegExp(scope));
     }
+    const jobs = jobActivityView({ kind: "unavailable" }, scope);
+    assert.ok(jobs.status === "not-connected" && jobs.body.includes(scope));
   }
 });
 
@@ -133,12 +152,13 @@ test("no invented backup statistics, percentages or success rates", () => {
 
 test("Backup page data comes only through the shared hooks; no fixtures, job records or direct fetching", () => {
   assert.doesNotMatch(ui + viewSource, /from "@\/(demo|mocks)\//);
-  assert.doesNotMatch(ui, /from "@\/services\/(?!backup-health"|backup-assets")/);
-  assert.doesNotMatch(ui, /getDemoBackupHealth|getBackupHealth|getDemoBackupAssets|normalize\w+\(/);
+  assert.doesNotMatch(ui, /from "@\/services\/(?!backup-health"|backup-assets"|backup-job-activity")/);
+  assert.doesNotMatch(ui, /getDemoBackupHealth|getBackupHealth|getDemoBackupAssets|getDemoBackupJobActivity|normalize\w+\(/);
   assert.doesNotMatch(ui + viewSource, /fetch\(|axios/);
   assert.match(read("src/components/backup/backup-overview-panel.tsx"), /useBackupHealth\(\)/);
   assert.match(read("src/components/backup/protected-assets-panel.tsx"), /useBackupAssets\(\)/);
-  assert.doesNotMatch(ui + viewSource, /Demo (Endpoint|Asset|Job|Backup Asset)|hostname|agent_id|job_id/i);
+  assert.match(read("src/components/backup/backup-job-activity-panel.tsx"), /useBackupJobActivity\(\)/);
+  assert.doesNotMatch(ui + viewSource, /Demo (Endpoint|Asset|Job|Backup Asset|Backup Job)|hostname|agent_id|job_id/i);
 });
 
 test("no successful sync timestamps", () => {
@@ -146,18 +166,18 @@ test("no successful sync timestamps", () => {
 });
 
 test("no restore actions or other interactive controls in the backup sections", () => {
-  for (const file of ["backup-sections", "backup-section-frame", "protected-assets-panel"]) {
+  for (const file of ["backup-sections", "backup-section-frame", "protected-assets-panel", "backup-job-activity-panel", "recovery-information-panel"]) {
     const source = read(`src/components/backup/${file}.tsx`);
-    assert.doesNotMatch(source, /<button|<a\s|<Link|href=|onClick|role="button"|cursor-pointer|tabIndex|<input|<select|<form/, file);
+    assert.doesNotMatch(source, /<button|<a\s|<Link|href=|onClick|role="button"|cursor-pointer|tabIndex|<input|<select|<form|hover:|disabled/, file);
   }
   const overview = read("src/components/backup/backup-overview-panel.tsx");
   assert.equal(overview.match(/<button/g)?.length, 1, "only the error-state Retry button");
   assert.match(overview, /onRetry && \(\s*<button[\s\S]*?Retry\s*<\/button>/);
   assert.doesNotMatch(overview, /<a\s|<Link|href=|<input|<select|<form/);
-  assert.match(RECOVERY_DISCLAIMER, /does not restore data/);
+  assert.equal(RESTORE_UNAVAILABLE, "Restore operations are not available in Quantum Shield Command.");
   for (const text of allCopy("All Customers")) assert.doesNotMatch(text, /restore now|start restore|download|export/i, text);
-  const recovery = BACKUP_SECTIONS.find((s) => s.id === "recovery-information")!;
-  assert.match(recovery.plannedLabel, /pending provider verification/i);
+  const integration = recoveryInformation("live", "All Customers").areas.find((a) => a.id === "integration-verification")!;
+  assert.match(integration.status, /pending verification/i);
 });
 
 test("no speculative provider endpoints or credentials", () => {

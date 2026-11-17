@@ -91,6 +91,7 @@ test("no demonstration fixtures or figures are duplicated in the Security module
   assert.deepEqual(fs.readdirSync(path.join(ROOT, "src/demo")).sort(), [
     "backup-assets.ts",
     "backup-health.ts",
+    "backup-job-activity.ts",
     "customer-overview.ts",
     "dashboard-assets.ts",
     "insights.ts",

@@ -1,14 +1,14 @@
 "use client";
 
-import type { LucideIcon } from "lucide-react";
-import { AlertTriangle, FlaskConical, HardDrive, LoaderCircle, PlugZap, ShieldQuestion } from "lucide-react";
-import { BackupSectionFrame, type BackupBadgeTone } from "@/components/backup/backup-section-frame";
+import { FlaskConical, HardDrive, ShieldQuestion } from "lucide-react";
+import { BackupPlannedList, BackupSectionFrame, BackupStateMessage, type BackupBadgeTone } from "@/components/backup/backup-section-frame";
 import {
   PROTECTED_ASSETS_DISCLOSURE,
+  PROTECTED_ASSETS_PLANNED,
+  PROTECTED_ASSETS_PLANNED_LABEL,
   PROTECTION_LABEL,
   protectedAssetsView,
   type ProtectedAssetsStatus,
-  type ProtectedAssetsView,
 } from "@/components/backup/protected-assets-view";
 import { useBackupAssets } from "@/components/backup/use-backup-assets";
 import type { BackupSection } from "@/components/backup/backup-view";
@@ -21,13 +21,6 @@ const badgeTone: Record<ProtectedAssetsStatus, BackupBadgeTone> = {
   simulated: "amber",
   "demo-empty": "amber",
   error: "red",
-};
-
-const stateIcon: Record<Exclude<ProtectedAssetsStatus, "simulated">, { icon: LucideIcon; tone: string }> = {
-  "not-connected": { icon: PlugZap, tone: "border-ink-700 bg-ink-800 text-ink-300" },
-  loading: { icon: LoaderCircle, tone: "border-ink-700 bg-ink-800 text-ink-300" },
-  "demo-empty": { icon: FlaskConical, tone: "border-amber-signal/30 bg-amber-signal/10 text-amber-signal" },
-  error: { icon: AlertTriangle, tone: "border-red-400/30 bg-red-400/10 text-red-300" },
 };
 
 type Props = { section: BackupSection; mode: DashboardMode; scopeLabel: string; delay: number };
@@ -49,7 +42,6 @@ export function ProtectedAssetsPanel({ section, mode, scopeLabel, delay }: Props
       busy={view.status === "loading"}
       scopeLabel={scopeLabel}
       delay={delay}
-      className="md:col-span-2"
     >
       {view.status === "simulated" ? (
         <>
@@ -72,45 +64,11 @@ export function ProtectedAssetsPanel({ section, mode, scopeLabel, delay }: Props
         </>
       ) : (
         <>
-          <StateMessage view={view} />
-          <div className="mt-3">
-            <p id="protected-assets-planned" className="text-xs text-ink-350">
-              {section.plannedLabel}
-            </p>
-            <ul aria-labelledby="protected-assets-planned" className="mt-2 flex flex-wrap gap-1.5">
-              {section.planned.map((item) => (
-                <li
-                  key={item}
-                  data-planned-item
-                  className="rounded-md border border-ink-800 bg-ink-900/80 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-350"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <BackupStateMessage status={view.status} title={view.title} body={view.body} marker="assets" />
+          <BackupPlannedList id="protected-assets-planned" label={PROTECTED_ASSETS_PLANNED_LABEL} items={PROTECTED_ASSETS_PLANNED} />
         </>
       )}
     </BackupSectionFrame>
-  );
-}
-
-function StateMessage({ view }: { view: Exclude<ProtectedAssetsView, { status: "simulated" }> }) {
-  const { icon: Icon, tone } = stateIcon[view.status];
-  return (
-    <div
-      data-assets-message
-      role={view.status === "error" ? "alert" : undefined}
-      className="mt-4 flex items-start gap-3 rounded-lg border border-dashed border-ink-700 bg-ink-950/40 px-3.5 py-3"
-    >
-      <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border ${tone}`}>
-        <Icon aria-hidden className={`h-3.5 w-3.5 ${view.status === "loading" ? "motion-safe:animate-spin" : ""}`} strokeWidth={2} />
-      </span>
-      <div className="min-w-0">
-        <p className="text-sm font-medium leading-snug text-ink-100">{view.title}</p>
-        <p className="mt-1 break-words text-sm leading-relaxed text-ink-350">{view.body}</p>
-      </div>
-    </div>
   );
 }
 
@@ -120,7 +78,7 @@ function AssetRow({ record, index }: { record: BackupAsset; index: number }) {
       data-asset={record.id}
       data-customer-id={record.customerId}
       style={{ animationDelay: `${index * 40}ms` }}
-      className="flex min-w-0 motion-safe:animate-slide-up flex-col rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3.5 transition-colors duration-200 hover:border-ink-700"
+      className="flex min-w-0 motion-safe:animate-slide-up flex-col rounded-xl border border-ink-800 bg-ink-950/40 px-4 py-3.5"
     >
       <div className="flex min-w-0 items-start gap-2.5">
         <HardDrive aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-ink-300" strokeWidth={1.75} />

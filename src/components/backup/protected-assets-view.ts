@@ -7,6 +7,9 @@ export const PROTECTED_ASSETS_DISCLOSURE =
 
 export const PROTECTION_LABEL = "Protection not verified";
 
+export const PROTECTED_ASSETS_PLANNED_LABEL = "Planned asset details";
+export const PROTECTED_ASSETS_PLANNED = ["Asset display name", "Associated customer", "Backup reporting visibility", "Backup status when supported"] as const;
+
 export type LoadedBackupAssets = { mode: DashboardMode; customerId: number | null; state: BackupAssetsState };
 
 // Records loaded for another mode or customer are never shown, even for a single render.

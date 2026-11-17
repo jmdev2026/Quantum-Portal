@@ -1,7 +1,9 @@
 import type { LucideIcon } from "lucide-react";
+import { AlertTriangle, FlaskConical, LoaderCircle, PlugZap } from "lucide-react";
 import type { ReactNode } from "react";
 
 export type BackupBadgeTone = "amber" | "neutral" | "red";
+export type BackupMessageStatus = "not-connected" | "loading" | "demo-empty" | "error";
 
 const badgeTones: Record<BackupBadgeTone, string> = {
   amber: "border-amber-signal/30 bg-amber-signal/10 text-amber-signal",
@@ -77,5 +79,52 @@ export function BackupSectionFrame({
 
       {children}
     </section>
+  );
+}
+
+const messageIcon: Record<BackupMessageStatus, { icon: LucideIcon; tone: string }> = {
+  "not-connected": { icon: PlugZap, tone: "border-ink-700 bg-ink-800 text-ink-300" },
+  loading: { icon: LoaderCircle, tone: "border-ink-700 bg-ink-800 text-ink-300" },
+  "demo-empty": { icon: FlaskConical, tone: "border-amber-signal/30 bg-amber-signal/10 text-amber-signal" },
+  error: { icon: AlertTriangle, tone: "border-red-400/30 bg-red-400/10 text-red-300" },
+};
+
+export function BackupStateMessage({ status, title, body, marker }: { status: BackupMessageStatus; title: string; body: string; marker: string }) {
+  const { icon: Icon, tone } = messageIcon[status];
+  return (
+    <div
+      data-state-message={marker}
+      role={status === "error" ? "alert" : undefined}
+      className="mt-4 flex items-start gap-3 rounded-lg border border-dashed border-ink-700 bg-ink-950/40 px-3.5 py-3"
+    >
+      <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md border ${tone}`}>
+        <Icon aria-hidden className={`h-3.5 w-3.5 ${status === "loading" ? "motion-safe:animate-spin" : ""}`} strokeWidth={2} />
+      </span>
+      <div className="min-w-0">
+        <p className="text-sm font-medium leading-snug text-ink-100">{title}</p>
+        <p className="mt-1 break-words text-sm leading-relaxed text-ink-350">{body}</p>
+      </div>
+    </div>
+  );
+}
+
+export function BackupPlannedList({ id, label, items }: { id: string; label: string; items: readonly string[] }) {
+  return (
+    <div className="mt-3">
+      <p id={id} className="text-xs text-ink-350">
+        {label}
+      </p>
+      <ul aria-labelledby={id} className="mt-2 flex flex-wrap gap-1.5">
+        {items.map((item) => (
+          <li
+            key={item}
+            data-planned-item
+            className="rounded-md border border-ink-800 bg-ink-900/80 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-ink-350"
+          >
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

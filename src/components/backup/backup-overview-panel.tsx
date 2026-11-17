@@ -82,9 +82,9 @@ export function BackupOverviewPanel({ scopeLabel, delay }: { scopeLabel: string;
     state.kind === "loading" ? (
       <Pending />
     ) : data ? (
-      <span className="text-xs text-ink-300">Not reported</span>
+      <span className="whitespace-nowrap text-xs text-ink-300">Not reported</span>
     ) : (
-      <span className="text-xs text-ink-300">{state.kind === "unavailable" && !short ? "Awaiting integration" : unavailableText[state.kind]}</span>
+      <span className="whitespace-nowrap text-xs text-ink-300">{state.kind === "unavailable" && !short ? "Awaiting integration" : unavailableText[state.kind]}</span>
     );
 
   return (
@@ -100,7 +100,6 @@ export function BackupOverviewPanel({ scopeLabel, delay }: { scopeLabel: string;
       busy={state.kind === "loading"}
       scopeLabel={scopeLabel}
       delay={delay}
-      className="md:col-span-2"
     >
       <div ref={contentRef} tabIndex={-1} className="mt-4 grid gap-4 outline-none @2xl:grid-cols-2 @5xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,1.25fr)]">
         <div className="flex min-w-0 flex-col gap-4">
@@ -134,10 +133,10 @@ export function BackupOverviewPanel({ scopeLabel, delay }: { scopeLabel: string;
               const { icon: Icon, tone } = bucketDisplay[key];
               const count = data?.freshness ? data.freshness[key] : null;
               return (
-                <li key={key} data-bucket={key} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-4 py-3">
+                <li key={key} data-bucket={key} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 px-4 py-3">
                   <span className="flex min-w-0 items-center gap-2.5 text-sm text-ink-100">
                     <Icon aria-hidden className={`h-4 w-4 shrink-0 ${tone}`} strokeWidth={2} />
-                    <span className="min-w-0">{label}</span>
+                    <span className="min-w-0 break-words">{label}</span>
                   </span>
                   {count !== null ? (
                     <span className={`text-base font-semibold leading-none tabular-nums ${stale ? "text-ink-300" : "text-ink-100"}`}>
