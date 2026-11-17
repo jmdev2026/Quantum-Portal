@@ -17,9 +17,21 @@ import { getBackupHealth, getDemoBackupHealth, normalizeBackupHealth } from "@/s
 const read = (path: string) => readFileSync(new URL(`../../${path}`, import.meta.url), "utf8");
 const items = navSections.flatMap((section) => section.items);
 const byId = (id: string) => items.find((item) => item.id === id)!;
-const BACKUP_UI = ["src/app/backup/page.tsx", "src/components/backup/backup-intro.tsx", "src/components/backup/backup-sections.tsx"];
+const BACKUP_UI = [
+  "src/app/backup/page.tsx",
+  "src/components/backup/backup-intro.tsx",
+  "src/components/backup/backup-sections.tsx",
+  "src/components/backup/backup-section-frame.tsx",
+  "src/components/backup/backup-overview-panel.tsx",
+  "src/components/backup/protected-assets-panel.tsx",
+];
 const ui = BACKUP_UI.map(read).join("\n");
-const viewSource = read("src/components/backup/backup-view.ts");
+const viewSource = [
+  "src/components/backup/backup-view.ts",
+  "src/components/backup/backup-overview-view.ts",
+  "src/components/backup/protected-assets-view.ts",
+  "src/components/backup/use-backup-assets.ts",
+].map(read).join("\n");
 const SCOPES = ["All Customers", "Demo Customer A", "Demo Customer B", "Demo Customer C"];
 const allCopy = (scope: string) => [
   BACKUP_LIVE_NOTICE,
@@ -69,7 +81,11 @@ test("exactly one primary navigation item is active per route", () => {
 test("all four backup sections are defined in order and rendered", () => {
   assert.deepEqual(BACKUP_SECTIONS.map((s) => s.title), ["Backup Overview", "Protected Assets", "Backup Job Activity", "Recovery Information"]);
   assert.equal(new Set(BACKUP_SECTIONS.map((s) => s.id)).size, 4);
-  assert.match(read("src/components/backup/backup-sections.tsx"), /BACKUP_SECTIONS\.map/);
+  const sections = read("src/components/backup/backup-sections.tsx");
+  assert.match(sections, /BACKUP_SECTIONS\.map/);
+  assert.match(sections, /<BackupOverviewPanel /);
+  assert.match(sections, /<ProtectedAssetsPanel /);
+  assert.match(sections, /<PlaceholderSection/);
 });
 
 test("Live Mode is explicitly unavailable and does not imply zero issues or success", () => {
@@ -80,24 +96,24 @@ test("Live Mode is explicitly unavailable and does not imply zero issues or succ
   assert.match(backupAnnouncement("live", "All Customers"), /not connected/);
 });
 
-test("Demo Mode shows placeholder copy and points to the separate Dashboard summaries", () => {
+test("Demo Mode keeps placeholder copy for unpopulated sections and explains what the page shows", () => {
   const demo = backupSectionState("demo", "Demo Customer B");
   assert.match(demo.badge, /Demo/);
   assert.match(demo.body, /later updates/);
   assert.match(demo.body, /No provider connection exists/);
-  assert.equal(
-    BACKUP_DEMO_PAGE_NOTICE,
-    "Detailed backup demonstration information has not been added to this page yet. The main Dashboard contains separate simulated Backup Health summaries.",
-  );
+  assert.match(BACKUP_DEMO_PAGE_NOTICE, /simulated backup overview and illustrative asset samples/);
+  assert.match(BACKUP_DEMO_PAGE_NOTICE, /same fictional figures as the Dashboard's Backup Health summary/);
+  assert.match(BACKUP_DEMO_PAGE_NOTICE, /job activity and recovery details have not been added yet/);
   assert.match(read("src/components/backup/backup-intro.tsx"), /<DemoModeNotice \/>/);
 });
 
 test("customer scope comes from the shared provider and appears in every section state", () => {
-  for (const file of ["src/components/backup/backup-intro.tsx", "src/components/backup/backup-sections.tsx"]) {
+  for (const file of ["src/components/backup/backup-intro.tsx", "src/components/backup/backup-sections.tsx", "src/components/backup/use-backup-assets.ts"]) {
     const source = read(file);
     assert.match(source, /useCustomerView\(\)/, file);
     assert.match(source, /useDashboardMode\(\)/, file);
-    assert.doesNotMatch(source, /CustomerSelector|createContext|useState/, file);
+    assert.doesNotMatch(source, /CustomerSelector|createContext/, file);
+    if (!file.endsWith("use-backup-assets.ts")) assert.doesNotMatch(source, /useState/, file);
   }
   for (const scope of SCOPES) {
     for (const mode of ["live", "demo"] as const) {
@@ -115,10 +131,14 @@ test("no invented backup statistics, percentages or success rates", () => {
   assert.doesNotMatch(ui + viewSource, /\b\d+(\.\d+)?%|successRate|success_rate/);
 });
 
-test("no fictional asset or job records and no data sources on the Backup page", () => {
-  assert.doesNotMatch(ui + viewSource, /@\/(demo|mocks|services)\//);
-  assert.doesNotMatch(ui + viewSource, /useBackupHealth|getDemoBackupHealth|fetch\(|axios/);
-  assert.doesNotMatch(ui + viewSource, /Demo (Endpoint|Asset|Job)|hostname|agent_id|job_id/i);
+test("Backup page data comes only through the shared hooks; no fixtures, job records or direct fetching", () => {
+  assert.doesNotMatch(ui + viewSource, /from "@\/(demo|mocks)\//);
+  assert.doesNotMatch(ui, /from "@\/services\/(?!backup-health"|backup-assets")/);
+  assert.doesNotMatch(ui, /getDemoBackupHealth|getBackupHealth|getDemoBackupAssets|normalize\w+\(/);
+  assert.doesNotMatch(ui + viewSource, /fetch\(|axios/);
+  assert.match(read("src/components/backup/backup-overview-panel.tsx"), /useBackupHealth\(\)/);
+  assert.match(read("src/components/backup/protected-assets-panel.tsx"), /useBackupAssets\(\)/);
+  assert.doesNotMatch(ui + viewSource, /Demo (Endpoint|Asset|Job|Backup Asset)|hostname|agent_id|job_id/i);
 });
 
 test("no successful sync timestamps", () => {
@@ -126,8 +146,14 @@ test("no successful sync timestamps", () => {
 });
 
 test("no restore actions or other interactive controls in the backup sections", () => {
-  const sections = read("src/components/backup/backup-sections.tsx");
-  assert.doesNotMatch(sections, /<button|<a\s|<Link|href=|onClick|role="button"|cursor-pointer|tabIndex|<input|<select|<form/);
+  for (const file of ["backup-sections", "backup-section-frame", "protected-assets-panel"]) {
+    const source = read(`src/components/backup/${file}.tsx`);
+    assert.doesNotMatch(source, /<button|<a\s|<Link|href=|onClick|role="button"|cursor-pointer|tabIndex|<input|<select|<form/, file);
+  }
+  const overview = read("src/components/backup/backup-overview-panel.tsx");
+  assert.equal(overview.match(/<button/g)?.length, 1, "only the error-state Retry button");
+  assert.match(overview, /onRetry && \(\s*<button[\s\S]*?Retry\s*<\/button>/);
+  assert.doesNotMatch(overview, /<a\s|<Link|href=|<input|<select|<form/);
   assert.match(RECOVERY_DISCLAIMER, /does not restore data/);
   for (const text of allCopy("All Customers")) assert.doesNotMatch(text, /restore now|start restore|download|export/i, text);
   const recovery = BACKUP_SECTIONS.find((s) => s.id === "recovery-information")!;

@@ -47,7 +47,7 @@ export const BACKUP_SECTIONS: readonly BackupSection[] = [
 export const BACKUP_LIVE_NOTICE = `${BACKUP_PROVIDER_NAME} is not connected. No protected assets, backup jobs, recovery points or sync times are shown.`;
 
 export const BACKUP_DEMO_PAGE_NOTICE =
-  "Detailed backup demonstration information has not been added to this page yet. The main Dashboard contains separate simulated Backup Health summaries.";
+  "This page shows a simulated backup overview and illustrative asset samples. The overview uses the same fictional figures as the Dashboard's Backup Health summary. Backup job activity and recovery details have not been added yet.";
 
 export const RECOVERY_DISCLAIMER = `This application does not restore data. Restore features, recovery points and retention visibility depend on verified ${BACKUP_PROVIDER_NAME} capabilities and are not available.`;
 
@@ -74,6 +74,6 @@ export function backupSectionState(mode: DashboardMode, scopeLabel: string): Bac
 
 export function backupAnnouncement(mode: DashboardMode, scopeLabel: string) {
   return mode === "demo"
-    ? `Backup and Recovery demonstration view for ${scopeLabel}. Sections are not yet populated.`
+    ? `Backup and Recovery demonstration view for ${scopeLabel}. Simulated overview and illustrative asset samples shown; job activity and recovery are not yet populated.`
     : `Backup and Recovery for ${scopeLabel}. Backup integration not connected.`;
 }

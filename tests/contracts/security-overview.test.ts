@@ -89,6 +89,7 @@ test("no demonstration fixtures or figures are duplicated in the Security module
     assert.doesNotMatch(source, /\b73\.5\b|\b(total|critical|percentage|coverage_percentage)\s*:\s*\d/, file);
   }
   assert.deepEqual(fs.readdirSync(path.join(ROOT, "src/demo")).sort(), [
+    "backup-assets.ts",
     "backup-health.ts",
     "customer-overview.ts",
     "dashboard-assets.ts",
