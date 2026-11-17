@@ -10,6 +10,7 @@ import {
   DatabaseBackup,
   Info,
   LoaderCircle,
+  MonitorSmartphone,
   PlugZap,
   RotateCw,
   ShieldCheck,
@@ -227,7 +228,7 @@ function CustomerDetail({
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2 @5xl:grid-cols-3">
         <DestinationCard
           icon={ShieldCheck}
           title="Security reporting"
@@ -243,6 +244,13 @@ function CustomerDetail({
           body="Backup overview, protected assets, job activity and recovery information for this customer are on the Backup & Recovery page."
           href="/backup"
           action="View Backup & Recovery"
+        />
+        <DestinationCard
+          icon={MonitorSmartphone}
+          title="Users & devices"
+          body="User and device summaries with example account and endpoint observations for this customer are on the Users & Devices page."
+          href="/users-devices"
+          action="View Users & Devices"
         />
       </div>
 
@@ -265,7 +273,7 @@ function DestinationCard({
 }: {
   icon: LucideIcon;
   title: string;
-  badge: ReactNode;
+  badge?: ReactNode;
   body: string;
   href: string;
   action: string;
@@ -276,7 +284,7 @@ function DestinationCard({
         <Icon aria-hidden className="h-4 w-4 shrink-0 text-shield-400" strokeWidth={1.75} />
         <h4 className="text-sm font-semibold text-ink-100">{title}</h4>
       </div>
-      <div>{badge}</div>
+      {badge && <div>{badge}</div>}
       <p className="text-sm leading-relaxed text-ink-300">{body}</p>
       <Link href={href} className={`mt-auto self-start ${primaryAction}`}>
         {action}

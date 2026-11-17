@@ -50,7 +50,7 @@ test("/customers route exists with metadata, heading and description", () => {
 test("Customers sidebar item is enabled and only it left the planned group", () => {
   assert.equal(byId("customers").href, "/customers");
   assert.equal(byId("customers").label, "Customers");
-  assert.deepEqual(items.filter((i) => !i.href).map((i) => i.id), ["users-devices", "reports", "compliance", "administration"]);
+  assert.deepEqual(items.filter((i) => !i.href).map((i) => i.id), ["reports", "compliance", "administration"]);
   const nav = read("src/components/sidebar/sidebar-nav.tsx");
   assert.ok(nav.indexOf("Soon") > nav.indexOf("function PlannedItem"), "Soon only renders for planned items");
 });
@@ -125,8 +125,9 @@ test("Security and Backup links are plain internal routes that keep the shared s
   assert.match(portfolioSource, /href="\/backup"\s+action="View Backup & Recovery"/);
   assert.doesNotMatch(portfolioSource, /href=\{?["`'][^"`']*\?|customer_id=|https?:\/\//, "no query params or external links");
   const layout = read("src/app/layout.tsx");
-  assert.ok(layout.indexOf("<CustomerViewProvider>") < layout.indexOf("{children}"));
-  assert.match(layout, /<DashboardModeProvider>\{children\}<\/DashboardModeProvider>/);
+  assert.ok(layout.indexOf("<DashboardModeProvider>") < layout.indexOf("<CustomerViewProvider>"), "mode wraps customer view");
+  assert.ok(layout.indexOf("<CustomerViewProvider>") < layout.indexOf("<AppHeader />"), "header shares both providers");
+  assert.ok(layout.indexOf("<AppHeader />") < layout.indexOf("{children}"));
 });
 
 test("Live mode shows no customer records or counts", async () => {

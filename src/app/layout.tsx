@@ -26,15 +26,17 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
       <body className="min-h-screen font-sans">
-        <CustomerViewProvider>
-          <div className="flex min-h-screen flex-col lg:flex-row">
-            <AppSidebar />
-            <div className="min-w-0 flex-1">
-              <AppHeader />
-              <DashboardModeProvider>{children}</DashboardModeProvider>
+        <DashboardModeProvider>
+          <CustomerViewProvider>
+            <div className="flex min-h-screen flex-col lg:flex-row">
+              <AppSidebar />
+              <div className="min-w-0 flex-1">
+                <AppHeader />
+                {children}
+              </div>
             </div>
-          </div>
-        </CustomerViewProvider>
+          </CustomerViewProvider>
+        </DashboardModeProvider>
       </body>
     </html>
   );

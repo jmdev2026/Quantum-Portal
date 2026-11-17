@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer } from "react";
 import type { Customer } from "@/services/customers";
 import { useCustomers, type CustomersState } from "@/components/customer-view/use-customers";
+import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
 import {
   customerViewReducer,
   findSelectedCustomer,
@@ -13,6 +14,7 @@ import {
 // UI viewing preference only. Never use it to authorize access; the backend enforces tenant permissions.
 export type CustomerViewContextValue = {
   view: CustomerView;
+  // Always null in Live Mode: demo customer identities must never be presented as live customers.
   selectedCustomer: Customer | null;
   notice: string | null;
   customersState: CustomersState;
@@ -24,6 +26,7 @@ export type CustomerViewContextValue = {
 const CustomerViewContext = createContext<CustomerViewContextValue | null>(null);
 
 export function CustomerViewProvider({ children }: { children: React.ReactNode }) {
+  const { mode } = useDashboardMode();
   const { state: customersState, reload } = useCustomers();
   const [state, dispatch] = useReducer(customerViewReducer, initialCustomerViewState);
   const customers = customersState.status === "ready" ? customersState.customers : null;
@@ -41,14 +44,14 @@ export function CustomerViewProvider({ children }: { children: React.ReactNode }
   const value = useMemo<CustomerViewContextValue>(
     () => ({
       view: state.view,
-      selectedCustomer: findSelectedCustomer(state.view, customers),
+      selectedCustomer: mode === "demo" ? findSelectedCustomer(state.view, customers) : null,
       notice: state.notice,
       customersState,
       reloadCustomers: reload,
       selectAll,
       selectCustomer,
     }),
-    [state, customers, customersState, reload, selectAll, selectCustomer],
+    [mode, state, customers, customersState, reload, selectAll, selectCustomer],
   );
 
   return <CustomerViewContext.Provider value={value}>{children}</CustomerViewContext.Provider>;

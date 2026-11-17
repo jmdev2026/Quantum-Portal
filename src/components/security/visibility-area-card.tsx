@@ -105,7 +105,7 @@ function StateMessage({ view }: { view: Exclude<VisibilityAreaView, { status: "s
   );
 }
 
-function RecordRow({ kind, record }: { kind: VisibilityArea["id"]; record: VisibilityRecord }) {
+export function RecordRow({ kind, record }: { kind: VisibilityArea["id"]; record: VisibilityRecord }) {
   return (
     <li
       data-record={record.id}

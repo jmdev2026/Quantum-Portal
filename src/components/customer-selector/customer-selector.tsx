@@ -1,10 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Building2, Check, ChevronDown, Layers, Loader2, RotateCw, TriangleAlert } from "lucide-react";
+import { Building2, Check, ChevronDown, Layers, Loader2, PlugZap, RotateCw, TriangleAlert } from "lucide-react";
 import type { Customer } from "@/services/customers";
 import type { CustomersState } from "@/components/customer-view/use-customers";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
+import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
+import { LIVE_CUSTOMER_SCOPE_DETAIL, LIVE_CUSTOMER_SCOPE_LABEL } from "@/components/customer-selector/live-scope";
 
 const segmentBase =
   "inline-flex min-h-8 min-w-0 items-center justify-center gap-1.5 rounded-md px-2.5 py-1 text-sm font-medium outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-shield-500/70 max-[359px]:px-2 sm:gap-2 sm:px-3";
@@ -22,6 +24,7 @@ export function CustomerSelector() {
     selectAll,
     selectCustomer,
   } = useCustomerView();
+  const { mode } = useDashboardMode();
   const selectedId = view.mode === "customer" ? view.customerId : null;
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -51,6 +54,12 @@ export function CustomerSelector() {
   useEffect(() => {
     if (open && state.status === "ready" && state.customers.length > 0) listRef.current?.focus();
   }, [open, state]);
+
+  useEffect(() => {
+    if (mode === "live") setOpen(false);
+  }, [mode]);
+
+  if (mode === "live") return <LiveScopeUnavailable />;
 
   const showAll = () => {
     selectAll();
@@ -207,6 +216,27 @@ export function CustomerSelector() {
           Frontend demonstration only. Choosing a customer does not filter data or control access.
         </p>
       </div>
+    </div>
+  );
+}
+
+function LiveScopeUnavailable() {
+  return (
+    <div className="w-full lg:w-auto" data-customer-scope="unavailable">
+      <div
+        role="group"
+        aria-label={`Customer view: ${LIVE_CUSTOMER_SCOPE_LABEL}`}
+        className="flex min-h-10 w-full items-center gap-2 rounded-lg border border-ink-700 bg-ink-950/60 px-3 py-1.5 lg:w-auto"
+      >
+        <PlugZap aria-hidden className="h-4 w-4 shrink-0 text-amber-signal" strokeWidth={1.75} />
+        <span className="min-w-0 text-sm leading-tight">
+          <span className="block font-medium text-ink-100">{LIVE_CUSTOMER_SCOPE_LABEL}</span>
+          <span className="block text-xs text-ink-350">{LIVE_CUSTOMER_SCOPE_DETAIL}</span>
+        </span>
+      </div>
+      <p role="status" className="sr-only">
+        {`${LIVE_CUSTOMER_SCOPE_LABEL}. ${LIVE_CUSTOMER_SCOPE_DETAIL}.`}
+      </p>
     </div>
   );
 }
