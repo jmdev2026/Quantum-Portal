@@ -13,8 +13,8 @@ import {
 
 // UI viewing preference only. Never use it to authorize access; the backend enforces tenant permissions.
 export type CustomerViewContextValue = {
+  // Live Mode always presents the all-customers view and a null selection, so no page reflects the stored demo choice.
   view: CustomerView;
-  // Always null in Live Mode: demo customer identities must never be presented as live customers.
   selectedCustomer: Customer | null;
   notice: string | null;
   customersState: CustomersState;
@@ -24,6 +24,7 @@ export type CustomerViewContextValue = {
 };
 
 const CustomerViewContext = createContext<CustomerViewContextValue | null>(null);
+const LIVE_VIEW: CustomerView = { mode: "all" };
 
 export function CustomerViewProvider({ children }: { children: React.ReactNode }) {
   const { mode } = useDashboardMode();
@@ -43,7 +44,7 @@ export function CustomerViewProvider({ children }: { children: React.ReactNode }
 
   const value = useMemo<CustomerViewContextValue>(
     () => ({
-      view: state.view,
+      view: mode === "demo" ? state.view : LIVE_VIEW,
       selectedCustomer: mode === "demo" ? findSelectedCustomer(state.view, customers) : null,
       notice: state.notice,
       customersState,

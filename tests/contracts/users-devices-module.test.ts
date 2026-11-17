@@ -180,6 +180,7 @@ test("Live Mode shows no simulated metrics, records or zero counts", async () =>
 test("shared customer view hides the selected demo customer in Live Mode", () => {
   const provider = read("src/components/customer-view/customer-view-provider.tsx");
   assert.match(provider, /selectedCustomer: mode === "demo" \? findSelectedCustomer\(state\.view, customers\) : null/);
+  assert.match(provider, /view: mode === "demo" \? state\.view : LIVE_VIEW/);
   const layout = read("src/app/layout.tsx");
   assert.ok(layout.indexOf("<DashboardModeProvider>") < layout.indexOf("<CustomerViewProvider>"));
   assert.ok(layout.indexOf("<CustomerViewProvider>") < layout.indexOf("<AppHeader />"));
