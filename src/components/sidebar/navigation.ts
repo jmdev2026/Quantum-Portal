@@ -43,7 +43,7 @@ export const navSections: NavSection[] = [
     label: "Management",
     items: [
       { id: "users-devices", label: "Users & Devices", icon: MonitorSmartphone },
-      { id: "customers", label: "Customers", icon: Building2 },
+      { id: "customers", label: "Customers", icon: Building2, href: "/customers" },
     ],
   },
   {

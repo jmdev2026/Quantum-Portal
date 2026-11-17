@@ -15,7 +15,7 @@ const demoAvailableDisplay = { label: "Demo data present", icon: FlaskConical, t
 const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-function ReportingBadge({ kind, status, simulated }: { kind: "security" | "backup"; status: ReportingStatus; simulated: boolean }) {
+export function ReportingBadge({ kind, status, simulated }: { kind: "security" | "backup"; status: ReportingStatus; simulated: boolean }) {
   const { label, icon: Icon, tone } = simulated && status === "available" ? demoAvailableDisplay : statusDisplay[status];
   const KindIcon = kind === "security" ? ShieldCheck : DatabaseBackup;
   return (
