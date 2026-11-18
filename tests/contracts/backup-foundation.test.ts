@@ -84,7 +84,7 @@ test("Soon appears only on planned items, so Backup no longer shows it", () => {
 test("Dashboard and Security stay enabled; other planned modules stay disabled", () => {
   assert.equal(byId("dashboard").href, "/");
   assert.equal(byId("security").href, "/security");
-  for (const id of ["compliance", "administration"]) assert.equal(byId(id).href, undefined, id);
+  for (const id of ["administration"]) assert.equal(byId(id).href, undefined, id);
 });
 
 test("exactly one primary navigation item is active per route", () => {

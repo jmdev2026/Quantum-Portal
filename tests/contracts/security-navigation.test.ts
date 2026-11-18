@@ -30,10 +30,10 @@ test("Dashboard and Security are never active together", () => {
   assert.equal(findActiveNavItem("/")?.id, "dashboard");
 });
 
-test("only Dashboard, Security, Backup, Users & Devices and Customers are enabled; other modules stay planned", () => {
+test("seven modules are enabled; Administration stays planned", () => {
   const enabled = items.filter((item) => item.href).map((item) => item.id);
-  assert.deepEqual(enabled, ["dashboard", "security", "backup", "users-devices", "customers", "reports"]);
-  for (const id of ["compliance", "administration"]) {
+  assert.deepEqual(enabled, ["dashboard", "security", "backup", "users-devices", "customers", "reports", "compliance"]);
+  for (const id of ["administration"]) {
     assert.equal(byId(id).href, undefined, id);
   }
 });

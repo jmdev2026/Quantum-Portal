@@ -66,10 +66,10 @@ test("/users-devices route exists with metadata, single h1 and description", () 
   }
 });
 
-test("Users & Devices sidebar item is enabled; Reports, Compliance and Administration stay planned", () => {
+test("Users & Devices sidebar item is enabled; Administration stays planned", () => {
   assert.equal(byId("users-devices").href, "/users-devices");
   assert.equal(byId("users-devices").label, "Users & Devices");
-  assert.deepEqual(items.filter((i) => !i.href).map((i) => i.id), ["compliance", "administration"]);
+  assert.deepEqual(items.filter((i) => !i.href).map((i) => i.id), ["administration"]);
 });
 
 test("exactly one navigation item is active per route, including /users-devices", () => {

@@ -50,7 +50,7 @@ test("/customers route exists with metadata, heading and description", () => {
 test("Customers sidebar item is enabled and only it left the planned group", () => {
   assert.equal(byId("customers").href, "/customers");
   assert.equal(byId("customers").label, "Customers");
-  assert.deepEqual(items.filter((i) => !i.href).map((i) => i.id), ["compliance", "administration"]);
+  assert.deepEqual(items.filter((i) => !i.href).map((i) => i.id), ["administration"]);
   const nav = read("src/components/sidebar/sidebar-nav.tsx");
   assert.ok(nav.indexOf("Soon") > nav.indexOf("function PlannedItem"), "Soon only renders for planned items");
 });

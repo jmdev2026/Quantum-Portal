@@ -51,7 +51,7 @@ export const navSections: NavSection[] = [
     label: "Governance",
     items: [
       { id: "reports", label: "Reports", icon: BarChart3, href: "/reports" },
-      { id: "compliance", label: "Compliance", icon: ClipboardCheck },
+      { id: "compliance", label: "Compliance", icon: ClipboardCheck, href: "/compliance" },
       { id: "administration", label: "Administration", icon: Settings2 },
     ],
   },
@@ -59,7 +59,7 @@ export const navSections: NavSection[] = [
 
 export function isNavItemActive(item: NavItem, pathname: string) {
   if (!item.href) return false;
-  if (item.href === "/" || item.href === "/reports") return pathname === item.href;
+  if (item.href === "/" || item.href === "/reports" || item.href === "/compliance") return pathname === item.href;
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 

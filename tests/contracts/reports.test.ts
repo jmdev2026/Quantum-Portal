@@ -22,7 +22,7 @@ test("Reports route, title and enabled navigation preserve planned governance it
   assert.ok(isNavItemActive(reports, "/reports"));
   assert.equal(isNavItemActive(reports, "/customers"), false);
   assert.equal(isNavItemActive(reports, "/reports/history"), false);
-  for (const id of ["compliance", "administration"]) assert.equal(items.find(i => i.id === id)?.href, undefined);
+  for (const id of ["administration"]) assert.equal(items.find(i => i.id === id)?.href, undefined);
 });
 
 test("report selection is local, single-select and keyboard-native", () => {
