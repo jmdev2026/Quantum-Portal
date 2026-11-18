@@ -49,7 +49,11 @@ test("each customer detail shows only that customer", async () => {
 
 test("unknown customer ids and wrong-scope portfolio responses fail safely", async () => {
   const state = customerViewReducer(initialCustomerViewState, { type: "select_customer", customerId: 99, customers });
-  assert.deepEqual(state.view, { mode: "all" });
+  assert.deepEqual(state.view, { mode: "customer", customerId: -1 });
+  assert.equal(normalizeCustomerOverview(await getDemoCustomerOverview(scopeOf(-1)), scopeOf(-1)).kind, "error");
+  assert.deepEqual(customerViewReducer(state, { type: "select_all" }).view, { mode: "all" });
+  const selected = customerViewReducer(initialCustomerViewState, { type: "select_customer", customerId: 2, customers });
+  assert.deepEqual(customerViewReducer(selected, { type: "reconcile", customers: [] }).view, { mode: "customer", customerId: -1 });
   const wrong = normalizeCustomerOverview(await getDemoCustomerOverview(scopeOf(1)), scopeOf(2));
   assert.equal(wrong.kind, "error");
   assert.deepEqual(visibleOverview({ mode: "demo", customerId: 2, state: wrong }, "live", null), { kind: "loading" });

@@ -154,7 +154,7 @@ test("unknown customer IDs fail safely without falling back to other customers",
   const view = customersPageView(await load("demo", 999), "customer");
   assert.equal(view.kind, "error");
   const notice = customerViewReducer(initialCustomerViewState, { type: "select_customer", customerId: 999, customers: [...customers] });
-  assert.deepEqual(notice.view, { mode: "all" });
+  assert.deepEqual(notice.view, { mode: "customer", customerId: -1 });
   assert.ok(notice.notice, "invalid selection is announced, not silent");
 });
 

@@ -14,8 +14,8 @@ export type CustomerViewAction =
 
 export const initialCustomerViewState: CustomerViewState = { view: { mode: "all" }, notice: null };
 
-const UNAVAILABLE_NOTICE = "The selected customer is no longer available. Showing all customers.";
-const INVALID_NOTICE = "That customer could not be selected. Showing all customers.";
+const UNAVAILABLE_NOTICE = "The selected customer is no longer available. Select an available customer or explicitly choose All Customers.";
+const INVALID_NOTICE = "That customer could not be selected. Select an available customer or explicitly choose All Customers.";
 
 export function findSelectedCustomer(view: CustomerView, customers: Customer[] | null): Customer | null {
   if (view.mode !== "customer" || !customers) return null;
@@ -31,11 +31,11 @@ export function customerViewReducer(state: CustomerViewState, action: CustomerVi
         Number.isInteger(action.customerId) &&
         action.customers !== null &&
         action.customers.some((customer) => customer.id === action.customerId);
-      if (!valid) return { view: { mode: "all" }, notice: INVALID_NOTICE };
+      if (!valid) return { view: { mode: "customer", customerId: -1 }, notice: INVALID_NOTICE };
       return { view: { mode: "customer", customerId: action.customerId }, notice: null };
     }
     case "reconcile":
       if (findSelectedCustomer(state.view, action.customers) || state.view.mode === "all") return state;
-      return { view: { mode: "all" }, notice: UNAVAILABLE_NOTICE };
+      return { view: { mode: "customer", customerId: -1 }, notice: UNAVAILABLE_NOTICE };
   }
 }

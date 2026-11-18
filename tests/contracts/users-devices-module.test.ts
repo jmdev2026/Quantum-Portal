@@ -221,7 +221,7 @@ test("announcements never name a customer", () => {
 });
 
 test("invalid IDs, wrong scopes and malformed records are rejected by the existing normalizers", async () => {
-  assert.equal(customerViewReducer(initialCustomerViewState, { type: "select_customer", customerId: 999, customers }).view.mode, "all");
+  assert.equal(customerViewReducer(initialCustomerViewState, { type: "select_customer", customerId: 999, customers }).view.mode, "customer");
   const response = await getDemoVisibilityRecords("identities", scopeFor(1));
   assert.equal(normalizeDemoVisibilityRecords(response, "identities", scopeFor(2), customers).kind, "error");
   const malformed = structuredClone(response);
