@@ -52,14 +52,14 @@ export const navSections: NavSection[] = [
     items: [
       { id: "reports", label: "Reports", icon: BarChart3, href: "/reports" },
       { id: "compliance", label: "Compliance", icon: ClipboardCheck, href: "/compliance" },
-      { id: "administration", label: "Administration", icon: Settings2 },
+      { id: "administration", label: "Administration", icon: Settings2, href: "/administration" },
     ],
   },
 ];
 
 export function isNavItemActive(item: NavItem, pathname: string) {
   if (!item.href) return false;
-  if (item.href === "/" || item.href === "/reports" || item.href === "/compliance") return pathname === item.href;
+  if (item.href === "/" || item.href === "/reports" || item.href === "/compliance" || item.href === "/administration") return pathname === item.href;
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 

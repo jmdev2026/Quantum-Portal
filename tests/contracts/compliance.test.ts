@@ -19,8 +19,8 @@ test("Compliance route and navigation enable seven modules, not Administration",
   assert.ok(isNavItemActive(item,"/compliance"));
   assert.equal(isNavItemActive(item,"/compliance/history"),false);
   assert.equal(isNavItemActive(item,"/reports"),false);
-  assert.equal(items.filter(i => i.href).length,7);
-  assert.equal(items.find(i => i.id === "administration")?.href,undefined);
+  assert.equal(items.filter(i => i.href).length,8);
+  assert.equal(items.find(i => i.id === "administration")?.href,"/administration");
 });
 
 test("NIST reference has the six official functions without scores or formal mappings", () => {
