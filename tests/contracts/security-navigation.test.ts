@@ -32,8 +32,8 @@ test("Dashboard and Security are never active together", () => {
 
 test("only Dashboard, Security, Backup, Users & Devices and Customers are enabled; other modules stay planned", () => {
   const enabled = items.filter((item) => item.href).map((item) => item.id);
-  assert.deepEqual(enabled, ["dashboard", "security", "backup", "users-devices", "customers"]);
-  for (const id of ["reports", "compliance", "administration"]) {
+  assert.deepEqual(enabled, ["dashboard", "security", "backup", "users-devices", "customers", "reports"]);
+  for (const id of ["compliance", "administration"]) {
     assert.equal(byId(id).href, undefined, id);
   }
 });
