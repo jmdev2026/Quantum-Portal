@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SecurityIntro } from "@/components/security/security-intro";
 import { SecuritySections } from "@/components/security/security-sections";
+import { SecurityCapabilityHub } from "@/components/security/security-capability-hub";
 
 export const metadata: Metadata = {
   title: "Security · Quantum Shield Command",
@@ -20,6 +21,7 @@ export default function SecurityPage() {
 
       <main className="relative z-10 mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <SecurityIntro />
+        <SecurityCapabilityHub />
         <SecuritySections />
       </main>
 

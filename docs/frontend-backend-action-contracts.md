@@ -1,4 +1,27 @@
-# Frontend ↔ backend action inventory — F02a update
+# Frontend ↔ backend action inventory — F02b update
+
+## F02b capability action contracts — no provider APIs implemented
+
+Six frontend routes are implemented; their search/filter/sort/reset/detail/open/close actions are local and nonpersistent. Return/Reports links preserve root viewing context; Reports navigation opens the existing general module, not a capability-specific report. Retry loads the same scoped fictional service, never a scan, response or recovery operation.
+
+| Frontend capability | Current simulated read source | Local supported actions | Future verified read / privileged boundary |
+|---|---|---|---|
+| /security/mdr | Existing getDemoSecurityDetections + unchanged normalizer | Search validated observation/title/customer/source; severity; name/severity sorting; reset; investigation detail; full Explorer link | Authorized detection visibility is separate from actual incident cases. Containment/remediation/isolation/case handling require distinct independently verified privileged contracts; none available. |
+| /security/itdr | Existing getDemoVisibilityRecords(identities) + unchanged normalizer | Account/observation search; supplied not-verified protection filter; name sort/reset/detail | Independently verified identity visibility; no fabricated login history/MFA/credential events. Disabling/password reset/session revocation/policy changes are separate privileged capabilities, currently unavailable. |
+| /security/external-footprint | getExternalFootprint → src/mocks/external-footprint.ts → normalizeCapabilityRecords | Reserved asset/finding search; category/severity; name/severity sort/reset/detail | Verified ownership/authorized discovery mapping required. No network scans, ports/IPs/CVSS/exploitation or scan timestamps. Scan initiation would require an independently reviewed operation; no API assumed. |
+| /security/email-protection | getEmailProtection → src/mocks/email-protection.ts → normalizeCapabilityRecords | Safe message-label/observation search; category/illustrative status; name sort/reset/detail | Verify intended email provider separately; do not assume Guardz or Check Point supplies records. Quarantine visibility and release/delete/block/allowlist/policy/scan APIs are unverified and unimplemented. |
+| /security/endpoint-security | Existing getDemoVisibilityRecords(endpoints) + unchanged normalizer | Endpoint/observation search; supplied unverified protection filter; name sort/reset/detail | Provider-managed inventory/agent/EDR telemetry must be independently validated and mapped. SentinelOne/Guardz management/isolation support is not assumed. No remote operation. |
+| /security/cloud-data-protection | getCloudDataProtection → src/mocks/cloud-data-protection.ts → normalizeCapabilityRecords | Synthetic workspace/observation search; cloud category/illustrative status; name sort/reset/detail | Independently verify cloud read/tenant mapping and service semantics. No Microsoft 365 IDs/customer files/DLP events/coverage or recovery points assumed. Separate from Datto Endpoint Backup; no configuration/restore operation. |
+
+The three new resources use strictly fictional `{ data: [...], meta: { scope, capability, source, status, message } }` envelopes. Nested customer association, synthetic ID/name/asset labels, allowed categorical/status values, explicit fictional/source/protection markers and fixed created_at authoring metadata are validated. Unsupported fields are rejected, including attempted provider/case fields. Created_at is not observation, breach, scan or integration evidence. Six portfolio examples/two per fictional customer never determine aggregate metrics.
+
+Provisional TODO(api) GET /api/security/... paths are application-owned integration placeholders only, not approved Laravel or provider endpoint contracts. No direct network request is made; the existing API_BASE_URL configuration supports the requested VITE_API_BASE_URL fallback, unused for these mocks. Backend shape/auth/authorization/provider adapter must be reviewed before replacing any fixture body. Never pass the fictional schema directly through as a claimed provider contract.
+
+Every future real capability read requires authenticated server principal, active tenant membership, resource-specific read permission and a separately authorized assigned MSP portfolio scope. Client customer IDs/view choices are not authorization. Server must reject unauthorized tenants before provider data retrieval, return minimal normalized safe fields and generic errors, and never silently substitute Demo/zeros. Frontend invalid IDs/wrong scopes/registry revocation/cancelled responses/detail invalidation are presentation defenses only.
+
+Privileged operations remain unimplemented: independently verify provider support first, then define explicit permissions, tenant/resource ownership, step-up/CSRF where appropriate, audit, idempotency/concurrency and server-confirmed failure/success semantics. Guardz, Check Point, SentinelOne, Microsoft 365 and Datto APIs/capabilities are not invented by this frontend batch.
+
+Dark Web Monitoring remains mandatory P1 F02c; Awareness Training and Phishing Simulations remain F02d. F02b does not create their routes/resources or imply completed dedicated experiences.
 
 ## Implemented local actions (no backend/provider requests)
 
