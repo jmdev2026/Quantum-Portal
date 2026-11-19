@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useId } from "react";
 import { navSections, isNavItemActive, type NavItem } from "@/components/sidebar/navigation";
 
 type SidebarNavProps = {
@@ -8,12 +9,13 @@ type SidebarNavProps = {
 };
 
 export function SidebarNav({ pathname, collapsed = false, onNavigate }: SidebarNavProps) {
+  const baseId = useId();
   return (
     <nav aria-label="Main navigation" className="flex flex-col gap-6">
       {navSections.map((section) => (
-        <div key={section.id} role="group" aria-labelledby={`nav-section-${section.id}`}>
+        <div key={section.id} role="group" aria-labelledby={`${baseId}-nav-section-${section.id}`}>
           <p
-            id={`nav-section-${section.id}`}
+            id={`${baseId}-nav-section-${section.id}`}
             className={
               collapsed
                 ? "sr-only"

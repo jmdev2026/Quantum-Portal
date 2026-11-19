@@ -1,7 +1,8 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
-import { Bell, CircleHelp, UserRound } from "lucide-react";
+import { Bell, UserRound } from "lucide-react";
+import { PortalHelp } from "@/components/header/portal-help";
 import { usePathname } from "next/navigation";
 import { CustomerSelector } from "@/components/customer-selector/customer-selector";
 import { findActiveNavItem } from "@/components/sidebar/navigation";
@@ -29,7 +30,7 @@ export function AppHeader() {
 
         <div className="order-2 flex shrink-0 items-center gap-1 sm:gap-2 lg:order-3">
           <PlaceholderAction icon={Bell} label="Notifications" />
-          <PlaceholderAction icon={CircleHelp} label="Help" />
+          <PortalHelp />
           <span aria-hidden className="mx-1 h-6 w-px bg-ink-700 sm:mx-2" />
           <button
             type="button"

@@ -1,0 +1,89 @@
+# F01 functionality gap register — source audit, not browser acceptance
+
+Laravel work is paused. This inventory groups functions by user workflow, not individual repeated buttons. IMPLEMENTED means current source path/logic exists; browser correctness remains NOT VERIFIED. PARTIAL means usable foundation lacks essential screens/interactions. MISSING means absent frontend interaction. BACKEND-DEPENDENT means real operation cannot be delivered locally. No module is accepted as complete.
+
+## Evidence and scope
+
+All eight routes traced through their supporting workspaces/sections, current control search, record renderers, scope reducers/hooks and service normalizers. Control inventory found navigation links, mobile menu/collapse, customer selection, customer detail/back/destination links, mode switching, insight category tabs, report selector and retry buttons. No component input/select/form/detail/dialog existed in the searched inventory before F01 Help. Native buttons do advertised selection/navigation/retry actions where present; missing search/details are absent features, not fabricated broken handlers. Static cards/status badges are read-only, although several have hover borders; not classified as clickable dead buttons without stronger evidence.
+
+Code uses Tailwind/Lucide/native HTML; no shadcn or installed dialog/table toolkit found in package dependencies. Existing response normalizers and providers are reused, not replaced. Record hooks cancel old effects and gate envelope mode/customer before displaying. Contract baseline covers scope, normalizers and eight modules. Full keyboard/visual correctness still requires browser evidence.
+
+Paths below are relative to src/components unless prefixed src/services or src/app. Data abbreviations: AS asset-summary; SS severity; SC coverage; IN insights; BH backup-health; CO customer-overview; D fictional detection records; V fictional identity/endpoint records; BA/BJ fictional backup assets/jobs; C canonical fictional customers. These map to existing services and src/demo sources; C is src/mocks/customers.ts. Backend proposals remain in backend-api-contracts.md. No new resource arrays introduced by F01.
+
+Security rules: S = scope/mode gates + invalid IDs fail closed + reset details on context change; R = read-only/no unsupported provider operation; P = future server auth/membership/permission/audit; E = no evidence/certification/secret claims. Verification: CT = focused contract/logic tests, B = browser interaction/accessibility/responsive test, API = future backend contract/security tests. Every row needs B before acceptance.
+
+| ID | Module / feature | Exact current path | Status | Missing screen / expected behavior | Data | Class / safety | Priority / batch | Verification |
+|---|---|---|---|---|---|---|---|---|
+|01|Shared navigation|sidebar/sidebar-nav.tsx; sidebar/navigation.ts|IMPLEMENTED|Eight real destinations and active route state; F01 fixes duplicate section IDs|Route config|Local / S|P0 / F01|CT,B|
+|02|Shared mobile menu|sidebar/app-sidebar.tsx|IMPLEMENTED|Open/close/backdrop/Escape/Tab wrap and breakpoint close; verify background interaction isolation|Route config|Local / S|P1 / F07|B|
+|03|Shared collapse|sidebar/app-sidebar.tsx|IMPLEMENTED|Toggle persists local preference; storage-denied behavior not verified|Preference|Local|P2 / F07|CT,B|
+|04|Shared customer scope|customer-selector/customer-selector.tsx; customer-view/customer-view-state.ts|IMPLEMENTED|Select/All/keyboard/retry; corrected misleading no-filter explanation in F01|C|Local / S, not P|P0 / F01|CT,B|
+|05|Shared mode|dashboard-mode/dashboard-mode-provider.tsx; dashboard-mode-switch.tsx|IMPLEMENTED|Live clears fictional content; refresh Live; restored Demo selection|Mode|Local / S|P0 / F01|CT,B|
+|06|Shared Help|header/app-header.tsx; header/portal-help.tsx|IMPLEMENTED|F01 replaces disabled Help with native modal, meaningful guidance and close/Escape|Static guidance|Local / R|P1 / F01|CT,B|
+|07|Shared notifications|header/app-header.tsx|BACKEND-DEPENDENT|Disabled explained control; future inbox/empty/error/detail UX|Authorized events|Backend / P|P2 / F07|API,B|
+|08|Shared profile|header/app-header.tsx|BACKEND-DEPENDENT|Disabled explained control; future preferences/auth state UX|Principal|Backend / P|P1 / F07|API,B|
+|09|Shared keyboard/contrast|src/app/layout.tsx; src/app/globals.css|NOT VERIFIED|Browser focus, contrast, reduced-motion, screen readers and mobile geometry; no fabricated screenshots|Rendered UI|Local / S|P0 / F08|B|
+|10|Dashboard summary display|dashboard/asset-summary.tsx; use-asset-summary.ts|IMPLEMENTED|Counts/status/retry and null/zero distinctions, not inventory|AS|Local / S|P1 / F02|CT,B|
+|11|Dashboard metric drilldown|dashboard/asset-metric-card.tsx|MISSING|Explicit links to relevant scoped inventory, not decorative click styling|AS,V|Local / S,R|P1 / F02|CT,B|
+|12|Dashboard severity drilldown|dashboard/issues-by-severity-panel.tsx|MISSING|Select severity and reach scoped detection view without treating examples as totals|SS,D|Local / S,E|P1 / F02|CT,B|
+|13|Dashboard coverage detail|dashboard/security-coverage-panel.tsx|PARTIAL|Gauge/status exists; explicit control detail navigation absent|SC|Local / S,E|P1 / F02|CT,B|
+|14|Dashboard insight tabs|dashboard/insights-panel.tsx|IMPLEMENTED|Category filter/counts and arrow/Home/End selection work in source|IN|Local / S|P1 / F02|CT,B|
+|15|Dashboard insight investigation|dashboard/insight-card.tsx|MISSING|Open/close contextual read-only detail and related report link|IN|Local / S,R|P1 / F02|CT,B|
+|16|Dashboard backup drilldowns|dashboard/backup-health-panel.tsx; backup-job-outcomes.tsx|MISSING|Meaningful explicit links to scoped asset/job views, basis retained|BH,BA,BJ|Local / S,E|P1 / F02|CT,B|
+|17|Dashboard customer overview|dashboard/customer-overview-panel.tsx; customer-portfolio-list.tsx|PARTIAL|Availability present; direct customer navigation absent|CO,C|Local / S|P1 / F02|CT,B|
+|18|Security summaries|security/security-overview-panel.tsx|IMPLEMENTED|Existing aggregate reporting and retry, not incident history|AS,SS,SC,IN|Local / S,E|P1 / F02|CT,B|
+|19|Security detection explorer|security/detection-feed.tsx; threats-detections-panel.tsx|PARTIAL|Read-only examples exist; search/severity/status/sort and reset missing|D|Local / S,R|P1 / F02a|CT,B|
+|20|Security investigation|security/detection-feed.tsx|MISSING|Finding selection/drawer, affected context and safe response guidance; no remediation|D|Local / S,R|P1 / F02a|CT,B|
+|21|Security identity details|security/visibility-area-card.tsx|PARTIAL|Examples exist; search/filter/detail absent|V|Local / S,R|P1 / F02a|CT,B|
+|22|Security endpoint details|security/visibility-area-card.tsx|PARTIAL|Examples exist; search/filter/detail absent|V|Local / S,R|P1 / F02a|CT,B|
+|23|Security MDR|security/security-controls-panel.tsx; src/services/security-coverage.ts|PARTIAL|Status only; general detection list is not dedicated MDR investigation/service detail|SC,D|Local detail; real response backend / S,R,P|P1 / F02b|CT,B,API|
+|24|Security ITDR|security/security-controls-panel.tsx|PARTIAL|Status only; generic identity examples do not constitute ITDR workflow|SC,V|Local detail; real response backend / S,R,P|P1 / F02b|CT,B,API|
+|25|Security External Footprint Scan|security/security-controls-panel.tsx|PARTIAL|Status only; domain/asset footprint detail absent; no active scan claim|SC|Local preview; real scan backend / E,P|P1 / F02b|CT,B,API|
+|26|Security Dark Web Monitoring|security/security-controls-panel.tsx; src/services/security-coverage.ts|MISSING|Dedicated Security → Dark Web Monitoring overview, exposure/account/domain/category explorer, severity/status filters, sorting, investigation and reporting navigation absent; badge is not a workflow|SC separate from future synthetic exposure resource|Local preview; provider capability unverified / S,R,E,P|P1 / F02c|CT,B,API|
+|27|Security Email Protection|security/security-controls-panel.tsx|PARTIAL|Status only; read-only service details/email observations absent|SC|Local preview; real data backend / E,P|P1 / F02b|CT,B,API|
+|28|Security Endpoint Security|security/security-controls-panel.tsx|PARTIAL|Status only; generic endpoints are not dedicated agent/policy workflow|SC,V|Local preview; management backend / S,R,P|P1 / F02b|CT,B,API|
+|29|Security Cloud Data Protection|security/security-controls-panel.tsx|PARTIAL|Status only; service detail/cloud observations absent|SC|Local preview; real data backend / E,P|P1 / F02b|CT,B,API|
+|30|Security Awareness Training|security/security-controls-panel.tsx|PARTIAL|Status only; training visibility/detail absent; no fabricated completion rates|SC|Local preview; campaigns backend / E,P|P2 / F02b|CT,B,API|
+|31|Security Phishing Simulations|security/security-controls-panel.tsx|PARTIAL|Status only; simulation detail/results absent; no send operation|SC|Local preview; campaigns backend / E,P|P2 / F02b|CT,B,API|
+|32|Security real remediation|security/threats-detections-panel.tsx|BACKEND-DEPENDENT|No operation exists; future explicit denied/unavailable/confirmation paths, not fake success|Verified incident capability|Backend / P,R|P2 / future backend|API,B|
+|33|Backup summaries|backup/backup-overview-panel.tsx|IMPLEMENTED|Assets/freshness/outcomes/status and retry with correct bases|BH|Local / S,E|P1 / F03|CT,B|
+|34|Backup asset explorer|backup/protected-assets-panel.tsx|PARTIAL|Examples exist; search/filter/sort/detail absent|BA|Local / S,E|P1 / F03|CT,B|
+|35|Backup job explorer|backup/backup-job-activity-panel.tsx|PARTIAL|Examples exist; outcome filters/sort/detail/descriptions absent|BJ|Local / S,E|P1 / F03|CT,B|
+|36|Backup recovery visibility|backup/recovery-information-panel.tsx; recovery-information-view.ts|PARTIAL|Honest unavailable guidance; no verified recovery point detail; no restore actions|Verified capability required|Local limitations; backend data / E,P|P1 / F03|CT,B,API|
+|37|Backup restore|backup/recovery-information-view.ts|BACKEND-DEPENDENT|Keep “Restore operations are not available in Quantum Shield Command.” No endpoint assumed|Unverified provider capability|Backend / P,R|P2 / future backend|API,B|
+|38|Customers portfolio/detail/navigation|customers/customers-portfolio.tsx|IMPLEMENTED|View customer selects scope; detail/back/three reporting links work in source|CO,C|Local / S|P1 / F04|CT,B|
+|39|Customers search/filter/sort|customers/customers-portfolio.tsx|MISSING|Filter list without changing shared scope; reset empty search|CO,C|Local / S|P1 / F04|CT,B|
+|40|Customers profile/settings/onboarding|customers/customers-portfolio.tsx|MISSING|Separate validated fictional preview form/profile; no save account claim|Future mock profile resource|Demo / S,P|P2 / F04|CT,B|
+|41|Customers real creation/update|src/services/customers.ts|BACKEND-DEPENDENT|No persistence or privileged management exists|Authorized customer input|Backend / P|P2 / future backend|API,B|
+|42|Users & Devices summaries/observations|users-devices/users-devices-sections.tsx|PARTIAL|Counts/examples/retry exist; not complete inventory|AS,V|Local / S,E|P1 / F04|CT,B|
+|43|Users & Devices explorers|users-devices/users-devices-sections.tsx|MISSING|Separate user/device search/sort/filter/detail and observation context; no invented agent/license evidence|V|Local / S,E|P1 / F04|CT,B|
+|44|Reports selection/preview|reports/reports-workspace.tsx; executive-summary.tsx|IMPLEMENTED|Three report selections change rendered content; no export/history|AS,SS,SC,IN,BH|Local / S,E|P1 / F05|CT,B|
+|45|Reports print/configuration|reports/reports-workspace.tsx|MISSING|Validated local configuration and actual labelled printable artifact; cancel discards draft|Existing report resources|Local/Demo / S,E|P1 / F05|CT,B|
+|46|Reports history/scheduling/delivery|reports/reports-workspace.tsx|BACKEND-DEPENDENT|No historical records/delivery; build explicit empty/unavailable screens, no fabricated history|Authorized generated reports/jobs|Backend / P|P2 / F05|API,B|
+|47|Compliance framework/control visibility|compliance/compliance-workspace.tsx|PARTIAL|Six reference functions/nine signals/retry exist; detail views missing|Static reference,SC|Local / S,E|P1 / F06|CT,B|
+|48|Compliance assessment/progress/preview|compliance/compliance-workspace.tsx|MISSING|Validated Demo form and draft-completion progress, not compliance score/certification; detail/reset/preview|Future synthetic assessment resource|Demo / S,E|P1 / F06|CT,B|
+|49|Compliance evidence storage|compliance/compliance-workspace.tsx|BACKEND-DEPENDENT|Categories/limitations exist, no verified inventory/uploads; future safe evidence metadata UX|Private authorized evidence|Backend / P,E|P2 / F06|API,B|
+|50|Administration settings/roles/matrix|administration/administration-workspace.tsx|PARTIAL|Static organization/proposed role descriptions only; preview screens/form/matrix missing|Static proposed roles; future fictional draft|Demo / S,P|P1 / F06|CT,B|
+|51|Administration integration configuration|administration/administration-workspace.tsx|BACKEND-DEPENDENT|Readiness cards only; no credential form/connection claim|Server secret references/verified capabilities|Backend / P|P1 / F06|API,B|
+|52|Administration audit log|administration/administration-workspace.tsx|BACKEND-DEPENDENT|Future event categories, not log entries; future authorized empty/search/detail UI|Server-attributed audit events|Backend / P|P2 / F06|API,B|
+|53|Administration notification/account preferences|administration/administration-workspace.tsx; header/app-header.tsx|MISSING|Separate local preference preview with validation/confirmation; no actual account save|Nonpersistent draft|Demo / S,P|P2 / F07|CT,B|
+|54|Authentication/access-denied UX|header/app-header.tsx; src/services/api.ts|BACKEND-DEPENDENT|No auth UI/adapter; design safe states without fake session or customer access|Reviewed principal contract|Backend / P|P1 / F07|CT,API,B|
+|55|Shared detail/search/confirmation pattern|header/portal-help.tsx; record renderers above|PARTIAL|Native modal now in use for Help; future record panels/search/simulated confirmation need actual consumer-specific implementations/tests|Scoped current records/drafts|Local/Demo / S,R|P1 / F02–F07|CT,B|
+
+## Confirmed P0/P1 findings and F01 corrections
+
+P0 misleading scope copy corrected: customer-selector previously said selection does not filter data despite scoped summaries/records. P0 duplicate desktop/mobile navigation section IDs corrected using instance-specific useId. P0 browser geometry/focus/contrast remains NOT VERIFIED, not a reported source defect. P1 disabled Help replaced with working truthful guidance dialog. Notification/profile are explicitly disabled; they are unavailable capabilities, not fake operational successes. No new remediation/admin/restore control introduced.
+
+P1 remaining: explicit metric/detail navigation; detection/identity/endpoint explorers; all service detail views including dedicated Dark Web Monitoring; asset/job/customer/user/device explorers; report output/config; assessment detail and admin preview. Some record/error paths have no retry, notably use-security-detections.ts, use-backup-assets.ts and SecurityControlsPanel consumption; future batches must expose actual retry, not reload the whole app or invent success.
+
+## Dark Web Monitoring acceptance constraints
+
+New route/section proposed for F02c: Security → Dark Web Monitoring (route name to be agreed, not currently implemented). Include exposure overview/severity, compromised-account/domain/category visibility, search/sort/severity/type/status filters, detail open/close and recommended guidance with report links. Use reserved example domains, synthetic identities, no leaked passwords, no invented breach evidence/date/history. Store future fictional resource under src/mocks/dark-web-findings.ts as Laravel-style `{ data: [...] }` with nested customer/account/domain objects, IDs and explicit synthetic created_at metadata (not breach dates). Services own access; components never call providers. SC control status stays separate from exposure count/scan assertion.
+
+Existing providers only; All is fictional Demo portfolio. Reject invalid scopes, hide detail synchronously on mode/customer mismatch, cancel stale requests, clear Demo immediately in Live. Acknowledgment/dismissal only if later approved as nonpersistent labelled Demo draft; no live remediation. Load/error/empty/unavailable/reset paths mandatory. Guardz capability, response fields, identifiers/auth/permissions/pagination/freshness remain questions, not invented provider contracts.
+
+## Definition of done / browser backlog
+
+Every finished module needs primary/secondary screens, truthful meaningful actions, local navigation/search/filter/sort/details where relevant, loading/error/retry/empty, keyboard/focus/semantics, responsive layouts, correct scope/mode, accurate labels, form validation/cancel/confirm for applicable Demo drafts, no fake operational success, consistent styling, regression tests and service contracts. Existing 602 passing tests alone do not establish completion.
+
+Developer QA: all eight routes at 320/375/768/1024/1280/1440/1920; Live, Demo All/A/B/C, rapid switching/invalid scope; new Help open/close/Escape/Tab/focus restoration/scroll; duplicate label regression; dialogs against mobile navigation; future search reset/no-results/details dismissed on scope changes. Browser NOT RUN. Preserve earlier Phase 4/5 matrices and screenshots; no new screenshots claimed. GitHub/Vercel source sync and approved favicon remain unverified/outstanding.

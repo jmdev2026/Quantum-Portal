@@ -213,7 +213,7 @@ export function CustomerSelector() {
         />
 
         <p className="border-t border-ink-800 bg-ink-950/50 px-4 py-3 text-xs leading-relaxed text-ink-350">
-          Frontend demonstration only. Choosing a customer does not filter data or control access.
+          Frontend demonstration only. Choosing a customer filters fictional summaries and records; it does not grant or control access.
         </p>
       </div>
     </div>
