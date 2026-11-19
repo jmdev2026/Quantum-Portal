@@ -57,6 +57,7 @@ export function CustomerOverviewView({
   return (
     <DashboardPanel
       id="customer-overview"
+      action={{ href: "/customers", label: "View Customers" }}
       icon={Building2}
       title="Customer Overview"
       description="Security and backup reporting availability for the selected view."

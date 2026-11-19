@@ -13,6 +13,7 @@ export function useSecurityDetections() {
   const customerId = view.mode === "customer" ? view.customerId : null;
   const customers = customersState.status === "ready" ? customersState.customers : null;
   const customersFailed = customersState.status === "error";
+  const [attempt, setAttempt] = useState(0);
   const [loaded, setLoaded] = useState<LoadedDetections>(() => ({ mode, customerId, state: { kind: "loading" } }));
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export function useSecurityDetections() {
     return () => {
       cancelled = true;
     };
-  }, [mode, customerId, customers, customersFailed]);
+  }, [mode, customerId, customers, customersFailed, attempt]);
 
-  return { state: visibleDetections(loaded, mode, customerId), simulated: mode === "demo" };
+  return { state: visibleDetections(loaded, mode, customerId), simulated: mode === "demo", retry: () => setAttempt(value => value + 1) };
 }

@@ -87,6 +87,7 @@ export function BackupHealthView({
   return (
     <DashboardPanel
       id="backup-health"
+      action={{ href: "/backup#backup-overview-title", label: "View Backup Overview" }}
       icon={DatabaseBackup}
       title="Backup Health"
       description="Endpoint protection, backup freshness and job outcomes."

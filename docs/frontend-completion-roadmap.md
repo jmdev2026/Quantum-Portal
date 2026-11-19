@@ -1,6 +1,10 @@
-# Frontend completion roadmap — F01
+# Frontend completion roadmap — F02a update
 
-Laravel implementation paused. Batches deliver working frontend workflows, not new documentation-only phases. F01 ships Help and shared scope/label corrections; does not start F02. F01 gap IDs are in frontend-functionality-gap-register.md. All batches retain existing root customer/mode providers, validators, read-only Live unavailable state and existing regression suite. No package/theme replacement needed.
+F02a delivered explicit Dashboard navigation, /security/detections with scoped search/severity/sort/detail/retry and /security/insights reusing validated insight presentation. Canonical metrics/examples unchanged; no provider/action APIs added. Native dialog and render-key invalidation implemented; browser QA remains NOT RUN. Original F02a investigation scope is complete for existing fields only; service-specific detail remains future work.
+
+Next batches: F02b MDR/ITDR/External Footprint/Email/Endpoint/Cloud; F02c Dark Web Monitoring (mandatory P1); F02d Awareness Training/Phishing Simulations. Awareness/phishing move out of F02b to keep individual capability implementation manageable, as explicitly approved in F02a. F03–F08 remain below. Do not start F02b until review.
+
+Laravel implementation paused. Batches deliver working frontend workflows, not new documentation-only phases. F01 shipped Help and shared scope/label corrections; F02a implementation is now delivered as recorded above. Gap IDs and F02a status changes are in frontend-functionality-gap-register.md. All batches retain existing root customer/mode providers, validators, read-only Live unavailable state and existing regression suite. No package/theme replacement needed.
 
 ## Shared interaction architecture
 
@@ -16,13 +20,17 @@ Deliver explicit metric → scoped inventory links, severity → filtered detect
 
 ## F02b — Security service detail experiences
 
-Deliver dedicated read-only details for MDR, ITDR, External Footprint Scan, Email Protection, Endpoint Security, Cloud Data Protection, Awareness Training and Phishing Simulations. Generic detections/identities/endpoints are reusable observations, not evidence these services ran. Reuse canonical SECURITY_CONTROLS keys and SC status explanations; add a service navigation surface with honest capability limitations. For each service: purpose, available scoped observations, status interpretation, related account/endpoint/report links, error/empty/unavailable and safe recommended guidance. Only add new fictional resources when genuinely needed, in src/mocks with Laravel-shaped nested relationships through services. No scans/campaign sends/policy changes, invented rates, licenses or verified agent claims. Tests validate category navigation, no conflation of coverage with scan/outcomes and no live action. Acceptance: all eight categories have meaningful detail, not badge-only duplication.
+Deliver dedicated read-only details for MDR, ITDR, External Footprint Scan, Email Protection, Endpoint Security and Cloud Data Protection. Awareness Training and Phishing Simulations are delivered in F02d with the same safety requirements. Generic detections/identities/endpoints are reusable observations, not evidence these services ran. Reuse canonical SECURITY_CONTROLS keys and SC status explanations; add a service navigation surface with honest capability limitations. For each service: purpose, available scoped observations, status interpretation, related account/endpoint/report links, error/empty/unavailable and safe recommended guidance. Only add new fictional resources when genuinely needed, in src/mocks with Laravel-shaped nested relationships through services. No scans/campaign sends/policy changes, invented rates, licenses or verified agent claims. Tests validate category navigation, no conflation of coverage with scan/outcomes and no live action. Acceptance: all eight categories have meaningful detail, not badge-only duplication.
 
 ## F02c — Dedicated Dark Web Monitoring (P1, mandatory)
 
 Deliver Security → Dark Web Monitoring overview, exposure summary/severity, findings explorer (search, severity/type/status filters, stable sorting/reset), synthetic affected-account/domain views, investigation detail and related Security/Reports links. Define route and service/type seam, fictional Laravel-shaped resource src/mocks/dark-web-findings.ts, and service-only access. Use reserved example domains/synthetic identities and clearly labelled created_at demonstration metadata, never breach dates or passwords. Keep SC dark_web_monitoring status independent of findings and monitoring assertions.
 
 Required screens: overview/explorer/detail/account/domain visibility, loading/error/retry/no-match/empty/Live-unavailable. Existing providers only. Test All/A/B/C, invalid/revoked registry IDs, wrong-scope response, rapid switching and open detail → Live removal. Test all filters/sort/search/detail/reset/report navigation. Any acknowledgment later requires explicit approved nonpersistent Demo-only draft confirmation/cancel; no live dismissal/remediation. Backend integration questions remain unverified, no guessed Guardz endpoints/fields. Acceptance: complete locally meaningful workflow with no live findings or scan/evidence claims.
+
+## F02d — Security Awareness Training and Phishing Simulations
+
+Deliver category navigation, meaningful read-only service details and explicitly fictional preview workflows only where approved. Reuse canonical coverage keys, service-detail patterns introduced by F02b and the existing scope providers. No campaigns are sent, no completed-training rates or historical simulation results invented. Validate local configuration drafts/cancel/reset; tests must distinguish fictional previews from verified provider capabilities and immediately clear them in Live. Browser accessibility/responsive checks required before acceptance.
 
 ## F03 — Backup & Recovery
 
@@ -48,4 +56,4 @@ Deliver notifications empty/unavailable inbox shell, preferences preview, contex
 
 Close all register rows or explicitly approve deferred backend capabilities. Run full contracts/type/lint/build, complete browser responsive/keyboard/screen-reader/contrast/print matrices, inspect console/network and real verified deployed revision. Reconcile every service TODO/request/response with integration contracts and pending provider capabilities. Preserve existing QA docs; record actual screenshots only in permitted environment. Approved favicon and GitHub/Vercel sync verification required. Production remains gated by executable authentication/tenant authorization/provider validation/security testing, regardless of frontend completion.
 
-Acceptance record per batch: owner/revision/build/date, features delivered, exact tests, browser NOT RUN or evidence, defects, deferred backend functions and approval. Do not mark a module complete merely because it renders. Stop after F01 for approval; F02 not started.
+Acceptance record per batch: owner/revision/build/date, features delivered, exact tests, browser NOT RUN or evidence, defects, deferred backend functions and approval. Do not mark a module complete merely because it renders. Stop after F02a for approval; F02b not started.

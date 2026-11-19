@@ -1,4 +1,10 @@
-# Frontend ↔ backend action inventory — F01
+# Frontend ↔ backend action inventory — F02a update
+
+## Implemented local actions (no backend/provider requests)
+
+Dashboard links use Next navigation and preserve the root customer/mode context. /security/detections reads only existing normalized fictional examples through useSecurityDetections. Search, severity filtering, deterministic title/severity sorting, reset, result counts and modal record selection/close are local, nonpersistent presentation operations. Retry re-runs the same fictional service, not a provider scan. /security/insights reuses the existing validated insight hook/panel. No new resource schema or data introduced.
+
+Canonical examples supply title, severity, customer association, summary and synthetic source only. No status, type, timeline, evidence, leaked credentials or provider case fields assumed. Example counts never substitute aggregate security issues. Future real detection reads require server auth/membership/resource permission and reviewed provider/normalized contract. A detail button grants no privileges. Any acknowledgment/dismissal/remediation remains unimplemented and capability-unverified. Dark Web Monitoring remains separate mandatory F02c work, not completed by this explorer.
 
 Interface requirements only; no endpoints, auth, providers or privileged operations implemented. Read alongside backend-api-contracts.md and frontend-functionality-gap-register.md. Routes listed there are Quantum Shield proposals, never Guardz/Datto endpoints. Demo uses existing service functions and independent fictional state, not real API fallback.
 

@@ -1,4 +1,16 @@
-# F01 functionality gap register — source audit, not browser acceptance
+# Frontend functionality gap register — source audit, not browser acceptance
+
+## F02a implementation update
+
+Dashboard workflows 11, 12, 13, 16 and 17 move MISSING/PARTIAL → IMPLEMENTED navigation: explicit Users/Devices links to existing visibility headings, example-detection route (not all aggregated findings), Security Controls heading, Backup Overview heading and Customers portfolio. Workflow 15 gains navigation to validated insight information at /security/insights, but invented insight investigation fields remain out of scope; detailed workflow remains PARTIAL. Existing summaries and all canonical figures unchanged.
+
+Workflows 19 and 20 move PARTIAL/MISSING → IMPLEMENTED for existing example explorer and investigation preview at /security/detections. Reuses useSecurityDetections/getDemoSecurityDetections/normalizer and the six canonical examples; All=6, A/B/C=2. Search uses title/summary/customer/source with trimming/case folding. Severity filter and deterministic severity/title sorting combine; no unsupported status/type/date filters. Every visible record opens a native detail modal using only validated fields; close/Escape/focus return and scope/mode-keyed reset implemented. Loading/error/retry/unavailable, empty examples and no matching examples distinct. Live hides controls/records/details. Summary panel remains read-only; entry link belongs to SecuritySections. Native dialog/browser Back/Forward and physical focus behavior NOT VERIFIED in a browser.
+
+Source: dashboard/drilldown-link.tsx, dashboard-panel.tsx, six Dashboard consumers; security/detection-explorer.tsx, detection-explorer-view.ts, detection-detail.tsx, use-security-detections.ts, security-sections.tsx; src/app/security/detections/page.tsx, src/app/security/insights/page.tsx, src/app/globals.css. Tests: detection-explorer.test.ts and dashboard-drilldowns.test.ts plus complete baseline. No fixtures/normalizers/providers or backend operations changed. Automated verification: TypeScript PASS, ESLint PASS, 617/617 tests PASS (605 baseline unchanged plus 12 focused tests), production build PASS on retry after temporary EAGAIN filesystem error. Browser NOT RUN. No known failing automated checks should be hidden.
+
+All nine category-specific workflows remain incomplete. Dark Web Monitoring stays MISSING/P1/F02c. MDR/ITDR/footprint/email/endpoint/cloud F02b; awareness/phishing F02d. Production data/auth/provider evidence remain backend-dependent. Earlier table represents original F01 classification; this update is authoritative for F02a affected rows.
+
+Browser handoff: 42 combinations minimum across Dashboard and Explorer, widths 320/375/768/1024/1280/1440/1920 × Live unavailable/Demo All/Demo B. Verify mobile controls/long titles, anchors beneath sticky header, direct nested routes, browser Back/Forward, keyboard/Tab/Escape/focus return, customer sequence All/A/B/C/All, rapid switching, invalid scope, modal open → Live immediate clearing. No screenshots fabricated.
 
 Laravel work is paused. This inventory groups functions by user workflow, not individual repeated buttons. IMPLEMENTED means current source path/logic exists; browser correctness remains NOT VERIFIED. PARTIAL means usable foundation lacks essential screens/interactions. MISSING means absent frontend interaction. BACKEND-DEPENDENT means real operation cannot be delivered locally. No module is accepted as complete.
 

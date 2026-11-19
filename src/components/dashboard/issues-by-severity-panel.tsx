@@ -64,6 +64,7 @@ export function IssuesBySeverityView({ state, simulated, onRetry }: IssuesBySeve
   return (
     <DashboardPanel
       id="issues-severity"
+      action={{ href: "/security/detections", label: "Explore example detections" }}
       icon={ShieldAlert}
       title="Issues by Severity"
       description="Open security issues grouped by severity."

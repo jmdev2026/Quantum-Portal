@@ -47,12 +47,12 @@ const hasInsights = (state: InsightsState): state is InsightsData => state.kind 
 const formatTimestamp = (iso: string) =>
   new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
 
-export function InsightsPanel() {
+export function InsightsPanel({ showNavigation = true }: { showNavigation?: boolean } = {}) {
   const { state, simulated, retry } = useInsights();
-  return <InsightsView state={state} simulated={simulated} onRetry={retry} />;
+  return <InsightsView state={state} simulated={simulated} onRetry={retry} showNavigation={showNavigation} />;
 }
 
-export function InsightsView({ state, simulated, onRetry }: { state: InsightsState; simulated: boolean; onRetry: () => void }) {
+export function InsightsView({ state, simulated, onRetry, showNavigation = true }: { state: InsightsState; simulated: boolean; onRetry: () => void; showNavigation?: boolean }) {
   const [activeTab, setActiveTab] = useState<TabKey>("all");
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const baseId = useId();
@@ -78,6 +78,7 @@ export function InsightsView({ state, simulated, onRetry }: { state: InsightsSta
   return (
     <DashboardPanel
       id="insights"
+      action={showNavigation ? { href: "/security/insights", label: "View security insights" } : undefined}
       icon={Lightbulb}
       title="Insights"
       description="Read-only security, tip and operations insights for the selected view."

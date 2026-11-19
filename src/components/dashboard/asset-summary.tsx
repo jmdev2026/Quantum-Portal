@@ -1,6 +1,7 @@
 "use client";
 
 import type { LucideIcon } from "lucide-react";
+import { DrilldownLink } from "@/components/dashboard/drilldown-link";
 import { Cloud, FlaskConical, Globe, Mail, MonitorSmartphone, RotateCw, Users } from "lucide-react";
 import type { AssetMetricKey, AssetMetricState } from "@/services/dashboard-assets";
 import { AssetMetricCard } from "@/components/dashboard/asset-metric-card";
@@ -75,6 +76,10 @@ export function AssetSummary() {
           <AssetMetricCard key={key} icon={icon} label={label} state={metricState(state, key)} simulated={simulated} />
         ))}
       </ul>
+      <div className="mt-4 flex flex-wrap gap-2 border-t border-ink-800 pt-3">
+        <DrilldownLink href="/users-devices#user-account-visibility-title">View Users</DrilldownLink>
+        <DrilldownLink href="/users-devices#device-endpoint-visibility-title">View Devices</DrilldownLink>
+      </div>
     </section>
   );
 }

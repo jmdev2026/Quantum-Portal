@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { DrilldownLink } from "@/components/dashboard/drilldown-link";
 
 type DashboardPanelProps = {
   id: string;
@@ -7,6 +8,7 @@ type DashboardPanelProps = {
   description: string;
   status: { label: string; tone: "pending" | "disconnected" };
   className?: string;
+  action?: { href: string; label: string };
   children: React.ReactNode;
 };
 
@@ -15,7 +17,7 @@ const toneStyles = {
   disconnected: "border-amber-signal/30 bg-amber-signal/10 text-amber-signal",
 };
 
-export function DashboardPanel({ id, icon: Icon, title, description, status, className = "", children }: DashboardPanelProps) {
+export function DashboardPanel({ id, icon: Icon, title, description, status, className = "", children, action }: DashboardPanelProps) {
   return (
     <section
       aria-labelledby={`${id}-title`}
@@ -40,6 +42,7 @@ export function DashboardPanel({ id, icon: Icon, title, description, status, cla
         </span>
       </header>
       <div className="mt-5 flex flex-1 flex-col">{children}</div>
+      {action && <footer className="mt-4 border-t border-ink-800 pt-3"><DrilldownLink href={action.href}>{action.label}</DrilldownLink></footer>}
     </section>
   );
 }

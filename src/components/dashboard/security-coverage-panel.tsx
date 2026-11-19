@@ -56,6 +56,7 @@ export function SecurityCoverageView({ state, simulated, onRetry }: SecurityCove
   return (
     <DashboardPanel
       id="security-coverage"
+      action={{ href: "/security#security-controls-title", label: "View Security Controls" }}
       icon={ShieldCheck}
       title="Security Coverage"
       description="Security control coverage for the selected view."
