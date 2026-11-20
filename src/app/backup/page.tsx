@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { BackupIntro } from "@/components/backup/backup-intro";
 import { BackupSections } from "@/components/backup/backup-sections";
+import { BackupNavigation } from "@/components/backup/backup-navigation";
 
 export const metadata: Metadata = {
   title: "Backup & Recovery · Quantum Shield Command",
@@ -20,6 +21,7 @@ export default function BackupPage() {
 
       <main className="relative z-10 mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <BackupIntro />
+        <BackupNavigation />
         <BackupSections />
       </main>
 

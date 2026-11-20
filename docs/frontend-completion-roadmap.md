@@ -1,4 +1,21 @@
-# Frontend completion roadmap — F02d update
+# Frontend completion roadmap — F03 update
+
+## Delivered F03 — Backup & Recovery, stop for review
+
+Implemented /backup, /backup/assets, /backup/jobs and /backup/recovery using canonical Backup services/normalizers, existing root shell/providers and already-correct nested sidebar matching. Overview connects protected summary, scoped freshness explanations, precise execution-outcome definitions and filtered example navigation, original sample previews with individual inspections, Recovery Information and existing Reports. Both explorers provide bounded trimmed case-insensitive search, schema-supported status filters, stable name/customer/status sorting, reset/result counts, native details and all loading/error/retry/empty/no-match/Live-unavailable states.
+
+No fixtures were added or changed. Canonical protected assets reconcile 18+27+16=61; freshness distributions equal protected assets in each scope; outcomes reconcile 19+27+17=63 executions and category-by-category [48,3,5,7]. Six asset and six job examples (two/customer) are independent. Actual example outcomes are 3 successful, 2 partial, 1 degraded and no not-available example. No sample freshness field or asset/job relationship exists, so drilldowns explain summary categories and independent views rather than invent associations/history. No date filters, operational metadata, coverage percentages, recovery points or successful restore records were fabricated.
+
+Recovery Information delivers capability/backup-vs-restore explanations, seven unmarked readiness questions, seven intended read-only process steps, honest external-support-channel guidance and existing PortalHelp, provider limitations and reporting requirements. “Restore operations are not available in Quantum Shield Command.” stays prominent. No executable recovery workflow, support request, approval, readiness score or restore promise. /reports opens the existing general Reports page; users may select the existing Backup & Recovery Report there. Configuration/export belongs to F05, not this milestone.
+
+Live returns before requests and exposes no fictional rows/names/metrics/details. Current registry/membership checks, synchronous mode/scope/retry/registry gates, cancellation and ready-only keyed content clear stale details and filters. Legacy preview hooks and shared summary hook are strengthened without altering baseline tests; sample normalizers reject unknown/revoked scopes even with empty responses while preserving safe error wording. These are presentation controls, not tenant authorization.
+
+F03 DEVELOPMENT PASS: TypeScript PASS, ESLint PASS, 746/746 automated tests PASS (727 unchanged baseline + 19 focused). Production build PASS on retry after temporary EAGAIN filesystem errors; 25 pages generated and the query-aware jobs route is dynamic. Final build is repeated after documentation updates, with final BUILD_ID in the delivery report. Initial full regression exposed two baseline conflicts, corrected without weakening tests. Browser QA NOT RUN; the explicit 84 route/width/context handoff plus keyboard/mobile/context/error/regression checks remains open. Source semantics do not establish rendered accessibility, browser acceptance or production readiness.
+
+F05 requirements: authorized separate protected inventory/summary, freshness and execution bases, verified history and relationships, source/availability/freshness, recovery-point/test evidence only if independently supported, role-redacted metadata, reporting/export audit and no fictional successful restore inference. Datto Endpoint Backup v2 / Kaseya 365 Endpoint Backup access/authentication/metric/history/restore capabilities remain unverified; Laravel/provider integration is paused.
+
+STOP AFTER F03. F04 has NOT STARTED. Exact next recommendation: F04 — Customers and Users & Devices, only after review and approval; complete portfolio management previews, profiles/onboarding/settings, user/device inventories/details/filtering and developer contracts without real operations. Preserve F05 Reports and Export/Configuration, F06 Compliance and Administration, F07 Shared Application Experiences, F08 Full Frontend Acceptance and Developer Handoff, and original F01 residual gaps. Earlier stop/next-batch records below are historical and superseded by approved F03 scope only.
+
 
 ## Delivered F02d — stop for review; not browser or production acceptance
 
@@ -10,7 +27,7 @@ F02d DEVELOPMENT PASS: TypeScript PASS, ESLint PASS, 727/727 tests PASS (701 unc
 
 F05 reporting additions: authorized scoped campaign/content/assignment/progress and outcome-record aggregates, exact eligible/delivered denominators, overlap definitions, source/freshness/availability, privacy-preserving participant presentation and honest missing delivery/evidence/history. Existing Reports has no dedicated training/simulation report, export, trend or provider data; no report completion is claimed.
 
-STOP AFTER F02d. F03 has NOT STARTED. Recommend F03 Backup & Recovery only after review/approval, not as authorization to begin. F04 Customers & Users/Devices, F05 Reports, F06 Compliance & Administration, F07 Shared experiences and F08 final acceptance/handoff remain unchanged; retain original F01 gaps and outstanding browser/backend acceptance. Earlier checkpoint statements below are historical and superseded only for delivered F02d capabilities.
+Historical F02d stop/next-batch recommendation was superseded by the approved F03 delivery above. F04 Customers & Users/Devices, F05 Reports, F06 Compliance & Administration, F07 Shared experiences and F08 final acceptance/handoff remain unchanged; retain original F01 gaps and outstanding browser/backend acceptance. Earlier checkpoint statements below are historical and superseded only for delivered F02d capabilities.
 
 
 ## Delivered F02c — stop for review, not browser acceptance
@@ -35,11 +52,11 @@ All six provide capability-specific context, overview, limitations, search/suppo
 
 Scope/mode/capability/retry changes invalidate details; cancellation/context and current registry gates prevent stale/wrong-scope records. Live clears examples and performs no fixture read. No provider or privileged operations added. Strict tests: 640/640 PASS (617 baseline + 23 focused), TypeScript and ESLint PASS. Final production build/BUILD_ID recorded in completion report. Browser NOT RUN; 126 minimum responsive combinations plus keyboard/detail/Back/Forward/scope tests are developer acceptance requirements in the register.
 
-Historical F02b next steps were F02c then F02d; F02c above is now delivered for development review. F03 Backup & Recovery; F04 Customers & Users/Devices; F05 Reports; F06 Compliance & Administration; F07 Shared experiences; F08 final frontend acceptance and handoff. Historical stop-after-F02b instruction has been superseded by the approved F02c assignment. The current stop boundary is F02d; wait for review.
+Historical F02b next steps were F02c then F02d; F02c above is now delivered for development review. F03 Backup & Recovery; F04 Customers & Users/Devices; F05 Reports; F06 Compliance & Administration; F07 Shared experiences; F08 final frontend acceptance and handoff. Historical stop-after-F02b instruction has been superseded by the approved F02c assignment. The current stop boundary is F03; wait for review.
 
 F02a delivered explicit Dashboard navigation, /security/detections with scoped search/severity/sort/detail/retry and /security/insights reusing validated insight presentation. Canonical metrics/examples unchanged; no provider/action APIs added. Native dialog and render-key invalidation implemented; browser QA remains NOT RUN. Original F02a investigation scope is complete for existing fields only; service-specific detail remains future work.
 
-F02a and F02b are delivered development implementations. F02c is now delivered above; the next unstarted batch is F02d Awareness Training/Phishing Simulations after review. F03–F08 remain below. Do not start F02d in this assignment.
+F02a and F02b are delivered development implementations. F02c/F02d were subsequently delivered, and F03 is now delivered above for review. F04–F08 remain below; do not start F04 in this assignment.
 
 Laravel implementation paused. Batches deliver working frontend workflows, not new documentation-only phases. F01 shipped Help and shared scope/label corrections; F02a implementation is now delivered as recorded above. Gap IDs and F02a status changes are in frontend-functionality-gap-register.md. All batches retain existing root customer/mode providers, validators, read-only Live unavailable state and existing regression suite. No package/theme replacement needed.
 

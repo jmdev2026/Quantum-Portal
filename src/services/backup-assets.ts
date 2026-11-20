@@ -118,6 +118,8 @@ export function normalizeDemoBackupAssets(
   requested: DashboardScope,
   knownCustomers: readonly KnownCustomer[],
 ): BackupAssetsState {
+  const requestedScope = parseScope(requested);
+  if (!requestedScope || (requestedScope.type === "customer" && !knownCustomers.some(customer => customer.id === requestedScope.customer_id))) return { kind: "error", message: "No demonstration data exists for this customer." };
   const data = isRecord(response) ? response.data : null;
   if (!isRecord(data) || keysOf(data) !== RESPONSE_KEYS) {
     return { kind: "error", message: "Example assets came back in an unexpected format." };

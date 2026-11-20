@@ -10,13 +10,13 @@ import { securityScopeLabel } from "@/components/security/security-overview-view
 export function BackupIntro() {
   const { view, selectedCustomer } = useCustomerView();
   const { mode } = useDashboardMode();
-  const scopeLabel = securityScopeLabel(view.mode, selectedCustomer?.name);
+  const scopeLabel = mode === "live" ? "Customer scope unavailable" : securityScopeLabel(view.mode, selectedCustomer?.name);
 
   return (
     <section aria-labelledby="backup-heading" data-mode={mode} className="flex motion-safe:animate-slide-up flex-col gap-4">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0">
-          <h1 id="backup-heading" className="text-2xl font-semibold leading-tight tracking-tight text-ink-100 sm:text-3xl">
+          <h1 id="backup-heading" tabIndex={-1} className="text-2xl font-semibold leading-tight tracking-tight text-ink-100 sm:text-3xl">
             Backup &amp; Recovery
           </h1>
           <div className="mt-2 flex flex-wrap items-center gap-2">
