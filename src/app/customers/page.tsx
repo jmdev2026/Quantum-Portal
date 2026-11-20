@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WorkflowNavigation } from "@/components/customer-workflows/workflow-ui";
 import { CustomersIntro } from "@/components/customers/customers-intro";
 import { CustomersPortfolio } from "@/components/customers/customers-portfolio";
 
@@ -20,6 +21,7 @@ export default function CustomersPage() {
 
       <main className="relative z-10 mx-auto flex max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
         <CustomersIntro />
+        <WorkflowNavigation area="customers" />
         <CustomersPortfolio />
       </main>
 

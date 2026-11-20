@@ -1,0 +1,25 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { action, control, panel } from "@/components/customer-workflows/workflow-ui";
+import { REVIEW_CADENCES, SERVICE_CHOICES, SETTINGS_NOTICE, TIME_ZONES, initialSettings, validateSettings } from "@/components/customer-workflows/preview-model";
+
+export function SettingsPreview({ customerName }: { customerName: string }) {
+  const [open, setOpen] = useState(false);
+  const opener = useRef<HTMLButtonElement>(null);
+  const restoreFocus = useRef(false);
+  useEffect(() => { if (!open && restoreFocus.current) { opener.current?.focus(); restoreFocus.current = false; } }, [open]);
+  const cancel = () => { restoreFocus.current = true; setOpen(false); };
+  return <section className={panel} aria-labelledby="customer-settings-title"><h2 id="customer-settings-title" className="text-lg font-semibold text-ink-100">Settings Preview</h2><p className="mt-2 text-sm leading-relaxed text-ink-300">Explore review preferences for {customerName}. No reporting schedule, provider service, permission or tenant configuration is changed.</p><p className="mt-3 text-sm text-amber-signal">{SETTINGS_NOTICE}</p>{!open && <button ref={opener} className={`mt-4 ${action}`} onClick={() => setOpen(true)}>Explore configuration preview</button>}{open && <SettingsForm customerName={customerName} cancel={cancel} />}</section>;
+}
+function SettingsForm({ customerName, cancel }: { customerName: string; cancel: () => void }) {
+  const [draft, setDraft] = useState(initialSettings);
+  const [review, setReview] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const alert = useRef<HTMLParagraphElement>(null);
+  useEffect(() => { if (error) alert.current?.focus(); else heading.current?.focus(); }, [error, review, confirmed]);
+  const reset = () => { setDraft(initialSettings()); setReview(false); setConfirmed(false); setError(null); heading.current?.focus(); };
+  return <form noValidate className="mt-6 grid gap-4" onSubmit={event => { event.preventDefault(); const issue = validateSettings(draft); if (issue) { setError(issue); alert.current?.focus(); return; } setError(null); if (review) setConfirmed(true); else setReview(true); }}><h3 ref={heading} tabIndex={-1} className="font-semibold text-ink-100 outline-none">{confirmed ? "Local configuration inspected" : review ? "Review proposed preferences" : "Proposed review preferences"}</h3>{error && <p ref={alert} tabIndex={-1} role="alert" className="text-sm text-red-300 outline-none">{error}</p>}{review ? <dl className="grid gap-3 rounded-lg border border-ink-700 p-4 text-sm text-ink-300">{[["Customer", customerName], ["Review label", draft.label], ["Time zone", draft.timeZone], ["Cadence", draft.cadence], ["Reporting areas", draft.sections.join(", ")]].map(([label, value]) => <div key={label}><dt className="font-medium text-ink-100">{label}</dt><dd className="mt-1 break-words">{value}</dd></div>)}</dl> : <><label className="text-sm text-ink-300">Fictional review label<input className={control} autoComplete="off" maxLength={80} value={draft.label} aria-invalid={!!error} onChange={event => setDraft({ ...draft, label: event.target.value })} /><span className="mt-2 block text-xs">Start with Demo:; 12–80 fictional letters and punctuation.</span></label><div className="grid gap-4 sm:grid-cols-2"><label className="text-sm text-ink-300">Proposed time zone<select className={control} value={draft.timeZone} onChange={event => setDraft({ ...draft, timeZone: event.target.value })}>{TIME_ZONES.map(value => <option key={value}>{value}</option>)}</select></label><label className="text-sm text-ink-300">Proposed review cadence<select className={control} value={draft.cadence} onChange={event => setDraft({ ...draft, cadence: event.target.value })}>{REVIEW_CADENCES.map(value => <option key={value}>{value}</option>)}</select></label></div><fieldset><legend className="text-sm text-ink-300">Proposed reporting areas</legend>{SERVICE_CHOICES.map(value => <label key={value} className="mt-2 flex min-h-11 items-center gap-3 text-sm text-ink-100"><input className="h-5 w-5 accent-shield-500" type="checkbox" checked={draft.sections.includes(value)} onChange={event => setDraft({ ...draft, sections: event.target.checked ? [...draft.sections, value] : draft.sections.filter(section => section !== value) })} />{value}</label>)}</fieldset></>}<p role={confirmed ? "status" : undefined} className="text-sm leading-relaxed text-amber-signal">{SETTINGS_NOTICE}. No schedule is active and nothing is saved.</p><div className="flex flex-wrap gap-3">{!confirmed && <button type="submit" className={action}>{review ? "Confirm local preview" : "Review preferences"}</button>}{review && !confirmed && <button type="button" className={action} onClick={() => { setReview(false); setError(null); }}>Edit preferences</button>}<button type="button" className={action} onClick={reset}>Reset preview</button><button type="button" className={action} onClick={cancel}>Cancel preview</button></div></form>;
+}

@@ -30,7 +30,7 @@ const sectionIcons: Record<RecordSection["kind"], LucideIcon> = { identities: Us
 export function UsersDevicesSections() {
   const { view, selectedCustomer } = useCustomerView();
   const { mode } = useDashboardMode();
-  const scopeLabel = securityScopeLabel(view.mode, selectedCustomer?.name);
+  const scopeLabel = mode === "live" ? "Live customer data unavailable" : securityScopeLabel(view.mode, selectedCustomer?.name);
   const summary = useAssetSummary();
   const records = { identities: useVisibilityRecords("identities"), endpoints: useVisibilityRecords("endpoints") };
 

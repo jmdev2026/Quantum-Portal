@@ -126,6 +126,7 @@ export function normalizeDemoVisibilityRecords(
   }
 
   const customers = new Map(knownCustomers.map((customer) => [customer.id, customer.name]));
+  if (!parseScope(requested) || (requested.type === "customer" && !customers.has(requested.customer_id))) return { kind: "error", message: "No demonstration data exists for this customer." };
   const seen = new Set<string>();
   const records: VisibilityRecord[] = [];
   for (const entry of data.records) {

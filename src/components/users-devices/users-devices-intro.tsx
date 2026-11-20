@@ -14,7 +14,7 @@ import {
 export function UsersDevicesIntro() {
   const { view, selectedCustomer } = useCustomerView();
   const { mode } = useDashboardMode();
-  const scopeLabel = securityScopeLabel(view.mode, selectedCustomer?.name);
+  const scopeLabel = mode === "live" ? "Live customer data unavailable" : securityScopeLabel(view.mode, selectedCustomer?.name);
 
   return (
     <section aria-labelledby="users-devices-heading" data-mode={mode} className="flex motion-safe:animate-slide-up flex-col gap-4">

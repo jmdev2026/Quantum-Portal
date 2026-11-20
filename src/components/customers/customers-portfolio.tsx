@@ -20,6 +20,7 @@ import Link from "next/link";
 import { useRef, type ReactNode } from "react";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
 import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
+import { CustomerDirectory } from "@/components/customer-workflows/customer-directory";
 import { ReportingBadge } from "@/components/dashboard/customer-portfolio-list";
 import { useCustomerOverview } from "@/components/dashboard/use-customer-overview";
 import {
@@ -37,7 +38,7 @@ const primaryAction = `inline-flex min-h-10 items-center justify-center gap-2 ro
 export function CustomersPortfolio() {
   const { selectCustomer, selectAll } = useCustomerView();
   const { mode } = useDashboardMode();
-  const { state, mode: layout, simulated, retry } = useCustomerOverview();
+  const { state, mode: layout, simulated, retry, contextKey } = useCustomerOverview();
   const view = customersPageView(state, layout);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -114,12 +115,9 @@ export function CustomersPortfolio() {
             </p>
           )}
           {view.kind === "portfolio" && (
-            <PortfolioGrid
-              customers={view.customers}
-              stale={view.stale}
-              simulated={simulated}
-              onView={(id) => keepFocus(() => selectCustomer(id))()}
-            />
+            <CustomerDirectory key={contextKey} records={view.customers}>
+              {records => <PortfolioGrid customers={records} stale={view.stale} simulated={simulated} onView={(id) => keepFocus(() => selectCustomer(id))()} />}
+            </CustomerDirectory>
           )}
           {view.kind === "detail" && (
             <CustomerDetail customer={view.customer} stale={view.stale} simulated={simulated} onBack={keepFocus(selectAll)} />
@@ -227,6 +225,8 @@ function CustomerDetail({
           Back to all customers
         </button>
       </div>
+
+      <Link href={`/customers/${customer.id}`} className={`self-start ${primaryAction}`}>Open full customer profile<ArrowRight aria-hidden className="h-4 w-4" /></Link>
 
       <div className="grid grid-cols-1 gap-4 @2xl:grid-cols-2 @5xl:grid-cols-3">
         <DestinationCard
