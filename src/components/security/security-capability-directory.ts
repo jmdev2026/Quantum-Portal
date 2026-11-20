@@ -67,7 +67,7 @@ export const SECURITY_CAPABILITIES: readonly CapabilityDefinition[] = [
   },
 ];
 export const PLANNED_SECURITY_CAPABILITIES = [
-  { title: "Dark Web Monitoring", milestone: "F02c · P1", description: "Dedicated exposure, compromised-account and domain investigation remains planned." },
+  { title: "Dark Web Monitoring", milestone: "F02c · P1", id: "dark-web", href: "/security/dark-web", description: "Explore fictional exposure findings, related accounts and reserved-domain previews with safe investigation and local review workflows." },
   { title: "Security Awareness Training", milestone: "F02d", description: "Dedicated training visibility and safe preview workflows remain planned." },
   { title: "Phishing Simulations", milestone: "F02d", description: "Dedicated simulation visibility and safe preview workflows remain planned." },
 ] as const;
