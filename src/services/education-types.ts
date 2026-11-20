@@ -1,0 +1,26 @@
+import type { DashboardScope } from "@/services/dashboard-response";
+
+export type ProgramKind = "training" | "simulation";
+export const EDUCATION_SOURCE = "Simulated demo data";
+export const AUTHORING_DATE = "2026-11-01T10:00:00Z";
+export const CAMPAIGN_STATES = ["program-preview", "review-preview"] as const;
+export const ASSIGNMENT_STATES = ["completed", "in-progress", "not-started"] as const;
+export const OUTCOME_FILTERS = ["delivered", "interacted", "reported", "no-interaction", "not-delivered"] as const;
+export const ASSIGNMENT_SETTINGS = ["self-paced-preview", "guided-review-preview"] as const;
+export const TRAINING_NOTICE = "Demonstration only. No training campaign or assignment has been created, delivered or saved.";
+export const SIMULATION_NOTICE = "Demonstration only. No simulation is created, scheduled, sent or tracked.";
+export type DemoRecord = { source: string; is_demo: true; created_at: string };
+export type ScopedRecord = DemoRecord & { customer: { id: number; name: string } };
+export type EducationContent = DemoRecord & { id: string; title: string; category: string; description: string; indicators: string[] };
+export type ProgramCampaign = ScopedRecord & { id: string; title: string; content: { id: string }; state: typeof CAMPAIGN_STATES[number]; description: string };
+export type ProgramParticipant = ScopedRecord & { id: string; label: string };
+export type TrainingAssignment = ScopedRecord & { id: string; campaign: { id: string }; participant: { id: string }; state: typeof ASSIGNMENT_STATES[number]; progress: number };
+export type SimulationOutcome = ScopedRecord & { id: string; campaign: { id: string }; participant: { id: string }; delivered: boolean; interacted: boolean; reported: boolean };
+export type ProgramRecord = TrainingAssignment | SimulationOutcome;
+export type EducationData = { campaigns: ProgramCampaign[]; participants: ProgramParticipant[]; records: ProgramRecord[]; catalog: EducationContent[] };
+export type EducationResponse = { data: EducationData; meta: { scope: DashboardScope; program: ProgramKind; source: string; status: "ready" | "error"; message: string | null } };
+export type EducationState = { kind: "loading" | "unavailable" } | { kind: "error"; message: string } | { kind: "ready"; data: EducationData };
+export type EducationSelection = { kind: "campaign" | "record" | "content"; id: string };
+export type EducationDraft = { title: string; customerId: number | null; contentId: string; participantIds: string[]; setting: string };
+export const emptyEducationDraft = (customerId: number | null): EducationDraft => ({ title: "", customerId, contentId: "", participantIds: [], setting: "" });
+export const isAssignment = (record: ProgramRecord): record is TrainingAssignment => "state" in record;
