@@ -59,7 +59,8 @@ export const navSections: NavSection[] = [
 
 export function isNavItemActive(item: NavItem, pathname: string) {
   if (!item.href) return false;
-  if (item.href === "/" || item.href === "/reports" || item.href === "/compliance" || item.href === "/administration") return pathname === item.href;
+  if (item.href === "/reports") return pathname === "/reports" || ["executive", "cybersecurity", "backup", "dark-web", "awareness-training", "phishing-simulations"].some(report => pathname === `/reports/${report}`);
+  if (item.href === "/" || item.href === "/compliance" || item.href === "/administration") return pathname === item.href;
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 

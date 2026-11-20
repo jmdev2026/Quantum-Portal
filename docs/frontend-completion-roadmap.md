@@ -1,4 +1,28 @@
-# Frontend completion roadmap — F04 Remediation R1
+# Frontend completion roadmap — F05 Reporting Center
+
+## F05 delivered development scope — 2026-11-20
+
+F04 approval authorizes F05; earlier stop/status statements below are historical, not current directives. Reports now has six purpose-built local experiences: Executive, Cybersecurity, Backup & Recovery, Dark Web Monitoring, Security Awareness Training and Phishing Simulations. `/reports` and its three original tabs remain; six discoverable `/reports/{report}` destinations provide configuration, actual preview, report-only browser print/Save as PDF, supported safe example CSVs and non-saving schedule review. No backend/PHP/auth/provider/persistence/history/email/server-PDF operation was added.
+
+Report sources reuse canonical services/normalizers and F02c/F02d metrics. Aggregate totals and examples remain separate. Every section retains source/scope/fictional/metric/period limitations. Configuration validates required/optional sections, title, presentation and current scope; summary/detail/example choices affect actual output. Schedule validation supports weekly weekday, monthly/quarterly day1–28, time, supplied zones and reserved unique fictional recipients. No schedule is saved, activated, emailed or delivered.
+
+Automated suite: 806/806 PASS (776 unchanged baseline +30 F05). Executed TypeScript PASS; ESLint PASS; separate reporting tests30/30 PASS; final full suite806/806 PASS with zero failures/skips/cancellations. Actual Next.js15.5.28 production compilation PASS on a bounded reduced-filesystem-concurrency retry after temporary EAGAIN errors on unchanged routes. No source/config workaround was added. Final compilation is repeated after documentation updates; generated BUILD_ID is included in delivery evidence. `docs/phase-f05-browser-qa-handoff.md` defines 126 report cases, 21 library cases and print/PDF/CSV/scope stress acceptance. **Browser QA NOT RUN; actual print/PDF files NOT visually inspected.** Earlier browser-QA gates stay open. Development verification is not WCAG conformance, provider acceptance or production readiness. GitHub sync/Vercel deployment NOT VERIFIED.
+
+### Remaining milestones
+
+| Milestone | Scope | Current status |
+|---|---|---|
+| F06 | Compliance frameworks/controls, assessments, evidence previews, administration settings/access governance, integration information, notifications and auditability | NOT STARTED; await F05 review and approval |
+| F07 | Shared application experiences, authentication UI states, notifications, preferences and Help | Not advanced |
+| F08 | Final frontend audit, executed browser/print/PDF acceptance, regressions and developer handoff | Not advanced; all earlier browser gates retained |
+
+Future real reporting still requires Laravel auth/tenant/role enforcement, provider provenance, authorized sensitive-field aggregation, configuration/history/private-file persistence, generation/download permissions, recurrence processing, recipient authorization, email delivery, audit, retention and safe errors. See updated action inventory; none is implemented by local preview controls.
+
+**STOP AFTER F05. DO NOT BEGIN F06 OR LARAVEL DEVELOPMENT. WAIT FOR REVIEW AND APPROVAL.**
+
+---
+
+# Historical F04 Remediation R1
 
 ## F04 development closeout — stop for review
 

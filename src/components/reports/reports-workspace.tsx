@@ -10,6 +10,7 @@ import { SecurityCoveragePanel } from "@/components/dashboard/security-coverage-
 import { SecurityControlsPanel } from "@/components/security/security-controls-panel";
 import { InsightsPanel } from "@/components/dashboard/insights-panel";
 import { BackupOverviewPanel } from "@/components/backup/backup-overview-panel";
+import { ReportLibrary } from "@/components/reports/report-center";
 import { RESTORE_UNAVAILABLE } from "@/components/backup/recovery-information-view";
 
 export const REPORT_TYPES = ["Executive Summary", "Cybersecurity Report", "Backup & Recovery Report"] as const;
@@ -26,6 +27,7 @@ export function ReportsWorkspace() {
       <p className="text-base leading-relaxed text-ink-300">Customer-specific cybersecurity, endpoint visibility and backup reporting.</p>
       <p className="rounded-xl border border-ink-700 bg-ink-900 p-4 text-sm leading-relaxed text-ink-100">{mode === "demo" ? "Demonstration previews · simulated data only. These figures do not establish verified customer health or protection." : "Reporting integrations are not connected."}</p>
     </header>
+    <ReportLibrary />
     <div role="group" aria-label="Select report" className="grid gap-2 rounded-xl border border-ink-700 bg-ink-900 p-2 sm:grid-cols-3">{REPORT_TYPES.map(report => <button key={report} type="button" aria-pressed={selected === report} onClick={() => setSelected(report)} className={`min-w-0 rounded-lg px-4 py-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-shield-400 ${selected === report ? "bg-shield-400 text-black" : "text-ink-100 hover:bg-ink-800"}`}>{report}</button>)}</div>
     <article aria-labelledby="report-title" className="min-w-0 space-y-8 rounded-2xl border border-ink-700 bg-ink-900/70 p-4 sm:p-8">
       <header className="border-b border-ink-700 pb-6"><p className="mb-2 text-xs font-mono uppercase tracking-wider text-shield-300">{mode === "demo" ? "Demonstration preview" : "Unavailable reporting"}</p><h2 id="report-title" className="text-2xl font-semibold leading-tight text-ink-100">{selected}</h2><p className="mt-3 break-words text-sm text-ink-100">Scope: {scope}</p></header>

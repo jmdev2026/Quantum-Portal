@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FlaskConical, PlugZap } from "lucide-react";
 import { useCustomerView } from "@/components/customer-view/customer-view-provider";
 import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
@@ -66,6 +67,7 @@ export function SecurityIntro() {
           </p>
         </div>
       )}
+      <Link href="/reports/cybersecurity" className="inline-flex min-h-11 w-fit items-center rounded-lg border border-ink-600 px-4 py-3 text-sm text-shield-300 focus-visible:outline-2 focus-visible:outline-shield-400">Open Cybersecurity Report</Link>
     </section>
   );
 }

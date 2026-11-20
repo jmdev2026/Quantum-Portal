@@ -1,4 +1,36 @@
-# Frontend ↔ backend action inventory — F04 Remediation R1
+# Frontend ↔ backend action inventory — F05 Reporting Center
+
+## Future reporting responsibilities — not implemented endpoints
+
+2026-11-20. Present functionality is canonical Demo reads, local non-saving configuration/rendering, browser report-only printing/Save as PDF, safe example CSV downloads and proposed recurring schedule review. No authenticated generation job, server PDF, historical file, email, recipient permission or persistent schedule exists. The service TODO is a provisional seam, not an approved Laravel/provider API path. No actual endpoint or production payload is invented here.
+
+### Common enforcement and privacy requirements
+
+Laravel must authenticate active sessions and enforce permitted tenant membership on every report definition/source/aggregate/related record/file/export/schedule/recipient request. MSP Administrator access means assigned tenants only; Client Administrator is limited to its tenant and separately granted reporting/configuration/schedule permissions; Client Viewer receives only explicitly allowed summary/content/download permissions and no mutation by default. These roles are future policy definitions, not existing authentication. URL/configuration/provider/browser preference never authorizes anything.
+
+Minimize confidential incident investigations, identity findings, Dark Web account exposure, individual employee training/phishing outcomes and backup assets; field-level sensitive-data access must be separately granted, with summary-only defaults where appropriate. Validate canonical same-tenant relationships/provenance before aggregation; never mix samples and aggregate counts. No cross-tenant shared cache or public output bucket. Recheck permissions at generation, storage, download and delivery, including revocation between steps.
+
+| Future action | Server responsibility / validation | Privacy, audit and failure behavior |
+|---|---|---|
+| Report type/catalog retrieval | Authorized versioned type/section/entitlement definitions; supported optional/required sections | Do not expose unauthorized report capabilities or tenant existence |
+| Report source retrieval/aggregation | Authenticate tenant, per-source read permission, safe normalized data, coherent scoped counts, valid numerator/denominator/period/null/freshness/provider attribution | Field minimization, private scoped cache, no raw secrets or unverified provider fields; empty differs from unavailable |
+| Configuration persistence | Independent write permission, allowlisted type/sections/title/presentation, same-tenant sources, version/concurrency/idempotency | Audit changed fields and actor; only server receipt permits saved claim |
+| Server report generation/PDF | Authorized job/request, validated source snapshot, role-specific redaction, bounded resources, complete approved template, actual file verification | Audit request/outcome/provenance; errors never create fake completed report; no browser config as authority |
+| Historical retrieval | Tenant-owned authorized report IDs, pagination/version/source/creation-date semantics | No fabricated history, generic denied/absent errors, safe retention |
+| Private output storage/download | Tenant-private storage, explicit generation/download permission, safe file types/names, access recheck and expiring links as appropriate | Confidentiality controls, safe disposal, authorized download audit, no cached cross-tenant files |
+| Structured data export | Tenant/role/source/field permission checks, selected supported fields, safe CSV quoting/formula neutralization, empty handling, bounded output | Audit sensitive exports; no hidden IDs/secrets/unneeded identifiers; browser safety is not server protection |
+| Schedule persistence/recurrence | Independent schedule permission; approved report/tenant/sections/cadence/day/time/IANA zone; explicit DST/month/quarter semantics, versioning, idempotency and cancellation | Audited server schedule changes, server-owned job state; preview is never activation |
+| Recipient authorization | Validate recipients/tenant association/allowed audience/consent, duplicate limits, change control and confidentiality policy | Do not send individual security outcomes to unauthorized audiences; minimize address logs |
+| Email delivery/job processing | Authorized current report/recipient/data access at send time; job queue/retries/rate limits/delivery infrastructure; reauthorize after revocation | Distinguish queued/sent/provider accepted/delivered/bounced; audit real outcomes only, no false future delivery promise |
+| Notification preferences | Per-user/tenant permissions, allowed notification categories/channels and secure persisted preferences | Private settings/version/audit, no frontend-only permission enforcement |
+| Report audit and retention | Server-attributed actor/tenant/report/version/source/scope/action/outcome audit; policy-defined retention/deletion/cache/file expiration | No passwords/tokens/raw sensitive provider payloads in logs; auditable authorized access and exports |
+| Errors/retries/provider provenance | Generic 401 expired, 403/404 denied/absent, bounded422 validation,409 conflicts,429 rate limiting and503 unavailable; provider mappings/availability verified | Hide stale private output on lost permission; no Demo fallback, zero inference, secret leakage or indefinite retry |
+
+Guardz, approved directory/endpoint sources and Datto reporting schemas, permissions, sample/aggregate semantics, retention, time periods and cross-provider relationships require developer/provider confirmation. Current UI does not implement production confidentiality or authorization controls. Frontend tests validate only local presentation and CSV safety. Executed evidence: TypeScript/ESLint PASS, report contracts30/30 PASS and complete suite806/806 PASS. Actual Next.js15.5.28 compilation PASS after bounded environmental filesystem retry; final compilation after documentation updates and generated BUILD_ID are recorded in delivery evidence. None establishes backend authorization, delivery or file security.
+
+---
+
+# Historical F04 Remediation R1
 
 ## F04 future authenticated action contracts — not implemented endpoints
 

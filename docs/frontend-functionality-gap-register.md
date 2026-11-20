@@ -1,4 +1,44 @@
-# Frontend functionality gap register — F04 Remediation R1
+# Frontend functionality gap register — F05 Reporting Center
+
+## F05 current delivery — 2026-11-20
+
+This section supersedes historical milestone stop/status statements below. F04 is approved; F05 implements six local, fictional reporting experiences. F06 NOT STARTED. Browser QA and actual printed/PDF acceptance remain NOT RUN; no production readiness, provider connectivity, authenticated permissions, historical report files or real scheduling/delivery is claimed.
+
+### Reporting feature register
+
+| Feature | Source / route | Delivered behavior | Evidence / acceptance gap | Future dependency |
+|---|---|---|---|---|
+| Library and categories | `/reports`; reports-workspace.tsx, report-center.tsx, report-model.ts | Original three tabs preserved; six purpose-specific cards; search, categories, reset, counts and working destinations | reports.test.ts baseline and report-center.test.ts; browser NOT RUN | Authorized type/catalog visibility |
+| Executive | `/reports/executive`; services/report-data.ts | Organization/overview, technology totals, severity, coverage/insights, protected backup total, general observations/reviews, permanent limitations | All/A/B/C reconciliation | Authorized scoped aggregate summaries |
+| Cybersecurity | `/reports/cybersecurity` | Severity, supplied coverage and insights, nine canonical controls, separate detections and identity/endpoint observations, considerations | Canonical validation, wrong-name rejection | Verified telemetry and sensitive-record permissions |
+| Backup & Recovery | `/reports/backup` | Protected aggregate, freshness, execution outcomes, separate assets/jobs, recovery/provider limitations | Counts reconcile independently of six examples | Verified backup contracts, period semantics and authorized data |
+| Dark Web | `/reports/dark-web` | F02c graph-derived severity/category/findings/accounts/domain previews/review status and general response guidance | F02c reconciliation; no verified incident/monitoring claim | Authorized exposure reporting and redaction |
+| Awareness Training | `/reports/awareness-training` | Campaign/topic breakdown, assigned participants/statuses, completed/eligible rate, outstanding examples and guidance | F02d metrics; zero denominator unavailable | Verified program/directory relationships |
+| Phishing Simulations | `/reports/phishing-simulations` | Campaign/scenario/outcomes, delivered-denominator rates, overlap and campaign-level breakdown, learning guidance | F02d interaction/report metrics and overlap | Approved provider outcome semantics |
+| Configuration | report-model.ts, report-center.tsx | Safe bounded title, required overview, supported unique section IDs, detail/summary, example inclusion; Apply/Edit/Cancel/Reset | Validation/default/nonmutation/source contracts | Persistence is NOT implemented |
+| Actual local preview | report-renderer.tsx | Branding text, correct title/scope, unique section definitions/tables, section anchors, generation date, mandatory disclosure/limitations | Renderer/configuration contracts; browser NOT RUN | Real source provenance and role-specific content |
+| Print / Save as PDF | report-center.tsx, globals.css | Browser window.print against body-portal prepared report; shell hidden in print; Letter margins, white background, repeated table headers and practical break rules | Print source contracts; actual print/PDF NOT RUN | No server/downloadable PDF generation |
+| CSV | report-model.ts, report-center.tsx | Real Blob download for five types with enabled example sections, configured row limits, metadata, UTF-8 BOM/CRLF, quoting and formula neutralization; safe type/scope filename | CSV escaping/control-prefix safety and context checks; downloaded files NOT visually inspected | Real export authorization, privacy and audit |
+| Executive CSV limitation | Executive report | No approved example dataset, so aggregate CSV is not offered; no fake export | Explicit unavailable export explanation | Approved tabular export definition |
+| Schedule preview | report-schedule.tsx | Weekly/monthly/quarterly cadence, time/zone/day/fictional recipients, section/title/scope review, Edit/Cancel/Reset | Cadence/recipient/validation/nonoperation contracts | No persistence, jobs, email or real schedule exists |
+| Scope and mode | WorkflowBoundary plus report session envelopes | Registry membership/replacement, keyed customer/report subtree, cancelled late loads, matching data object/attempt checks; Live stops before Demo reads; outputs only for current ready preview | Invalid/revoked/wrong scope, Live and stale-source contracts | Frontend checks are not tenant authorization |
+| States/accessibility/responsive | All report UI | Loading, unavailable, error/retry, empty records/no-match; native labeled forms, heading/error focus, status announcements, semantic tables, wrap-safe layouts | Source checks only; WCAG/layout/browser NOT RUN | Developer browser acceptance |
+| Navigation | reports/[report]/page.tsx; sidebar/navigation.ts | Six allowed direct destinations, unknown-report not-found, active Reports item, return/library links; Dashboard/Security/Backup direct report links; existing capability/profile library links preserved | Route/sidebar and unchanged baseline contracts | No direct record association is invented |
+
+### Metric provenance and period rules
+
+Each rendered section always names its source, metric definition, selected scope, fictional status and inference limits; optional examples cannot remove the footer/source disclosures. Assets use supplied count numerators without denominator; aggregate issue counts remain separate from detection rows; coverage is a supplied fictional percentage with its canonical basis, no exposed numerator/denominator, never calculated from controls. Backup freshness counts are supplied categories; outcomes count executions in the canonical illustrative last_24_hours period, not sample rows or generation date. Dark Web counts derive only from validated F02c examples. Training completion = completed eligible assignments / eligible assignments. Simulation interaction/report rates = delivered outcomes with interaction/report / delivered outcomes, retaining overlap. Missing/zero denominators display Not available. No arbitrary date picker, trend, benchmark, risk score, verified scan, completion, delivery or restore date is invented. Summary limits to first five rows per section and labels the truncation; Detailed includes all validated rows. CSV follows the same presentation choice.
+
+### F05 file inventory and verification
+
+Created: `src/app/reports/[report]/page.tsx`; `src/components/reports/report-model.ts`, `report-center.tsx`, `report-renderer.tsx`, `report-schedule.tsx`; `src/services/report-data.ts`; `tests/contracts/report-center.test.ts`; `docs/phase-f05-browser-qa-handoff.md`.
+Modified: existing reports-workspace.tsx, globals.css, sidebar/navigation.ts, dashboard/dashboard-intro.tsx, security/security-intro.tsx, backup/backup-navigation.tsx and the three completion documents. No baseline test, fixture, provider, backend, dependency or persistence changed.
+
+Full automated suite: **806/806 PASS**, including unchanged 776 baseline and 30 meaningful reporting tests. Executed strict TypeScript PASS; ESLint PASS; separate report contracts 30/30 PASS; final full suite 806/806 PASS, zero failed/skipped/cancelled. Next.js 15.5.28 production build PASS after two temporary EAGAIN failures on existing routes; final bounded retry used UV_THREADPOOL_SIZE=1 without source/config changes. Production compilation is repeated after documentation evidence updates; final BUILD_ID is captured in the delivery report. No build success is inferred from typechecking. Browser handoff: `docs/phase-f05-browser-qa-handoff.md` with 126 required report cases plus 21 library cases and supplemental stress/print/CSV checks. Actual browser/print/PDF inspection NOT RUN. GitHub synchronization and Vercel deployment NOT VERIFIED. No confirmed unresolved source defect identified by checks; this is not a browser correctness guarantee.
+
+---
+
+# Historical F04 Remediation R1
 
 ## F04 closeout — actual development delivery, not browser acceptance
 

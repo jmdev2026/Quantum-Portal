@@ -49,6 +49,25 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.report-print-root { display: none; }
+
+@media print {
+  @page { size: letter; margin: 0.65in; }
+  html, body { background: white !important; color: #111827 !important; color-scheme: light; }
+  body > *:not(.report-print-root) { display: none !important; }
+  .report-print-root { display: block !important; }
+  .quantum-report { padding: 0 !important; border: 0 !important; border-radius: 0 !important; font-size: 10pt; line-height: 1.5; }
+  .quantum-report h2 { font-size: 23pt; }
+  .quantum-report h3 { break-after: avoid; font-size: 15pt; }
+  .quantum-report header { break-inside: avoid; }
+  .quantum-report thead { display: table-header-group; }
+  .quantum-report tr { break-inside: avoid; }
+  .quantum-report table { width: 100%; font-size: 8pt; }
+  .report-table-wrap { overflow: visible !important; }
+  .report-section { margin-top: 18pt; }
+  .quantum-report footer { margin-top: 24pt; }
+}
+
 ::selection {
   background-color: var(--color-shield-500);
   color: var(--color-ink-950);

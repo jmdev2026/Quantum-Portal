@@ -13,5 +13,6 @@ export function BackupNavigation() {
     <Link href="/backup/jobs" aria-current={pathname === "/backup/jobs" ? "page" : undefined} className={backupAction}>Backup Jobs</Link>
     <Link href="/backup/recovery" aria-current={pathname === "/backup/recovery" ? "page" : undefined} className={backupAction}>Recovery Information</Link>
     <Link href="/reports" className={backupAction}>Existing Reports</Link>
+    <Link href="/reports/backup" className={backupAction}>Open Backup Report</Link>
   </nav>;
 }
