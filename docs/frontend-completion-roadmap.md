@@ -1,4 +1,39 @@
-# Frontend completion roadmap — F03 update
+# Frontend completion roadmap — F04 Remediation R1
+
+## F04 development closeout — stop for review
+
+2026-11-20. Customers and Users & Devices implementation is delivered for nonpersistent fictional demonstration; R1 completes documentation, route verification and developer acceptance handoff. No working frontend was rebuilt, no confirmed P0/P1 source regression was found, and no source or existing test was changed in R1. Final recommendation is gated on the final verification entry below. Development PASS is not browser acceptance, provider acceptance or production readiness.
+
+Actual route families: `/customers`, `/customers/[id]`, `/customers/onboarding`, `/users-devices`, `/users-devices/users`, `/users-devices/devices`. Valid profile examples are `/customers/1`, `/customers/2`, `/customers/3`; they require explicitly matching selected Demo scope. All or incompatible selection shows a scope requirement rather than auto-selecting a customer. Settings is inline on the matching profile; identity/endpoint details are native explorer dialogs, not separate routes. Onboarding is available only in Demo All, deliberately not under a selected existing customer.
+
+Customers: canonical portfolio, supported availability filter, bounded case-insensitive search, name/ID stable sorting, reset/results/resource states, explicit shared customer selection, full profile navigation. Profiles show organization/technology/security/backup/user-device summaries from canonical hooks/normalizers, all requested module links, reporting and integration limitations. Onboarding implements organization/contact/reporting-areas/environment/review with validation, Next/Back/Edit/local confirmation/Cancel/Reset. Settings implements validated label/time-zone/review-cadence/report-area edits with review/Edit/local confirmation/Cancel/Reset. No creation, tenant, agreement, invitation, saved preference or active schedule is claimed.
+
+Users & Devices: existing overview and Dashboard anchors preserved; canonical users/devices totals All 146/83, A 62/35, B 48/27, C 36/21. Separate explorers reuse exactly six canonical identities and six endpoints, two/customer/resource. Supported scoped customer/visibility filters, validated-text search, deterministic copying label/customer/ID sorting, reset/results/empty/no-match/error/retry, native details and security/backup module navigation. Samples do not calculate aggregate inventories; no missing employee/device metadata or relationships are fabricated. Planned roles are not real authentication or authorization.
+
+Shared providers/registry remain single source. Live hides fictional rows/metrics/previews before Demo reads. Registry membership/replacement, mode/customer/kind/retry envelopes, cancellation and keyed ready subtrees prevent incompatible detail/filter/draft persistence. Route IDs do not establish authority. No backend, PHP, Supabase/persistence, real customer data or provider operation was introduced.
+
+R1 executed verification: `npm run typecheck` PASS; `npm run lint` PASS; `npm test` 776/776 PASS (746 unchanged F01–F03 baseline + 30 F04); separate focused Customers/Users & Devices/scope/Live-Demo/Dashboard/Backup contracts 144/144 PASS, included in the full suite. Actual `npm run build` invokes Next.js 15.5.28 `next build` and PASSed on a bounded retry after a temporary EAGAIN readdir error in the unchanged External Footprint route; no source fix was required. Final production verification is repeated after these documentation evidence updates, with the resulting actual BUILD_ID in the delivery report. No build success is inferred from a typecheck. Full sources/docs are retained; GitHub synchronization and Vercel deployment NOT VERIFIED, no Git/deployment operation performed.
+
+Updated closeout documents: `docs/frontend-functionality-gap-register.md` (feature-by-feature source/interactions/tests/browser/backend/defects), this roadmap, `docs/frontend-backend-action-contracts.md` (future authenticated action/ownership/validation/audit/privacy/error/dependency inventory). Created `docs/phase-f04-browser-qa-handoff.md` with actual six route families/eight concrete addresses, 168 base route/width/context cases plus 14 matched A/C profiles = minimum 182; all browser cases NOT RUN. Historical screenshots do not verify F04.
+
+### Remaining F04 acceptance, separated from integration
+
+- Confirmed unresolved P0/P1 frontend source defects: none identified in the source/automated audit; not a blanket browser correctness claim.
+- Browser acceptance: NOT RUN; developer must execute handoff covering forms, filtering/details, scope races, keyboard/focus/contrast/overflow, mobile navigation and Back/Forward. Source/native HTML semantics do not establish WCAG compliance.
+- Backend dependencies: real auth/tenant permissions, organization/contacts/services/invitations/membership, complete inventories, authoritative provider observations/relationships, persistent configuration, private caches/audit and reporting/output. These remain absent by design, not fake frontend successes.
+
+### Remaining milestones — not advanced
+
+| Milestone | Remaining scope | Status |
+|---|---|---|
+| F05 | Reports, report configuration, previews, output and scheduling UI; honest scope/source/unavailable states, separately authorized future integrations | NOT STARTED; recommend only after F04 review/approval |
+| F06 | Compliance and Administration, permissions/limitations and safe local interactions within approved scope | Not advanced by R1 |
+| F07 | Shared application experiences, account interfaces, notifications and preferences; no real authentication absent explicit authorization | Not advanced by R1 |
+| F08 | Complete frontend audit, executed browser acceptance, regression evidence and developer handoff | Not advanced; browser/backend acceptance remains open |
+
+Preserve original F01 residual gaps and all earlier unverified browser/backend capabilities. Earlier sections below are historical milestone records; their stop/next instructions and “F04 not started” descriptions are superseded by this approved F04/R1 work only. **STOP AFTER F04 REMEDIATION R1. DO NOT BEGIN F05, Laravel or real customer integration. WAIT FOR REVIEW AND APPROVAL.**
+
+## Historical completion checkpoints
 
 ## Delivered F03 — Backup & Recovery, stop for review
 
