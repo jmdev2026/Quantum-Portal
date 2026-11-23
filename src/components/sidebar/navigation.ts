@@ -66,6 +66,7 @@ export function isNavItemActive(item: NavItem, pathname: string) {
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 
-export function findActiveNavItem(pathname: string) {
-  return navSections.flatMap((section) => section.items).find((item) => isNavItemActive(item, pathname));
+export function findActiveNavItem(pathname: string): NavItem | undefined {
+  const shared = [{ id: "account", label: "Account", href: "/account", icon: Settings2 }, { id: "notifications", label: "Notifications", href: "/notifications", icon: ClipboardCheck }, { id: "help", label: "Help & Support", href: "/help", icon: ShieldCheck }, { id: "sign-in", label: "Authentication Design", href: "/sign-in", icon: ShieldCheck }, { id: "access-denied", label: "Access State Preview", href: "/access-denied", icon: ShieldCheck }];
+  return navSections.flatMap((section) => section.items).find((item) => isNavItemActive(item, pathname)) ?? shared.find(item => item.href === pathname);
 }

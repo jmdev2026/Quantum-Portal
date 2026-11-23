@@ -1,6 +1,20 @@
-# Frontend completion roadmap — F06 Compliance & Administration
+# Frontend completion roadmap — F07 Shared Application Experience
 
 ## Current milestone — 2026-11-23
+
+F07 development delivered and awaiting review: sign-in/access-state preview, account workspace, Notification Center, global navigation search, Help & Support, 404/error/loading states and shell consistency. Tests 876/876. Browser QA NOT RUN (`phase-f07-browser-qa-handoff.md`).
+
+| Milestone | Scope | Status |
+| --- | --- | --- |
+| F01–F06 | Approved module completion | Approved |
+| F07 | Shared application experience | Delivered for review |
+| F08 | Control inventory; Compliance Report print/export; browser QA reconciliation F04–F07; branding (approved logo/favicon); GitHub/Vercel verification; developer handoff | Not started — requires approval |
+
+**STOP AFTER F07; DO NOT BEGIN F08.**
+
+# Historical F06 Compliance & Administration
+
+## F06 milestone — 2026-11-23
 
 F04/F05 are approved and their historical stop/status statements below are superseded. F06 completes both assigned governance experiences using local nonpersistent previews. Ten concrete routes: Compliance overview/framework/controls/assessments/evidence and Administration overview/access/integrations/audit/settings. The eight subpages are allowlisted static App Router destinations; the existing overview foundations remain intact and gain navigation.
 

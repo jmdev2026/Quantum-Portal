@@ -1,6 +1,25 @@
-# Frontend functionality gap register — F06 Compliance & Administration
+# Frontend functionality gap register — F07 Shared Application Experience
 
-## Current F06 delivery — 2026-11-23
+## Current F07 delivery — 2026-11-23
+
+Status: development delivered; browser QA NOT RUN (see `phase-f07-browser-qa-handoff.md`). Tests 876/876 (846 baseline + 30 F07).
+
+| Area | Delivered frontend | Remaining gap |
+| --- | --- | --- |
+| Authentication / access states | /sign-in and /access-denied design preview with 16 states (sign-in required, invalid credentials, MFA, MFA unavailable, recovery, expired, 401, 403, invalid scope, revoked membership, privileged action unavailable, disabled, service unavailable, reauthenticate, signed out, permission changed); disabled fieldset, no form/submit, no credentials, no fake session | Real Laravel Sanctum sign-in, MFA, recovery, lockout, session lifecycle and enforced 401/403 |
+| Account | /account: Live sign-in-required; Demo fictional profile, membership, shared preference preview reused from Administration settings, security info, notification preferences, support | Real principal, membership and persisted preferences |
+| Notification Center | /notifications plus header link: six fictional scoped examples, explorer (search, category, local status, sort, reset), details dialog, local reviewed marker with reset; Live unavailable; no unread count | Real notification feed, delivery, read state persistence and counts |
+| Global search | Header navigation search over a route registry (all destinations verified to exist), keyboard, Escape, Ctrl/Cmd+K; disabled on invalid scope | Record search intentionally not implemented; requires authorized backend search |
+| Help & Support | /help with ten guides and related links; portal help dialog links to it | No verified support email/phone/ticketing; no ticket or chat invented |
+| Error states | 404, route error with Retry (no details), global error, loading status | Monitoring/error reporting backend |
+| Shell | Header actions replaced with working links; skip link; mobile menu closes on navigation; 44px targets | Browser-executed responsive and WCAG 2.2 AA verification |
+| Branding | Shield icon plus "Quantum Shield / Command" text verified; no logo/favicon assets exist | Approved logo, favicon and app icon (F08) |
+
+F08 closure list (preserved): control inventory; dedicated Compliance Report print/export; browser QA reconciliation across F04–F07; branding assets; GitHub/Vercel verification; developer handoff. **STOP AFTER F07; DO NOT BEGIN F08; WAIT FOR REVIEW AND APPROVAL.**
+
+# Historical F06 Compliance & Administration
+
+## F06 delivery — 2026-11-23
 
 F04/F05 are approved. This current section supersedes historical stop/status statements below. Both governance modules now have working local workflows; F07 is NOT STARTED. No backend, persistence, real evidence upload, certification, invitation, access mutation, connection, audit recording, settings saving or notification delivery was introduced.
 

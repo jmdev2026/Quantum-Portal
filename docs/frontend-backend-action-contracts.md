@@ -1,4 +1,22 @@
-# Frontend ↔ backend action inventory — F06 Governance
+# Frontend ↔ backend action inventory — F07 Shared Application Experience
+
+## F07 future responsibilities — not implemented endpoints
+
+The frontend currently uses one provisional seam (`GET /application/preview`, marked TODO(api)) returning fictional Demo data; Live returns unavailable before any read.
+
+| Area | Backend responsibility |
+| --- | --- |
+| Sign-in / sign-out | Sanctum CSRF cookie, credential exchange, generic invalid-credential errors, rate limiting and lockout, sign-out that invalidates the session |
+| Session lifecycle | Expiry, renewal, reauthentication for privileged actions, permission-changed and access-revoked signals mapped to the existing access states |
+| MFA and recovery | MFA challenge/verification, unavailable-factor handling, recovery request without account enumeration |
+| Current principal | `GET` current user, membership, role and permitted customer scopes; 401 vs 403 distinction; invalid scope and revoked membership never widen to All |
+| Safe redirects | Post-sign-in return only to allowlisted internal routes (frontend already uses an exact allowlist) |
+| Account | Profile read/update, preference persistence validated server-side with the same rules as the shared preference preview |
+| Notifications | Tenant-scoped list with pagination, filters, accurate unread counts, read/unread persistence, delivery preferences; no cross-customer leakage |
+| Search | Optional authorized record search, tenant-scoped, rate limited; current navigation search needs no backend |
+| Support | Verified support contacts and optional ticketing with authenticated submission, attachments policy and audit |
+
+# Historical F06 Governance
 
 ## F06 future responsibilities — not implemented endpoints
 

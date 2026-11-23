@@ -1,0 +1,27 @@
+"use client";
+import Link from "next/link";
+import { Search } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useCustomerView } from "@/components/customer-view/customer-view-provider";
+import { useDashboardMode } from "@/components/dashboard-mode/dashboard-mode-provider";
+import { searchDestinations, safeDestination, DESTINATIONS } from "@/components/shared-experience/experience-model";
+import { governanceAction, governanceControl } from "@/components/governance/governance-ui";
+export function GlobalSearch() {
+  const { mode } = useDashboardMode(); const { view, customersState } = useCustomerView();
+  const selected = view.mode === "customer" ? view.customerId : null; const registry = customersState.status === "ready" ? customersState.customers : null;
+  const allowed = mode === "live" || (registry !== null && (selected === null || registry.some(item => item.id === selected)));
+  const [open, setOpen] = useState<{ mode: typeof mode; selected: number | null; registry: typeof registry } | null>(null); const trigger = useRef<HTMLButtonElement>(null);
+  const close = useCallback(() => setOpen(null), []);
+  const show = useCallback(() => { if (allowed) setOpen({ mode, selected, registry }); }, [allowed, mode, selected, registry]);
+  useEffect(() => { setOpen(null); }, [mode, selected, registry]);
+  useEffect(() => { const key = (event: KeyboardEvent) => { const target = event.target; if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k" && !(target instanceof HTMLElement && (target.isContentEditable || target.closest("input, textarea, select")))) { event.preventDefault(); show(); } }; document.addEventListener("keydown", key); return () => document.removeEventListener("keydown", key); }, [show]);
+  const current = allowed && open?.mode === mode && open.selected === selected && open.registry === registry;
+  return <><button ref={trigger} type="button" disabled={!allowed} aria-label={allowed ? "Search destinations (Ctrl or Command K)" : "Search unavailable for invalid customer scope"} aria-haspopup="dialog" onClick={show} className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-300 hover:bg-ink-800 hover:text-ink-100 focus-visible:ring-2 focus-visible:ring-shield-400 disabled:opacity-50"><Search aria-hidden className="h-5 w-5" /></button>{current && <SearchDialog close={close} trigger={trigger.current} />}</>;
+}
+function SearchDialog({ close, trigger }: { close: () => void; trigger: HTMLElement | null }) {
+  const dialog = useRef<HTMLDialogElement>(null); const input = useRef<HTMLInputElement>(null); const links = useRef<(HTMLAnchorElement | null)[]>([]);
+  const [query, setQuery] = useState(""); const [category, setCategory] = useState("All"); const results = searchDestinations(query, category);
+  useEffect(() => { const element = dialog.current; element?.showModal(); input.current?.focus(); return () => { element?.close(); if (trigger?.isConnected) trigger.focus(); }; }, [trigger]);
+  function keys(event: React.KeyboardEvent) { const index = links.current.findIndex(link => link === event.target); if (index < 0 && event.target !== input.current) return; if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return; event.preventDefault(); const next = event.key === "ArrowDown" ? (index + 1) % results.length : (index <= 0 ? results.length - 1 : index - 1); links.current[next]?.focus(); }
+  return <dialog ref={dialog} onCancel={event => { event.preventDefault(); close(); }} aria-labelledby="search-title" className="fixed inset-0 m-auto max-h-[85dvh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-xl border border-ink-600 bg-ink-900 p-4 text-ink-100 backdrop:bg-black/75 sm:p-6" onKeyDown={keys}><header className="flex items-center justify-between gap-4"><h2 id="search-title" className="text-xl font-semibold">Find a portal destination</h2><button className={governanceAction} onClick={close}>Close</button></header><p className="mt-4 text-sm text-ink-300">Navigation only—not customer record search or authorization. Arrow keys move through results; Enter follows a destination; Escape closes.</p><label className="mt-4 block text-sm">Search destinations<input ref={input} type="search" maxLength={120} className={governanceControl} value={query} onChange={event => setQuery(event.target.value)} /></label><label className="mt-4 block text-sm">Area<select className={governanceControl} value={category} onChange={event => setCategory(event.target.value)}>{["All", ...new Set(DESTINATIONS.map(item => item.category))].map(value => <option key={value}>{value}</option>)}</select></label><p role="status" className="my-4 text-sm">{results.length} destinations found.</p><nav aria-label="Search results" className="space-y-2">{results.map((item, index) => <Link key={item.href} ref={node => { links.current[index] = node; }} href={safeDestination(item.href)} onClick={close} className="flex min-h-11 items-center justify-between gap-4 rounded-lg border border-ink-700 p-3 text-sm hover:border-shield-400 focus-visible:outline-2 focus-visible:outline-shield-400"><span className="break-words">{item.title}</span><span className="text-xs text-ink-300">{item.category}</span></Link>)}</nav>{!results.length && <p>No matching destinations. Clear the search or change area.</p>}<button className={`${governanceAction} mt-4`} onClick={() => { setQuery(""); setCategory("All"); input.current?.focus(); }}>Clear Search</button></dialog>;
+}

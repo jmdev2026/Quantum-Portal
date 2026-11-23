@@ -1,62 +1,13 @@
 "use client";
-
-import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
 import { Bell, UserRound } from "lucide-react";
 import { PortalHelp } from "@/components/header/portal-help";
+import { GlobalSearch } from "@/components/shared-experience/global-search";
 import { usePathname } from "next/navigation";
 import { CustomerSelector } from "@/components/customer-selector/customer-selector";
 import { findActiveNavItem } from "@/components/sidebar/navigation";
-
 export function AppHeader() {
-  const pathname = usePathname();
-  const title = findActiveNavItem(pathname)?.label ?? "Page not found";
-
-  return (
-    <header className="relative z-20 border-b border-ink-800 bg-ink-900/95 backdrop-blur lg:sticky lg:top-0">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:h-[72px] lg:flex-nowrap lg:px-8 lg:py-0">
-        <div className="order-1 min-w-0 flex-1">
-          <p className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-shield-400">
-            <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-shield-500 shadow-[0_0_8px_1px] shadow-shield-500/60" />
-            <span className="truncate">Quantum Shield Command</span>
-          </p>
-          <p className="mt-1 truncate text-lg font-semibold leading-tight tracking-tight text-ink-100 lg:text-xl">
-            {title}
-          </p>
-        </div>
-
-        <div className="order-3 w-full lg:order-2 lg:w-auto">
-          <CustomerSelector />
-        </div>
-
-        <div className="order-2 flex shrink-0 items-center gap-1 sm:gap-2 lg:order-3">
-          <PlaceholderAction icon={Bell} label="Notifications" />
-          <PortalHelp />
-          <span aria-hidden className="mx-1 h-6 w-px bg-ink-700 sm:mx-2" />
-          <button
-            type="button"
-            disabled
-            aria-label="Profile (not yet available)"
-            title="Profile is not yet available"
-            className="flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-full border border-ink-700 bg-ink-800 text-ink-400"
-          >
-            <UserRound aria-hidden className="h-[18px] w-[18px]" strokeWidth={1.75} />
-          </button>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-function PlaceholderAction({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
-  return (
-    <button
-      type="button"
-      disabled
-      aria-label={`${label} (not yet available)`}
-      title={`${label} is not yet available`}
-      className="flex h-10 w-10 cursor-not-allowed items-center justify-center rounded-lg text-ink-400 opacity-80"
-    >
-      <Icon aria-hidden className="h-[18px] w-[18px]" strokeWidth={1.75} />
-    </button>
-  );
+  const pathname = usePathname(); const title = findActiveNavItem(pathname)?.label ?? "Page not found";
+  const action = "flex h-11 w-11 items-center justify-center rounded-lg text-ink-300 hover:bg-ink-800 hover:text-ink-100 focus-visible:ring-2 focus-visible:ring-shield-400";
+  return <header className="relative z-20 border-b border-ink-800 bg-ink-900/95 backdrop-blur lg:sticky lg:top-0"><div className="flex flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:min-h-[72px] lg:flex-nowrap lg:px-8"><div className="order-1 min-w-0 flex-1"><p className="truncate font-mono text-[10px] uppercase tracking-[0.2em] text-shield-400">Quantum Shield Command</p><p className="mt-1 truncate text-lg font-semibold leading-tight text-ink-100">{title}</p></div><div className="order-3 w-full lg:order-2 lg:w-auto"><CustomerSelector /></div><div className="order-2 flex shrink-0 items-center gap-1 lg:order-3"><GlobalSearch /><Link href="/notifications" aria-label="Notification Center — demonstration and unavailable states" className={action}><Bell aria-hidden className="h-5 w-5" /></Link><PortalHelp /><Link href="/account" aria-label="Account — fictional preview, not signed in" className={`${action} border border-ink-700`}><UserRound aria-hidden className="h-5 w-5" /></Link></div></div></header>;
 }

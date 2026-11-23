@@ -98,6 +98,7 @@ function MobileNavigation({
 
   const close = useCallback(() => onOpenChange(false), [onOpenChange]);
   const currentLabel = findActiveNavItem(pathname)?.label;
+  useEffect(() => { close(); }, [pathname, close]);
 
   useEffect(() => {
     if (open) {
@@ -158,7 +159,7 @@ function MobileNavigation({
           Menu
         </button>
         {currentLabel && (
-          <span className="font-mono text-[11px] uppercase tracking-widest text-ink-350">{currentLabel}</span>
+          <span className="ml-4 truncate font-mono text-[11px] uppercase tracking-widest text-ink-350">{currentLabel}</span>
         )}
       </div>
 
