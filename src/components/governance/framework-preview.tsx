@@ -1,0 +1,10 @@
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+import { FRAMEWORK_FUNCTIONS, FRAMEWORK_DISCLAIMER, NIST_REFERENCE } from "@/components/compliance/compliance-view";
+import { governancePanel, governanceAction, governanceControl } from "@/components/governance/governance-ui";
+export function FrameworkPreview() {
+  const [selected, setSelected] = useState(0);
+  const current = FRAMEWORK_FUNCTIONS[selected];
+  return <section className={governancePanel}><h2 className="text-xl font-semibold">NIST CSF 2.0 framework navigator</h2><label className="block text-sm">Available reference framework<select className={governanceControl}><option>NIST CSF 2.0</option></select></label><p className="text-sm">One supplied framework; no additional framework or official outcome mapping is asserted.</p><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{FRAMEWORK_FUNCTIONS.map((item, index) => <button key={item.name} className={`${governanceAction} ${selected === index ? "border-shield-400 bg-ink-800" : ""}`} aria-pressed={selected === index} onClick={() => setSelected(index)}>{item.name}</button>)}</div><article className="space-y-4 rounded-lg border border-ink-600 p-4" aria-live="polite"><h3 className="text-lg font-semibold">{current.name}</h3><p className="leading-relaxed">{current.description}</p><p className="text-sm">Mapped controls: not available. The nine existing security signals have no validated function relationships. An empty mapping is not evidence of a missing safeguard or unmet outcome.</p><div className="flex flex-wrap gap-2"><Link className={governanceAction} href="/compliance/controls">Explore Existing Signals</Link><Link className={governanceAction} href="/compliance/assessments">Start Local Review</Link></div></article><p className="text-sm leading-relaxed">{FRAMEWORK_DISCLAIMER}</p><a href={NIST_REFERENCE} target="_blank" rel="noopener noreferrer" className={governanceAction}>Official NIST reference</a><button className={governanceAction} onClick={() => setSelected(0)}>Reset Navigator</button></section>;
+}

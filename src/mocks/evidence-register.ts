@@ -1,0 +1,5 @@
+export const evidenceRegisterResponse = { data: [
+  { id: "demo-evidence-a", customer: { id: 1, name: "Demo Customer A" }, control: { key: "mdr" }, category: "Incident response procedures and exercise records", description: "Fictional response procedure description; no document exists in this portal.", state: "Design example", is_demo: true, timestamp_basis: "fixture_authoring", created_at: "2026-11-23T00:00:00Z" },
+  { id: "demo-evidence-b", customer: { id: 2, name: "Demo Customer B" }, control: { key: "security_awareness_training" }, category: "Security awareness and training records", description: "Fictional training evidence metadata; no employee record or attachment exists.", state: "Design example", is_demo: true, timestamp_basis: "fixture_authoring", created_at: "2026-11-23T00:00:00Z" },
+  { id: "demo-evidence-c", customer: { id: 3, name: "Demo Customer C" }, control: { key: "endpoint_security" }, category: "Asset and system inventory records", description: "Fictional inventory evidence description; no file has been collected.", state: "Design example", is_demo: true, timestamp_basis: "fixture_authoring", created_at: "2026-11-23T00:00:00Z" },
+] };

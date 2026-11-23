@@ -1,4 +1,24 @@
-# Frontend completion roadmap — F05 Reporting Center
+# Frontend completion roadmap — F06 Compliance & Administration
+
+## Current milestone — 2026-11-23
+
+F04/F05 are approved and their historical stop/status statements below are superseded. F06 completes both assigned governance experiences using local nonpersistent previews. Ten concrete routes: Compliance overview/framework/controls/assessments/evidence and Administration overview/access/integrations/audit/settings. The eight subpages are allowlisted static App Router destinations; the existing overview foundations remain intact and gain navigation.
+
+Compliance delivers six-function NIST navigation with truthful unavailable mappings, the exact nine canonical Security Coverage indicators/explorer/details, a staged fictional assessment with local reviewed/included progress, evidence category guidance/strict fictional register/metadata review and actual read-only assessment summary. Administration delivers proposed permission matrix/role comparison, canonical identity client-role and reserved invitation previews, three planned integration directory/details/configuration reviews, synthetic audit schema explorer and local density/report/notification preferences. All support meaningful reset/review behavior and scoped loading/error/unavailable/empty states. No backend/PHP/auth/persistence/upload/mail/access mutation/provider connection/audit recording or settings saving.
+
+Executed evidence: TypeScript PASS; ESLint PASS; F06 focused 40/40 PASS; complete suite 846/846 PASS (806 preserved +40), no failures/skips/cancellations. Final actual compilation/BUILD_ID are delivered separately; no F05 build is reused as F06 evidence. Browser QA NOT RUN; `docs/phase-f06-browser-qa-handoff.md` specifies 210 base cases plus stress/regression cases. Source checks do not establish WCAG or production acceptance. GitHub/Vercel NOT VERIFIED.
+
+| Milestone | Current recommendation |
+|---|---|
+| F06 | Development scope implemented; review final compilation evidence and delivery, then approve before advancement |
+| F07 | NOT STARTED; begin shared experiences/authentication UI states/notifications/preferences/Help only after explicit F06 review and approval; no backend operational claims |
+| F08 | Retain all earlier browser acceptance gates; execute responsive/focus/isolation/print/PDF regressions and dedicated Compliance Report print/export closure |
+
+The local assessment summary is not a standalone printable Compliance Report or seventh F05 report. Canonical sources have no official NIST mappings; future validated mapping/evidence requirements need approved data, not guessed relationships. Real governance requires Laravel session/tenant/role/field authorization, private evidence lifecycle, membership/invitation/revocation, provider product/API verification, immutable audit, persistence/versioning and delivery. **STOP AFTER F06. DO NOT BEGIN F07. WAIT FOR REVIEW AND APPROVAL.**
+
+---
+
+# Historical F05 Reporting Center
 
 ## F05 delivered development scope — 2026-11-20
 

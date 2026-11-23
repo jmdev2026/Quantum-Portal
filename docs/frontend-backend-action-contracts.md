@@ -1,4 +1,36 @@
-# Frontend ↔ backend action inventory — F05 Reporting Center
+# Frontend ↔ backend action inventory — F06 Governance
+
+## F06 future responsibilities — not implemented endpoints
+
+2026-11-23. Current UI is scoped fictional reading and local review only. No Laravel/PHP, authentication, authorization deployment, credential handling, private document upload, persistence, invitation, audit recording or notification delivery was added. `GET /governance/preview` TODO is a provisional local seam, not an approved backend endpoint. All real endpoints/payloads require developer agreement.
+
+| Frontend action | Future server enforcement and validation | Privacy/audit/failure requirements |
+|---|---|---|
+| Framework/control retrieval | Authorized versioned framework, control/outcome definitions and validated relationships; source/scope/freshness semantics | Never infer official mappings, compliance scores or achieved outcomes from security indicators |
+| Assessment create/update/review | Active actor, tenant membership, separate reviewer/write permissions, unique validated control/evidence references, state transitions, version/concurrency and idempotency | Audit actor/change/result; no client-generated saved/verified/certified claim; deny cross-tenant links |
+| Evidence register/detail | Tenant and field-level access, approved required categories/control mappings, attachment metadata and reviewer provenance | Minimize sensitive content; distinguish absent/denied/unavailable; no cross-tenant enumeration |
+| Evidence submission/upload | Authorized scoped multipart or private upload flow, bounded size/type/content checks, malware review, storage quotas, safe names, integrity and controlled submission state | Tenant-private storage, expiring authorized downloads, no public URLs, restricted review, retention/deletion and audited lifecycle; no secrets in logs |
+| Compliance report | Approved template/mappings/evidence status, role-specific content and authorized generation/download | Dedicated print/export is F08 frontend work; real output requires private storage/redaction/audit, not inferred certification |
+| Role and permission retrieval | Server-defined least-privilege roles, explicit grants and sensitive-field policy | Proposed matrix is not authority; unspecified privileges deny; MSP only assigned tenants, client only own permitted tenant |
+| Role assignment | Current membership, actor privilege ceiling, target same tenant, explicit elevation policy, concurrency/idempotency | No self-elevation or privilege beyond actor authority; audit actual changes and invalidate affected sessions as required |
+| Invitation | Authorized tenant/role/recipient eligibility, quotas, expiry, secure single-use token exchange and server email | Tokens never logged/exposed broadly; current authorization recheck on acceptance; atomic redemption, generic errors, revocation and audited outcomes |
+| Membership revocation | Authorized tenant action and session/resource-access invalidation | Reauthorize each request and in-flight export; hide stale private UI; client selection is never authorization |
+| Integration configuration | Assigned tenant capability and separate admin permission; server-held encrypted secrets, allowlisted provider routes, verified product/version/scopes/tenant mapping, typed response validation | No browser keys/tokens; no arbitrary outbound URLs; credential rotation, rate limits, bounded retry and audited authorized changes |
+| Provider capability verification | Guardz approved security API; Datto Endpoint Backup v2/Kaseya 365 entitlement/schema; Laravel aggregation/auth boundaries | Do not substitute SIRIS/SaaS Protection or promise unsupported operations; no failures represented as zeros |
+| Audit search/detail/export | Immutable server-created actor/tenant/action/target/result/time, restricted query/field permissions and authorized redacted export | Retention/tamper resistance and access audit; no raw credentials or unnecessary personal fields; authored fixtures are not actual events |
+| Portal preferences | Per-user/tenant write permission, allowed density/presentation/cadence/time zone, persistence/version control | Server acknowledgement required for saved claim; global context remains independently enforced |
+| Notification preferences/delivery | Allowed categories/channels/audience, consent, current tenant/field access, queue/delivery handling and suppression policy | No sensitive message to unauthorized audience; distinguish preview/queued/sent/delivered, audit actual outcomes only |
+| Errors/source transitions | Generic expired/denied/absent errors, bounded validation/conflict/rate-limit/unavailable responses and safe retries | No tenant existence leak, secret disclosure, stale cross-tenant cache or Demo fallback |
+
+Common rule: authenticate active sessions and establish authorized tenant membership on every read, write, related record, file and delivery; client-side registry/route/role choices never grant access. Validate request shape and same-tenant relations server-side. Keep privileged mutation separate from read-only reporting. Actual evidence/control mapping and provider provenance require authorized sources and reviewer acceptance.
+
+Current service reads use canonical normalizers and strictly authored `{ data: [...] }` evidence/audit design fixtures. Fixture `created_at` is explicitly fixture-authoring metadata, never evidence or event chronology. No uploaded bytes, credentials, session IDs, IP addresses or actual invitations are collected. Automated evidence: TypeScript/ESLint PASS; focused F06 40/40; full 846/846, unchanged 806 baseline. Browser/backend security acceptance NOT RUN. Final production compilation/BUILD_ID are recorded in delivery.
+
+**STOP AFTER F06. DO NOT BEGIN F07 OR BACKEND IMPLEMENTATION. WAIT FOR REVIEW AND APPROVAL.**
+
+---
+
+# Historical F05 Reporting Center
 
 ## Future reporting responsibilities — not implemented endpoints
 

@@ -1,0 +1,5 @@
+export const auditSchemaResponse = { data: [
+  { id: "demo-audit-a", customer: { id: 1, name: "Demo Customer A" }, actor: { label: "Fictional schema actor A" }, category: "Customer-access changes", description: "Synthetic schema illustrating where an authorized membership decision would be attributed; no access was changed.", is_demo: true, timestamp_basis: "fixture_authoring", created_at: "2026-11-23T00:00:00Z" },
+  { id: "demo-audit-b", customer: { id: 2, name: "Demo Customer B" }, actor: { label: "Fictional schema actor B" }, category: "Integration configuration changes", description: "Synthetic schema illustrating a future integration configuration audit; no provider configuration was changed.", is_demo: true, timestamp_basis: "fixture_authoring", created_at: "2026-11-23T00:00:00Z" },
+  { id: "demo-audit-c", customer: { id: 3, name: "Demo Customer C" }, actor: { label: "Fictional schema actor C" }, category: "Role and permission changes", description: "Synthetic schema illustrating future permission-review attribution; no role or permission was assigned.", is_demo: true, timestamp_basis: "fixture_authoring", created_at: "2026-11-23T00:00:00Z" },
+] };

@@ -1,4 +1,38 @@
-# Frontend functionality gap register — F05 Reporting Center
+# Frontend functionality gap register — F06 Compliance & Administration
+
+## Current F06 delivery — 2026-11-23
+
+F04/F05 are approved. This current section supersedes historical stop/status statements below. Both governance modules now have working local workflows; F07 is NOT STARTED. No backend, persistence, real evidence upload, certification, invitation, access mutation, connection, audit recording, settings saving or notification delivery was introduced.
+
+| Feature | Actual route/source | Implemented frontend behavior | Remaining boundary |
+|---|---|---|---|
+| Compliance overview | `/compliance`, unchanged compliance-workspace plus new navigation | Existing summaries and definitions retained; all four new workspaces discoverable | Not a certified assessment |
+| Framework | `/compliance/framework`, framework-preview | Six selectable canonical functions, exact descriptions, reset, existing control/review links | No validated official function/control mappings exist; explicitly unavailable rather than fabricated |
+| Controls | `/compliance/controls`, governance-explorer and governance service | Exact nine Security Coverage definitions/statuses, bounded search, category/status filtering, copying sort, counts/reset/details | Signals are not official NIST controls or verified evidence; no control-specific observations invented |
+| Assessments | `/compliance/assessments`, assessment-preview/model | Explicit scoped customer, one framework, unique controls, staged local review/notes/category requests, summary/progress, Edit/Cancel/Reset | Reviewed/included examples is local progress, never compliance achievement; no saving/submission/certification |
+| Evidence | `/compliance/evidence`, evidence-preview/register fixture | Educational categories, scoped fictional metadata register/search/filter/sort/details, validated metadata-only review/Edit/Cancel/Reset | No attachment/document bytes or verified requirement; authoring timestamps never evidence activity dates |
+| Compliance reporting | Assessment local summary | Read-only actual local summary and Reports Library navigation | Dedicated Compliance Report print/export explicitly deferred to F08; no seventh F05 report |
+| Administration overview | `/administration`, unchanged administration-workspace plus navigation | Canonical roles/provider/audit foundations retained; four new workspaces discoverable | Informational foundations are not operational protections |
+| Access | `/administration/access`, access-preview/model | Eleven proposed permissions, three-role selection/comparison/category filters/rationale/reset; canonical identity client-role review; reserved fictional recipient invitation review | No authentication, account, token, mail, active assignment or privilege elevation |
+| Integrations | `/administration/integrations`, integration-preview | Exactly three searchable canonical plans/details; requested area/scope questions and configuration review/Edit/Cancel/Reset | Laravel, Guardz and Datto Endpoint Backup v2/Kaseya 365 remain unconnected; requested areas unverified, no credentials or user URLs |
+| Auditability | `/administration/audit`, audit-schema/governance-explorer | Scoped synthetic actor/category/tenant schema examples, search/category/sort/details/reset and requirements | No actual events, chronology/IP/session IDs, operational export or audit retention verification |
+| Settings/notifications | `/administration/settings`, settings-preview | Local sample density/presentation, supplied cadence/zone, six notification categories, validated review/Edit/Cancel/Reset | No saved account preferences, schedule or notification delivery; no global mode/scope override |
+| Isolation/states | WorkflowBoundary plus governance session | Membership/source identity/mode/scope/attempt checks, cancellation, keyed drafts/query resets; loading/error/retry/unavailable/empty/no-match | Frontend isolation is not server tenant authorization |
+| Accessibility/layout | governance-ui and responsive preview layouts | Native modal details, Escape/focus return, labels/legends/error focus/statuses, 44px actions, wrap-safe grids | Browser/WCAG/responsive acceptance NOT RUN |
+
+Source discovery: the existing Compliance foundation reuses nine canonical cybersecurity reporting indicators. It does not supply nine independent official NIST controls, control-specific evidence mappings or function associations. Preserve this distinction; missing mapping is unavailable data, not failed compliance.
+
+New fixtures are minimal separate `{ data: [...] }` resources, one synthetic metadata/schema example per customer. Their `created_at` has `timestamp_basis: fixture_authoring`; no UI uses it as evidence/event chronology. Strict validation preserves exact authored same-tenant relationships. No inventory/metric/role/provider baseline fixture or test changed.
+
+Verification: TypeScript PASS; ESLint PASS; focused F06 40/40 PASS; full suite 846/846 PASS (806 unchanged baseline +40), zero failures/skips/cancellations. Final actual production compilation and BUILD_ID are recorded in delivery. Browser QA NOT RUN; 210 base cases plus supplemental cases in `docs/phase-f06-browser-qa-handoff.md`. GitHub sync/Vercel deployment NOT VERIFIED. No browser artifact or production readiness claimed.
+
+Created F06 source: two allowlisted `[section]` route files, eleven `src/components/governance` modules, `src/services/governance.ts`, evidence-register/audit-schema fixtures. Added focused contract test and browser handoff. Modified overview route navigation, sidebar allowlists and three completion documents; legacy read-only workspaces and 806 tests preserved.
+
+Remaining frontend: executed browser/scope/focus/responsive acceptance across all milestones; F08 dedicated compliance print/export; F07 only after explicit review approval. Future Laravel must enforce auth/tenant/role/field policy, validated mappings, private evidence lifecycle, invitations/revocation, verified provider access, immutable audit and preferences/delivery. **STOP AFTER F06; DO NOT BEGIN F07; WAIT FOR REVIEW AND APPROVAL.**
+
+---
+
+# Historical F05 Reporting Center
 
 ## F05 current delivery — 2026-11-20
 
