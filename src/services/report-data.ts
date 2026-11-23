@@ -14,6 +14,9 @@ import { isAssignment } from "@/services/education-types";
 import { type DashboardScope, parseScope } from "@/services/dashboard-response";
 import { type ReportId, reportDefinition } from "@/components/reports/report-model";
 
+import { getGovernanceData } from "@/services/governance";
+import { buildComplianceReport } from "@/services/compliance-report";
+
 export type ReportSection = { index: number; text: string; headers: string[]; rows: (string | number)[][]; examples?: boolean; definition: string; source: string };
 export type ReportData = { report: ReportId; scope: number | null; sections: ReportSection[] };
 export type ReportState = { kind: "loading" | "unavailable" } | { kind: "error"; message: string } | { kind: "ready"; data: ReportData };
@@ -73,6 +76,11 @@ export async function getReportData(id: ReportId, scope: DashboardScope, registr
       add(5, "Illustrative jobs only, not historical executions.", ["Customer", "Job", "Outcome", "Description"], jobRows.records.map(row => [row.customerName, row.title, row.outcome, row.description]), "Backup Job Explorer", "Example rows do not define execution aggregate totals; no invented run date.", true);
       add(6, "Review provider mappings, approved restore tests, retention and recovery requirements. RTO/RPO, recovery points, restoration success and data integrity are not verified. Datto integration and cross-provider identifiers require developer confirmation.", [], [], "Recovery limitations and general guidance", general);
     }
+  } else if (id === "compliance") {
+    const governance = await getGovernanceData(scope, registry, mode);
+    if (governance.kind !== "ready") return governance;
+    const data = buildComplianceReport(governance.data, scope.type === "all" ? null : scope.customer_id, registry);
+    return data ? { kind: "ready", data } : { kind: "error", message: "Compliance report scope did not validate." };
   } else if (id === "dark-web") {
     const state = normalizeDemoDarkWeb(await getDemoDarkWeb(scope), scope, registry);
     if (state.kind !== "ready") return { kind: "error", message: "Dark Web relationships did not validate." };

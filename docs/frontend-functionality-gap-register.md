@@ -1,6 +1,25 @@
-# Frontend functionality gap register — F07 Shared Application Experience
+# Frontend functionality gap register — F08 Final Functionality Closure
 
-## Current F07 delivery — 2026-11-23
+## Current F08 delivery — 2026-11-23
+
+Status: frontend development delivered for owner review. Tests 892/892 (876 baseline + 16 F08). Browser acceptance NOT RUN (`final-frontend-browser-acceptance.md`).
+
+| ID | Area | Status | Remaining gap |
+| --- | --- | --- | --- |
+| F08-01 | Compliance Assessment Report (`/reports/compliance`), 12 sections, required disclosure sections, Print and safe CSV | Implemented (Demo) | Backend generation and stored history |
+| F08-02 | Local assessment draft → Compliance report preview inside Assessment Workspace | Implemented (Demo, not persisted) | Server persistence and review workflow |
+| F08-03 | Report discoverability from Library, Compliance Overview, Assessment Workspace and Compliance navigation | Implemented | — |
+| F08-04 | Dashboard insight investigation (Review Insight Context) | Implemented (read-only) | Provider-backed insight detail |
+| F08-05 | Mobile menu background made non-interactive while open | Implemented | Browser verification |
+| F08-06 | Sidebar survives blocked browser storage | Implemented | Browser verification |
+| F08-07 | Branding: logo, favicon, app icons | BLOCKED | Owner-approved assets (`production-readiness-gates.md`) |
+| F08-08 | Verified support contact | BLOCKED | Owner-supplied verified contact |
+| F08-09 | Git/Vercel synchronization | NOT VERIFIED | Repository and deployment evidence |
+| F08-10 | Authentication, tenant authorization, providers, persistence | NOT STARTED | Laravel backend phase |
+
+Audit result: no open P0/P1 frontend defects found by source review. No unsafe HTML injection, no network calls, no credentials, no invented contact details.
+
+## Historical F07 delivery — 2026-11-23
 
 Status: development delivered; browser QA NOT RUN (see `phase-f07-browser-qa-handoff.md`). Tests 876/876 (846 baseline + 30 F07).
 

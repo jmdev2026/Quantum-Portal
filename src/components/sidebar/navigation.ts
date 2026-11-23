@@ -59,7 +59,7 @@ export const navSections: NavSection[] = [
 
 export function isNavItemActive(item: NavItem, pathname: string) {
   if (!item.href) return false;
-  if (item.href === "/reports") return pathname === "/reports" || ["executive", "cybersecurity", "backup", "dark-web", "awareness-training", "phishing-simulations"].some(report => pathname === `/reports/${report}`);
+  if (item.href === "/reports") return pathname === "/reports" || ["executive", "cybersecurity", "backup", "dark-web", "awareness-training", "phishing-simulations", "compliance"].some(report => pathname === `/reports/${report}`);
   if (item.href === "/compliance") return pathname === item.href || ["framework", "controls", "assessments", "evidence"].some(section => pathname === `/compliance/${section}`);
   if (item.href === "/administration") return pathname === item.href || ["access", "integrations", "audit", "settings"].some(section => pathname === `/administration/${section}`);
   if (item.href === "/") return pathname === item.href;

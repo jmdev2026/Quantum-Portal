@@ -15,12 +15,12 @@ export function AppSidebar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    setCollapsed(window.localStorage.getItem(COLLAPSE_STORAGE_KEY) === "1");
+    try { setCollapsed(window.localStorage.getItem(COLLAPSE_STORAGE_KEY) === "1"); } catch { setCollapsed(false); }
   }, []);
 
   const toggleCollapsed = () => {
     setCollapsed((prev) => {
-      window.localStorage.setItem(COLLAPSE_STORAGE_KEY, prev ? "0" : "1");
+      try { window.localStorage.setItem(COLLAPSE_STORAGE_KEY, prev ? "0" : "1"); } catch { /* Collapse remains usable when browser storage is blocked. */ }
       return !prev;
     });
   };
@@ -106,8 +106,12 @@ function MobileNavigation({
       closeRef.current?.focus();
       const previousOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
+      const background = ["portal-shell-body", "portal-skip-link"].map(id => document.getElementById(id)).filter((element): element is HTMLElement => element !== null);
+      const previousInert = background.map(element => element.inert);
+      background.forEach(element => { element.inert = true; });
       return () => {
         document.body.style.overflow = previousOverflow;
+        background.forEach((element, index) => { element.inert = previousInert[index]; });
       };
     }
     if (wasOpen.current) {

@@ -1,0 +1,44 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+import { REPORTS, defaultConfig, validateConfig, requiredSections, csvContent } from "@/components/reports/report-model";
+import { getReportData } from "@/services/report-data";
+import { getGovernanceData } from "@/services/governance";
+import { buildComplianceReport } from "@/services/compliance-report";
+import { DESTINATIONS, safeDestination } from "@/components/shared-experience/experience-model";
+import { findActiveNavItem } from "@/components/sidebar/navigation";
+const registry = [1, 2, 3].map((id, index) => ({ id, name: `Demo Customer ${"ABC"[index]}` }));
+const read = (path: string) => readFileSync(path, "utf8");
+for (const id of [null, 1, 2, 3]) test(`Compliance canonical sources and no manufactured findings in scope ${id}`, async () => {
+  const result = await getReportData("compliance", id === null ? { type: "all" } : { type: "customer", customer_id: id }, registry, "demo");
+  assert.equal(result.kind, "ready"); if (result.kind !== "ready") return;
+  assert.equal(result.data.scope, id); assert.equal(result.data.sections.length, 12);
+  assert.equal(result.data.sections[2].rows.length, 6); assert.equal(result.data.sections[3].rows.length, 9);
+  assert.equal(result.data.sections[5].rows.length, 0); assert.equal(result.data.sections[6].rows.length, 6);
+  assert.match(result.data.sections[10].text, /not nine official NIST controls/);
+});
+test("Compliance Live and invalid/revoked scopes never produce an artifact", async () => {
+  assert.deepEqual(await getReportData("compliance", { type: "all" }, registry, "live"), { kind: "unavailable" });
+  for (const id of [999, -1, NaN, 1.5]) assert.equal((await getReportData("compliance", { type: "customer", customer_id: id }, registry, "demo")).kind, "error");
+  assert.equal((await getReportData("compliance", { type: "customer", customer_id: 2 }, registry.filter(row => row.id !== 2), "demo")).kind, "error");
+});
+test("Compliance governance normalization rejects wrong registry names", async () => { assert.equal((await getReportData("compliance", { type: "customer", customer_id: 2 }, [{ id: 2, name: "Wrong" }], "demo")).kind, "error"); });
+test("validated local assessment stays explicitly scoped and omits private notes", async () => {
+  const state = await getGovernanceData({ type: "all" }, registry, "demo"); assert.equal(state.kind, "ready"); if (state.kind !== "ready") return;
+  const draft = { customer: 2, framework: "NIST CSF 2.0", entries: [{ control: state.data.controls[0].key, state: "Evidence Needed", categories: [], notes: "Demo: Review supporting information" }] };
+  const report = buildComplianceReport(state.data, null, registry, draft)!;
+  assert.equal(report.scope, 2); assert.equal(report.sections[3].rows.length, 1); assert.equal(report.sections[3].rows[0][1], "Evidence Needed"); assert.equal(report.sections[5].rows.length, 1); assert.equal(report.sections[8].rows.length, 1);
+  assert.ok(!JSON.stringify(report).includes(draft.entries[0].notes));
+  assert.equal(buildComplianceReport(state.data, 1, registry, draft), null);
+  assert.equal(buildComplianceReport(state.data, null, registry.filter(row => row.id !== 2), draft), null);
+  assert.equal(buildComplianceReport(state.data, null, registry, { ...draft, entries: [{ ...draft.entries[0], state: "Certified" }] }), null);
+});
+test("Compliance methodology, framework and disclosures cannot be unchecked", () => { const config = defaultConfig("compliance", 2); assert.equal(validateConfig(config, "compliance", 2), null); for (const index of requiredSections("compliance")) assert.ok(validateConfig({ ...config, sections: config.sections.filter(value => value !== index) }, "compliance", 2)); assert.equal(validateConfig({ ...config, sections: [...requiredSections("compliance")] }, "compliance", 2), null); });
+test("seven report destinations are discoverable and recognized by shell", () => { assert.equal(REPORTS.length, 7); for (const item of REPORTS) { assert.ok(DESTINATIONS.some(row => row.href === `/reports/${item.id}`)); assert.equal(findActiveNavItem(`/reports/${item.id}`)?.id, "reports"); assert.equal(safeDestination(`/reports/${item.id}`), `/reports/${item.id}`); } });
+test("Compliance navigation and assessment report preserve existing library", () => { assert.match(read("src/components/governance/governance-ui.tsx"), /href="\/reports\/compliance"/); const source = read("src/components/governance/assessment-preview.tsx"); assert.match(source, /LocalComplianceReport/); assert.match(source, /href="\/reports\/compliance"/); assert.match(source, /href="\/reports"/); });
+test("general and local print output uses isolated renderer and real browser printing", () => { for (const file of ["report-center", "local-compliance-report"]) { const source = read(`src/components/reports/${file}.tsx`); assert.match(source, /window.print\(\)/); assert.match(source, /report-print-root/); assert.match(source, /createPortal/); assert.match(source, /validateConfig/); assert.match(source, /mode === "demo"/); assert.doesNotMatch(source, /Download PDF|PDF saved/); } });
+test("Compliance CSV uses UTF8 quoting neutralization and no hidden identifiers", () => { const result = csvContent([["DEMONSTRATION REPORT"], ["=SUM(A1)", 'é,"x"']]); assert.ok(result.startsWith("\uFEFF")); assert.ok(result.includes("'=")); assert.ok(result.includes('""x""')); const source = read("src/components/reports/local-compliance-report.tsx"); for (const pattern of [/DEMO_DISCLOSURE/, /section.examples/, /config.sections.includes/, /csvContent/, /anchor.download/, /anchor.click\(\)/, /revokeObjectURL/]) assert.match(source, pattern); assert.doesNotMatch(source, /entry.notes|localStorage|sessionStorage/); });
+test("scope boundaries remove unsaved assessment and print portals during incompatible changes", () => { const source = read("src/components/customer-workflows/workflow-boundary.tsx"); assert.match(source, /registry !== heldRegistry/); assert.match(source, /key=\{`\$\{mode\}:\$\{customerId\}/); assert.match(read("src/components/governance/governance-workspace.tsx"), /loaded.registry !== registry/); });
+test("sidebar collapse remains usable with denied browser storage", () => { const source = read("src/components/sidebar/app-sidebar.tsx"); assert.match(source, /try \{ setCollapsed/); assert.match(source, /try \{ window.localStorage.setItem/); });
+test("brand and support remain honest unapproved fallbacks", () => { assert.match(read("src/components/sidebar/app-sidebar.tsx"), /<Shield/); assert.match(read("src/components/shared-experience/help-workspace.tsx"), /No verified support email/); assert.doesNotMatch(read("src/components/shared-experience/help-workspace.tsx"), /mailto:|tel:/); });
+test("route files for all eight modules and nine capabilities exist", () => { for (const route of ["", "security", "backup", "customers", "users-devices", "reports", "compliance", "administration", ...["mdr", "itdr", "external-footprint", "dark-web", "email-protection", "endpoint-security", "cloud-data-protection", "awareness-training", "phishing-simulations"].map(id => `security/${id}`)]) assert.ok(existsSync(`src/app/${route ? route + "/" : ""}page.tsx`)); });

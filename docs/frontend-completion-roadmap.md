@@ -1,6 +1,17 @@
-# Frontend completion roadmap — F07 Shared Application Experience
+# Frontend completion roadmap — F08 Final Functionality Closure
 
 ## Current milestone — 2026-11-23
+
+F08 delivered for owner review: Compliance Assessment Report, final audits, insight investigation, mobile menu and storage fixes, consolidated browser acceptance list, developer handoff and production readiness gates. Tests 892/892. Frontend development is complete pending owner acceptance; browser acceptance NOT RUN, branding and support contact BLOCKED, backend NOT STARTED. Next phase (backend) must not begin without owner approval.
+
+| Milestone | Scope | Status |
+| --- | --- | --- |
+| F01–F06 | Approved module completion | Approved |
+| F07 | Shared application experience | Partial acceptance |
+| F08 | Final functionality closure | Delivered for review |
+| Backend | Laravel auth, tenancy, providers | Not started |
+
+## Historical F07 milestone — 2026-11-23
 
 F07 development delivered and awaiting review: sign-in/access-state preview, account workspace, Notification Center, global navigation search, Help & Support, 404/error/loading states and shell consistency. Tests 876/876. Browser QA NOT RUN (`phase-f07-browser-qa-handoff.md`).
 

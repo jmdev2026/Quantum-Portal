@@ -5,7 +5,9 @@ export const REPORTS = [
   { id: "dark-web", title: "Dark Web Monitoring Report", category: "Security", purpose: "Fictional exposure findings, accounts and domain previews.", sections: ["Exposure overview", "Findings by severity and category", "Fictional affected accounts", "Monitored-domain preview", "Illustrative review status", "General response guidance"] },
   { id: "awareness-training", title: "Security Awareness Training Report", category: "Education", purpose: "Campaigns, topics, assignments and example completion metrics.", sections: ["Training program summary", "Illustrative campaigns", "Assigned participants and completion", "Training topics", "Outstanding example assignments", "General training recommendations"] },
   { id: "phishing-simulations", title: "Phishing Simulation Report", category: "Education", purpose: "Scenario categories, overlapping outcomes and illustrative rates.", sections: ["Simulation program overview", "Illustrative campaigns and scenarios", "Fictional participant outcomes", "Illustrative click and report rates", "Campaign-level breakdown", "Training opportunities"] },
+  { id: "compliance", title: "Compliance Assessment Report", category: "Governance", purpose: "NIST CSF reference, illustrative reporting signals and evidence review limitations.", sections: ["Report cover and scope", "NIST CSF 2.0 framework overview", "Six framework functions", "Illustrative control review summary", "Assessment scope", "Local assessment review results", "Evidence requirements", "Evidence availability limitations", "Items requiring review", "Recommended next steps", "Reporting methodology", "Data source and legal/operational limitations"] },
 ] as const;
+export const requiredSections = (id: string): readonly number[] => id === "compliance" ? [0, 1, 7, 10, 11] : [0];
 export type ReportId = typeof REPORTS[number]["id"];
 export type ReportConfig = { report: ReportId; scope: number | null; title: string; sections: number[]; detail: "summary" | "detailed"; examples: boolean };
 export const reportDefinition = (id: string) => REPORTS.find(report => report.id === id);
@@ -14,7 +16,7 @@ export function validateConfig(config: ReportConfig, id: ReportId, scope: number
   const report = reportDefinition(config.report);
   if (!report || config.report !== id || config.scope !== scope) return "Report or customer scope changed. Start a new preview.";
   if (config.title.trim().length < 8 || config.title.trim().length > 80 || !/^[A-Za-z0-9 ,.&()'–—-]+$/.test(config.title.trim())) return "Use an 8–80-character report title without addresses or markup.";
-  if (!Array.isArray(config.sections) || !config.sections.includes(0) || new Set(config.sections).size !== config.sections.length || config.sections.some(section => !Number.isSafeInteger(section) || section < 0 || section >= report.sections.length)) return "Include the required overview and choose unique supported sections.";
+  if (!Array.isArray(config.sections) || !requiredSections(id).every(index => config.sections.includes(index)) || new Set(config.sections).size !== config.sections.length || config.sections.some(section => !Number.isSafeInteger(section) || section < 0 || section >= report.sections.length)) return "Include the required overview and choose unique supported sections.";
   if (!["summary", "detailed"].includes(config.detail) || typeof config.examples !== "boolean") return "Choose supported presentation options.";
   return null;
 }

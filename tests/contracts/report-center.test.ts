@@ -14,7 +14,7 @@ const center = read("src/components/reports/report-center.tsx");
 const renderer = read("src/components/reports/report-renderer.tsx");
 
 test("six distinct report definitions and direct routes preserve Reports navigation", () => {
-  assert.equal(REPORTS.length, 6); assert.equal(new Set(REPORTS.map(report => report.id)).size, 6);
+  assert.equal(REPORTS.length, 7); assert.equal(new Set(REPORTS.map(report => report.id)).size, 7);
   const nav = navSections.flatMap(section => section.items).find(item => item.id === "reports")!;
   for (const report of REPORTS) { assert.equal(isNavItemActive(nav, `/reports/${report.id}`), true); assert.ok(report.sections.length >= 6); }
   assert.equal(isNavItemActive(nav, "/reports/history"), false);

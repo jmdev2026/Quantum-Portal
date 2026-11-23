@@ -1,3 +1,7 @@
+"use client";
+import Link from "next/link";
+import { useRef, useState } from "react";
+import { GovernanceDialog, governanceAction } from "@/components/governance/governance-ui";
 import type { LucideIcon } from "lucide-react";
 import { CircleAlert, Info, Lightbulb, OctagonAlert, ShieldAlert, SignalLow, TriangleAlert, Wrench } from "lucide-react";
 import type { Insight, InsightCategory, InsightPriority } from "@/services/insights";
@@ -21,6 +25,8 @@ const formatTimestamp = (iso: string) =>
 
 // Provider text is rendered only as React text nodes; never pass it to innerHTML or treat it as instructions.
 export function InsightCard({ insight, stale }: { insight: Insight; stale: boolean }) {
+  const [opened, setOpened] = useState<Insight | null>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
   const category = categoryDisplay[insight.category];
   const priority = insight.priority ? priorityDisplay[insight.priority] : null;
   const timestamp = insight.updatedAt ?? insight.observedAt;
@@ -64,6 +70,8 @@ export function InsightCard({ insight, stale }: { insight: Insight; stale: boole
           )}
         </p>
       )}
+      <button type="button" ref={trigger} className={governanceAction} onClick={() => setOpened(insight)}>Review Insight Context</button>
+      {opened === insight && <GovernanceDialog title={insight.title} trigger={trigger.current} close={() => setOpened(null)}><p>{insight.summary}</p><p>Category: {category.label} · Source: {insight.source ?? "Not supplied"} · {stale ? "Stale reporting" : "Illustrative reporting"}</p><p>Read-only source context. No incident investigation, verified customer finding or remediation is established.</p><Link href="/security/insights" onClick={() => setOpened(null)} className={governanceAction}>Security Insights</Link><Link href="/reports/cybersecurity" onClick={() => setOpened(null)} className={governanceAction}>Cybersecurity Report</Link></GovernanceDialog>}
     </article>
   );
 }

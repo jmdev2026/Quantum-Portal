@@ -28,10 +28,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="min-h-screen font-sans">
         <DashboardModeProvider>
           <CustomerViewProvider>
-            <a href="#portal-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-ink-950 focus:p-4 focus:text-shield-300">Skip to workspace</a>
+            <a id="portal-skip-link" href="#portal-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-ink-950 focus:p-4 focus:text-shield-300">Skip to workspace</a>
             <div className="flex min-h-screen flex-col lg:flex-row">
               <AppSidebar />
-              <div className="min-w-0 flex-1">
+              <div id="portal-shell-body" className="min-w-0 flex-1">
                 <AppHeader />
                 <div id="portal-content" tabIndex={-1} className="min-w-0">{children}</div>
               </div>

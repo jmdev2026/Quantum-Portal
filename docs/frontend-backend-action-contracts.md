@@ -1,6 +1,16 @@
-# Frontend ↔ backend action inventory — F07 Shared Application Experience
+# Frontend ↔ backend action inventory — F08 Final Functionality Closure
 
-## F07 future responsibilities — not implemented endpoints
+## F08 future responsibilities — not implemented endpoints
+
+| Action | Current frontend | Backend responsibility |
+| --- | --- | --- |
+| Compliance Assessment Report | Built locally from `getGovernanceData`; Print and CSV in the browser; Live unavailable | Tenant-authorized report generation, stored report history, server-side PDF if required, audit of exports |
+| Assessment draft | Local, unsaved, discarded on scope/mode change | Save/submit/review endpoints with tenant ownership, versioning and audit |
+| Insight context | Read-only dialog from fixture fields | Provider-backed insight detail once Guardz capability is verified |
+
+No new endpoints are invented. No certification, compliance determination or score is produced by frontend or backend contracts.
+
+## Historical F07 future responsibilities — not implemented endpoints
 
 The frontend currently uses one provisional seam (`GET /application/preview`, marked TODO(api)) returning fictional Demo data; Live returns unavailable before any read.
 
